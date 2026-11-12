@@ -16,7 +16,8 @@
   "harnesses": [
     "generic",
     "codex",
-    "claude-code"
+    "claude-code",
+    "antigravity"
   ],
   "components": {
     "main": {

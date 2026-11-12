@@ -1,22 +1,37 @@
 # Repo Workflow
 
 A small, checked-in operating contract for bounded delivery across coding harnesses.
-Milestone 1 defines contracts and representative content. There is no installer, resolver,
-updater, released package, or claim of verified framework/engine compatibility yet.
+Milestones 1–2 provide contracts, composable profiles and a deterministic local initial-install tool.
+Generic Markdown, Codex, Claude Code routing and Google Antigravity share the same core.
+Native harness discovery remains unverified; see [status](docs/STATUS.md).
 
-Start with [current status](docs/STATUS.md), [composition](docs/COMPOSITION.md),
-[ownership and updates](docs/OWNERSHIP.md), and [source provenance](docs/SOURCES.md).
-Configuration uses JSON, a portable YAML subset; see [the mixed example](tests/fixtures/projects/mixed-monorepo.json)
-and [schema contract](schemas/README.md). Profiles and presets compose rather than duplicate workflows.
-
-Validate contracts with Python 3.11+ in an isolated environment:
+Use Python 3.11+ from this source checkout:
 
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements-dev.txt
-.venv/bin/python tests/validate_contracts.py
+.venv/bin/python -m repo_workflow inspect --root /path/to/target --task feature --affected src/example.py
+.venv/bin/python -m repo_workflow plan --root /path/to/target > /tmp/workflow-plan.json
+# Review the JSON changes, diffs and conflicts before applying.
+.venv/bin/python -m repo_workflow apply --root /path/to/target --plan /tmp/workflow-plan.json
+.venv/bin/python -m repo_workflow doctor --root /path/to/target --task docs --affected README.md
 ```
 
-Validation executes no configured commands and contacts no services. Behavioral scenarios specify
-future acceptance; they do not prove the unimplemented resolver or updater works.
-See [acceptance coverage](tests/fixtures/README.md) and [roadmap](ROADMAP.md).
+First create the target's project-owned `.repo-workflow.json` using an
+[example](tests/fixtures/projects/library-cli.json) and the [schema contract](schemas/README.md).
+Use a clean, pinned source checkout. The tool operates locally without fetching content or executing
+configured commands. Dependencies require separate installation. Plans contain complete before/after
+content and hashed inputs; keep them local and review them as project data.
+
+Existing owned files produce conflicts; project memory is preserved. Updates, uninstall, migrations
+and interrupted-install recovery belong to Milestone 3. Inspect the retained journal after an
+interrupted installation; retrying as a fresh install is rejected.
+
+```sh
+.venv/bin/python tests/validate_contracts.py
+.venv/bin/python -m unittest discover -s tests -p 'test_*.py'
+```
+
+Read [composition](docs/COMPOSITION.md), [ownership](docs/OWNERSHIP.md),
+[harness discovery](adapters/README.md), [provenance](docs/SOURCES.md) and [roadmap](ROADMAP.md).
+Diagnostics do not execute gates, consume passing evidence or certify completion.

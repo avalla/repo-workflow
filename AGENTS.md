@@ -3,8 +3,9 @@
 Read docs/STATUS.md and the current task first. Use REPO_GRAPH.md to locate the owning
 contract; load only relevant profiles, workflows and ADRs. Keep evidence on disk.
 
-This repository currently defines Milestone 1. Do not implement the CLI, adopt into source
-projects, publish, deploy, or infer authorization from configured commands. Preserve existing files.
+Milestone 2 implements the local initial-install CLI. Publishing to avalla/repo-workflow is
+authorized. Do not adopt into source projects, implement Milestone 3, deploy, or infer
+authorization from configured commands. Preserve existing files.
 Use the smallest coherent change. Keep core provider-neutral; adapters cannot weaken gates.
 Unknown fields fail. Policies have declared merge rules; never use last-writer-wins.
 

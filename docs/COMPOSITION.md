@@ -12,7 +12,7 @@ profile files explicitly; local profiles use the same schema. Reject duplicate I
 across local and bundled catalogues rather than shadowing one. Plans hash these files as inputs.
 Normal operation reads the selected checked-in installation; it does not fetch this source repository.
 
-Resolution stages (implementation belongs to Milestone 2):
+Resolution stages (implemented by the M2 local tool):
 
 1. Validate strict schemas, including unknown fields. JSON is the initial interchange format.
 2. Expand presets and exact-version transitive requirements. Reject cycles, missing versions,
@@ -82,3 +82,6 @@ Each gate uses a command binding or a manual procedure, never both; an unbound g
 Binding/environment IDs must exist and agree. Environment requirements are descriptions, not secrets.
 Inspect/plan/doctor/install never execute configured commands. Ordered argv avoids implicit shell
 interpolation; a shell must be explicitly bound as argv[0] and remains subject to task authorization.
+
+M2 rejects every override until an owner-verification protocol exists. It reports prerequisites
+as UNKNOWN and gates as NOT RUN/BLOCKED; it does not ingest evidence or run bindings.

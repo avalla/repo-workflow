@@ -68,7 +68,8 @@
         "enum": [
           "generic",
           "codex",
-          "claude-code"
+          "claude-code",
+          "antigravity"
         ]
       },
       "uniqueItems": true,
