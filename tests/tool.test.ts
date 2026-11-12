@@ -2,7 +2,7 @@ import {afterEach, expect, test} from 'bun:test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {tmpdir} from 'node:os';
-import {canonical, checked, decode, digest, Inputs, SOURCE, validate} from '../src/io';
+import {canonical, checked, decode, digest, Inputs, SOURCE, sourceCommit, validate} from '../src/io';
 import {apply, configuration, plan, recover, threeWay} from '../src/lifecycle';
 import {createConfig, initialize} from '../src/init';
 import {doctor, inspect} from '../src/cli';
@@ -18,6 +18,78 @@ function fixture(name = 'library-cli') {
 function write(root: string, p: string, text: string) {fs.mkdirSync(path.dirname(root + '/' + p), {recursive: true}); fs.writeFileSync(root + '/' + p, text);}
 const text = (root: string, p: string) => fs.readFileSync(root + '/' + p, 'utf8');
 const install = (root: string) => apply(plan(root), root);
+
+test('source identity resolves loose and packed shared refs in a real Git worktree', () => {
+  const root = fixture(), worktree = root + '-worktree'; roots.push(worktree);
+  const git = (...args: string[]) => {
+    const result = Bun.spawnSync(['git', '-C', root, ...args]);
+    expect(result.exitCode).toBe(0); return result.stdout.toString().trim();
+  };
+  git('init'); git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', 'commit', '--allow-empty', '-m', 'fixture');
+  git('worktree', 'add', '-b', 'pilot', worktree);
+  const expected = git('rev-parse', 'HEAD');
+  expect(sourceCommit(worktree)).toBe(expected);
+  git('pack-refs', '--all'); expect(sourceCommit(worktree)).toBe(expected);
+  git('-C', worktree, 'checkout', '--detach'); expect(sourceCommit(worktree)).toBe(expected);
+});
+
+test.each(['resume', 'rollback'] as const)('recovery refuses permission edits on new files during %s', direction => {
+  const root = fixture(), value = plan(root), id = digest(canonical(value));
+  expect(() => apply(value, root, 1)).toThrow('injected-interruption');
+  const file = root + '/' + value.changes[0].path;
+  fs.chmodSync(file, 0o600);
+  expect(() => recover(root, id, direction)).toThrow('recovery-mode-edit');
+  expect(fs.statSync(file).mode & 0o777).toBe(0o600);
+  expect(text(root, value.changes[0].path)).toBe(value.changes[0].content!);
+});
+
+test('explicit recovery releases dead markers after terminal save and before journal creation', () => {
+  const root = fixture(), value = plan(root), id = digest(canonical(value)); apply(value, root);
+  const active = '.repo-workflow/transactions/active';
+  write(root, active, canonical({pid: 2147483647}));
+  expect(() => plan(root, 'update')).toThrow('active-transaction');
+  expect(recover(root, id, 'resume').state).toBe('applied');
+  expect(plan(root, 'update').conflicts).toEqual([]);
+  const empty = fixture(), orphanId = '0'.repeat(64);
+  write(empty, active, canonical({pid: process.pid}));
+  expect(() => recover(empty, orphanId, 'resume')).toThrow('transaction-process-still-running');
+  write(empty, active, canonical({pid: 2147483647}));
+  expect(recover(empty, orphanId, 'resume').state).toBe('marker-released');
+  expect(plan(empty).conflicts).toEqual([]);
+});
+
+test('a recovery guard excludes competing recovery and apply without stealing ownership', () => {
+  const root = fixture(), value = plan(root), id = digest(canonical(value));
+  const guard = '.repo-workflow/transactions/recovery-owner';
+  write(root, guard, canonical({pid: process.pid}));
+  write(root, '.repo-workflow/transactions/active', canonical({pid: 2147483647}));
+  const original = text(root, guard);
+  expect(() => recover(root, id, 'resume')).toThrow('EEXIST');
+  expect(text(root, guard)).toBe(original);
+  fs.unlinkSync(root + '/.repo-workflow/transactions/active');
+  const fresh = plan(root);
+  expect(() => apply(fresh, root)).toThrow('recovery-in-progress');
+  expect(text(root, guard)).toBe(original);
+  expect(fs.existsSync(root + '/.repo-workflow/lock.json')).toBe(false);
+  expect(doctor(root).findings).toContainEqual({code: 'recovery-in-progress', result: 'BLOCKED'});
+});
+
+test('a second process cannot reclaim an active recovery owner', async () => {
+  const root = fixture(), id = '0'.repeat(64), dir = root + '/.repo-workflow/transactions';
+  fs.mkdirSync(dir, {recursive: true});
+  const child = Bun.spawn([process.execPath, '-e', `
+    const fs = require('node:fs'); const dir = ${JSON.stringify(dir)};
+    for (const name of ['recovery-owner', 'active']) fs.writeFileSync(dir + '/' + name, JSON.stringify({pid: process.pid}));
+    process.stdout.write('ready'); setInterval(() => {}, 1000);
+  `], {stdout: 'pipe', stderr: 'pipe'});
+  try {
+    await child.stdout.getReader().read();
+    const before = text(root, '.repo-workflow/transactions/active');
+    expect(() => recover(root, id, 'resume')).toThrow('EEXIST');
+    expect(text(root, '.repo-workflow/transactions/active')).toBe(before);
+    expect(decode(before).pid).toBe(child.pid);
+  } finally {child.kill(); await child.exited;}
+});
 
 test('all representative configurations resolve deterministically and retain independent review', () => {
   for (const name of fs.readdirSync(SOURCE + '/tests/fixtures/projects').filter(n => n.endsWith('.json'))) {

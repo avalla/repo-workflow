@@ -106,14 +106,17 @@ export function atomic(file: string, content: string, mode = 0o644) {
   catch (error) {try {fs.closeSync(fd);} catch {} throw error;}
   finally {fs.rmSync(temporary, {force: true});}
 }
-export function sourceCommit(): string {
-  let git = path.join(SOURCE, '.git');
-  if (fs.statSync(git).isFile()) git = path.resolve(SOURCE, fs.readFileSync(git, 'utf8').trim().replace(/^gitdir: /, ''));
+export function sourceCommit(root = SOURCE): string {
+  let git = path.join(root, '.git');
+  if (fs.statSync(git).isFile()) git = path.resolve(root, fs.readFileSync(git, 'utf8').trim().replace(/^gitdir: /, ''));
+  const commonFile = path.join(git, 'commondir');
+  const common = fs.existsSync(commonFile) ? path.resolve(git, fs.readFileSync(commonFile, 'utf8').trim()) : git;
   let head = fs.readFileSync(path.join(git, 'HEAD'), 'utf8').trim();
   if (head.startsWith('ref: ')) {
-    const ref = head.slice(5), file = path.join(git, ref);
-    head = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').trim() :
-      fs.readFileSync(path.join(git, 'packed-refs'), 'utf8').split('\n').find(l => l.endsWith(' ' + ref))?.split(' ')[0] ?? '';
+    const ref = head.slice(5), file = [path.join(git, ref), path.join(common, ref)].find(p => fs.existsSync(p));
+    const packed = path.join(common, 'packed-refs');
+    head = file ? fs.readFileSync(file, 'utf8').trim() : fs.existsSync(packed) ?
+      fs.readFileSync(packed, 'utf8').split('\n').find(l => l.endsWith(' ' + ref))?.split(' ')[0] ?? '' : '';
   }
   requireThat(/^[a-f0-9]{40}$/.test(head), 'unresolved-source-commit'); return head;
 }

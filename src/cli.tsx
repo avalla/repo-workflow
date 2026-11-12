@@ -29,6 +29,7 @@ export function doctor(root: string, task = 'feature', affected: string[] = []) 
       if (!['applied', 'rolled-back'].includes(target.json('.repo-workflow/transactions/' + file).state)) findings.push({code: 'incomplete-transaction:' + file, result: 'BLOCKED'});
     }
     if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/active'))) findings.push({code: 'active-transaction', result: 'BLOCKED'});
+    if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/recovery-owner'))) findings.push({code: 'recovery-in-progress', result: 'BLOCKED'});
   }
   return {findings, gates: gateReport(effective, config, task, affected), prerequisites: effective.profiles.flatMap((p: Document) => p.profile.policy.prerequisites.map((requirement: string) => ({scope: p.scope, requirement, result: 'UNKNOWN'}))), completion: false, commandsExecuted: [], discovery: 'filesystem contract only; native harness execution is separate evidence'};
 }

@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import {randomUUID} from 'node:crypto';
 import {atomic, canonical, checked, decode, digest, GENERATOR, Inputs, requireThat as req, snapshot, SOURCE, sourceCommit, validate, VERSION, type Document, type Snapshot} from './io';
 import {resolve} from './compose';
 import {allowedTarget, block, mergeEntry, render} from './render';
@@ -91,17 +92,40 @@ export function plan(root: string, operation: Operation = 'install'): Plan {
     targetReads: target.reads, sourceReads: source.reads, changes, conflicts: conflicts.sort(), diagnostics};
 }
 
+function publishOwner(root: string, file: string) {
+  const temporary = checked(root, TX + '/owner-' + randomUUID());
+  try {
+    atomic(temporary, canonical({pid: process.pid}), 0o600);
+    fs.linkSync(temporary, file);
+  } finally {fs.rmSync(temporary, {force: true});}
+}
 function mutex(root: string, recover = false): () => void {
   const dir = checked(root, TX); fs.mkdirSync(dir, {recursive: true});
   const file = checked(root, TX + '/active');
+  const guard = checked(root, TX + '/recovery-owner');
+  // Never steal a recovery guard: two reclaimers must not unlink a newly live owner.
+  // A killed recovery holding this guard requires explicit operator reconciliation.
+  if (recover) publishOwner(root, guard);
+  else req(!fs.existsSync(guard), 'recovery-in-progress: inspect recovery-owner');
+  try {
   if (recover && fs.existsSync(file)) {
     const owner = decode(fs.readFileSync(file)); req(Number.isInteger(owner.pid) && owner.pid > 0, 'invalid-active-owner');
     let alive = true; try {process.kill(owner.pid, 0);} catch (e: any) {if (e.code === 'ESRCH') alive = false; else throw e;}
     req(!alive, 'transaction-process-still-running'); fs.unlinkSync(file);
   }
-  const fd = fs.openSync(file, 'wx', 0o600);
-  try {fs.writeFileSync(fd, canonical({pid: process.pid})); fs.fsyncSync(fd);} finally {fs.closeSync(fd);}
-  return () => {fs.unlinkSync(checked(root, TX + '/active'));};
+  // Publish a complete owner record exclusively: a crash cannot expose empty JSON.
+  publishOwner(root, file);
+  if (!recover && fs.existsSync(guard)) {
+    fs.unlinkSync(file); throw new Error('recovery-in-progress: inspect recovery-owner');
+  }
+  return () => {
+    fs.unlinkSync(checked(root, TX + '/active'));
+    if (recover) fs.unlinkSync(checked(root, TX + '/recovery-owner'));
+  };
+  } catch (error) {
+    if (recover) fs.unlinkSync(guard);
+    throw error;
+  }
 }
 function currentText(root: string, p: string) {
   const file = checked(root, p);
@@ -129,7 +153,7 @@ function verifyRecovery(root: string, journal: Document) {
     req(before && (c.before === null ? before.kind === 'absent' : before.kind === 'file' && before.sha256 === digest(c.before)), 'journal-before-integrity');
     const actual = currentText(root, c.path);
     req(actual === c.before || actual === c.content, 'recovery-user-edit: ' + c.path);
-    if (actual !== null && before.kind === 'file') req((fs.statSync(checked(root, c.path)).mode & 0o777) === before.mode, 'recovery-mode-edit: ' + c.path);
+    if (actual !== null) req((fs.statSync(checked(root, c.path)).mode & 0o777) === (before.kind === 'file' ? before.mode : 0o644), 'recovery-mode-edit: ' + c.path);
   }
   for (const [p, s] of Object.entries(journal.targetReads) as [string, Snapshot][]) {
     const actual = snapshot(root, p);
@@ -183,11 +207,24 @@ export function apply(value: Plan, root: string, failAfter?: number) {
 export function recover(root: string, identifier: string, direction: 'resume' | 'rollback') {
   req(/^[a-f0-9]{64}$/.test(identifier), 'invalid-transaction-id');
   root = fs.realpathSync(path.resolve(root)); const name = TX + '/' + identifier + '.json';
-  const journal = new Inputs(root).json(name);
-  req(journal.planId === identifier && !terminal(journal.state), 'transaction-not-recoverable');
-  // Prepared/applied M2 journals have compatible before-images; verify all reads first.
+  const marker = fs.existsSync(checked(root, TX + '/active'));
+  req(fs.existsSync(checked(root, name)) || marker, 'transaction-not-recoverable');
   const release = mutex(root, true);
   try {
+    // A crash can precede journal creation or follow its terminal save. Reclaim only
+    // the dead marker; no before/after images are applied in these cases.
+    if (!fs.existsSync(checked(root, name))) {
+      for (const file of fs.readdirSync(checked(root, TX)).filter(n => n.endsWith('.json'))) {
+        req(terminal(new Inputs(root).json(TX + '/' + file).state), 'incomplete-transaction: ' + file);
+      }
+      return {state: 'marker-released', planId: identifier, journal: null, manifest: []};
+    }
+    const journal = new Inputs(root).json(name);
+    req(journal.planId === identifier, 'transaction-not-recoverable');
+    if (terminal(journal.state)) {
+      req(marker, 'transaction-not-recoverable');
+      return {state: journal.state, planId: identifier, journal: name, manifest: []};
+    }
     req(!journal.direction || journal.direction === direction, 'recovery-direction-locked');
     journal.direction = direction;
     return execute(root, journal, name, direction);

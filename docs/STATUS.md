@@ -24,12 +24,14 @@ existence. All original regular files except the managed AGENTS target retained 
 source worktree status stayed unchanged. Agile Factory's existing STATUS triggered a budget warning.
 Application commands were not executed; these experiments do not close the full pilot gates.
 Native Codex, Claude Code and Antigravity discovery is NOT RUN. Real resume/slice/review/handoff,
-full source-project pilots, CI, engine/hardware validation and independent review are NOT RUN.
-No source projects were modified. Architectural review here is self-review.
+full source-project pilots, CI and engine/hardware validation are NOT RUN.
+An independent tooling review found worktree identity and recovery edge cases; fixes and
+regressions are recorded in the [review report](sessions/m3-independent-review.md).
+The README now explains generated project structure, ownership, composition and harness integration.
+No source projects were modified.
 
-AutoÉpoque's legacy versus canonical approval policy needs owner reconciliation before adoption;
-its decommissioned test environment must not be inferred as usable from older instructions.
-The owner elected to leave that decision open and continue the other development work.
+The owner removed AutoÉpoque adoption from active scope on 2026-11-12 and selected Agile Factory
+Next as the current pattern source. Historical extraction remains provenance, not an active pilot.
 No blocking decision affects this CLI implementation. Weakening overrides and multi-repository
 roots remain unsupported. Unknown prerequisites and unavailable review keep gates incomplete.
 Next work: finish M3 pilots on disposable source-project copies and measure startup context,

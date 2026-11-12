@@ -108,6 +108,15 @@ bun run cli recover --root ../my-project --transaction <id> --direction rollback
 ```
 
 Recovery preflights recorded inputs and before/after hashes; unrelated edits stop recovery.
+Permission changes on newly created files also stop recovery. If a crash leaves a dead process
+marker after the journal reached `applied` or `rolled-back`, `recover` releases that marker without
+replaying changes. If the crash preceded journal creation, use the plan's transaction identifier
+(SHA-256 of its canonical JSON); recovery releases the dead marker only when no unfinished journal
+exists. Live process markers are never reclaimed. Malformed historical markers fail closed.
+An exclusive `recovery-owner` guard serializes recovery. If recovery itself is killed while
+holding this guard, subsequent writers fail closed. Preserve its contents and reconcile the guard
+manually only after verifying that no owner/recovery process is running. Automatic guard stealing
+is intentionally unsupported because it could admit concurrent writers.
 A live transaction process prevents another writer. Explicit recovery can reclaim a dead process
 marker. Once recovery starts, its direction stays fixed. Replacement is atomic per file;
 the whole operation is journaled, not multi-file atomic. Rollback restores bytes and modes but
