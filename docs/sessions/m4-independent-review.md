@@ -81,3 +81,34 @@ it does not qualify runtime agent execution, establish owner approval, or satisf
 | src/render.ts | `d8c057a06070f009a9d616843b2e70fd84bc60a96d18a7eaf07d169a0d02c4fc` |
 | tests/tool.test.ts | `1a52042efddd5e65fb9c32396ec0eb92a40dfcaec6e3752641647d7167b31b1f` |
 | tests/wizard.test.tsx | `73bde895132afaf51f3619be3f2ef290774c2b3da22625b94893af4c26d15682` |
+
+## Evidence-only addendum
+
+Verified at: 2026-11-12T16:44:18Z. Result: **PASS — no actionable findings**.
+Reviewer context and independence remain as above. Reviewed the five documentation files below
+against implementation commit `26153826db27d275acdff6663e7936e983929b27`; no implementation,
+schema, core policy, skill or test edits were present. Original implementation hashes remain valid.
+
+M4 closure matches the original checklist's installed-procedure, local-contract and independent-review
+scope. It does not assert native procedure execution or remote CI completion. Checklist counts
+reconcile: M1 5/5, M2 4/5, M3 9/9, M4 6/6, total 24/25 = 96%, three of four milestones complete.
+Historical pending statements and manifests are explicitly superseded by follow-up evidence rather
+than rewritten as historical PASS. M2 native qualification and native/application limitations remain open.
+
+Independently observed: `bun test tests/contracts.test.ts` PASS, 5 tests and 137 assertions;
+`git diff --check` PASS. Full suite was not repeated for these evidence-only edits; the independently
+observed 37-test run above covers unchanged implementation. `gh pr view 1` confirms OPEN PR
+https://github.com/avalla/repo-workflow/pull/1, base main at
+`bd05d9a566717b5bfec8eb71c74c0d0d38a38da8`, head feat/assessment-delivery-workflows at
+`26153826db27d275acdff6663e7936e983929b27`. Both observed Contracts checks are IN_PROGRESS,
+with empty conclusions, and are not PASS. Subsequent evidence-only commits will advance the live PR
+head; this review binds the documentation bytes below and unchanged implementation, not a future
+remote check result. No merge or deployment was observed or performed by reviewer.
+
+| Documentation path | SHA-256 |
+| --- | --- |
+| ROADMAP.md | `5fdabed6581ccfeadf535adeaa87e9296334deb7d30411dda013251ff44e3806` |
+| docs/STATUS.md | `e244d8f2255e0c4169f1c2a1f3d6400ad9f5b4eb22ec583505fc68476e248463` |
+| docs/sessions/assessment-skills.md | `c78bbbd32b0fd52bd87b76036ee4fc786534be9b829c4a4c1cc18e55ece28896` |
+| docs/sessions/delivery-skills.md | `00dd21cae084b244ebea8d0a94a2c4c9c62d7a7168aa78b73cbc495f43650073` |
+| docs/sessions/delivery-workflow.md | `5b3ab053a8069c410956e14696aca88c91af223ae4a6f11c52d41ce2689c4bc8` |

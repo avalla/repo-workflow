@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **72% — 18/25 checklist items complete; 2/4 milestones complete.**
+Progress: **96% — 24/25 checklist items complete; 3/4 milestones complete.**
 Items have equal weight; this measures completed scope, not effort, time or delivery certification.
 Count only checked items below. Round `100 × completed / total` to the nearest whole percent.
 Blocked or unverified items stay unchecked; update counts whenever scope or evidence changes.
@@ -10,7 +10,7 @@ Blocked or unverified items stay unchecked; update counts whenever scope or evid
 | M1 — contracts and extracted content | 5/5 | 100% | Complete |
 | M2 — deterministic local tool | 4/5 | 80% | Native verification outstanding |
 | M3 — safe updates and pilot adoption | 9/9 | 100% | Bounded documentation adoption complete |
-| M4 — assessment and review procedures | 0/6 | 0% | Independent review pending |
+| M4 — assessment and review procedures | 6/6 | 100% | Installed procedures independently reviewed |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -57,17 +57,19 @@ Historical AutoÉpoque extraction remains documented for provenance. Unavailable
 
 ## Milestone 4 — assessment and review procedures
 
-- [ ] Deliver installed security assessment and expanded independent review procedures with contract checks and independent review evidence.
-- [ ] Deliver release-readiness with contract checks and independent review evidence.
-- [ ] Deliver debug-investigation with contract checks and independent review evidence.
-- [ ] Deliver architecture-review with contract checks and independent review evidence.
-- [ ] Deliver software-versioning with contract checks and independent review evidence.
+- [x] Deliver installed security assessment and expanded independent review procedures with contract checks and independent review evidence.
+- [x] Deliver release-readiness with contract checks and independent review evidence.
+- [x] Deliver debug-investigation with contract checks and independent review evidence.
+- [x] Deliver architecture-review with contract checks and independent review evidence.
+- [x] Deliver software-versioning with contract checks and independent review evidence.
 
 Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md).
 Additional procedures: [delivery skills report](docs/sessions/delivery-skills.md).
-- [ ] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review evidence.
+- [x] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review evidence.
 
 See [delivery workflow report](docs/sessions/delivery-workflow.md).
-Independent review remains pending; implementation alone does not close this item.
+Independent review PASS: [review report](docs/sessions/m4-independent-review.md).
+Scope: installed procedures and local contracts; native agent/application execution remains NOT RUN.
+PR: [#1](https://github.com/avalla/repo-workflow/pull/1); no merge or deployment performed.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.
