@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "framework": {
+    "version": "0.1.0"
+  },
+  "project": {
+    "name": "mixed-example",
+    "domain": "business-application",
+    "delivery": [
+      "saas",
+      "on-premise"
+    ],
+    "layout": "monorepo",
+    "documentationLanguage": "en",
+    "codeLanguage": "en"
+  },
+  "harnesses": [
+    "generic",
+    "codex",
+    "claude-code"
+  ],
+  "components": {
+    "web": {
+      "path": "../outside",
+      "surface": "web",
+      "stack": [
+        "typescript",
+        "supabase"
+      ],
+      "profiles": [
+        {
+          "id": "surface-web",
+          "version": "0.1.0",
+          "scope": "component:web"
+        },
+        {
+          "id": "technology-supabase",
+          "version": "0.1.0",
+          "scope": "component:web"
+        }
+      ],
+      "settings": {}
+    },
+    "worker": {
+      "path": "apps/worker",
+      "surface": "worker",
+      "stack": [
+        "typescript",
+        "supabase"
+      ],
+      "profiles": [
+        {
+          "id": "technology-supabase",
+          "version": "0.1.0",
+          "scope": "component:worker"
+        },
+        {
+          "id": "capability-outbox",
+          "version": "0.1.0",
+          "scope": "component:worker"
+        }
+      ],
+      "settings": {}
+    },
+    "ml": {
+      "path": "apps/ml",
+      "surface": "batch",
+      "stack": [
+        "python",
+        "uv"
+      ],
+      "profiles": [],
+      "settings": {}
+    }
+  },
+  "profiles": [
+    {
+      "id": "layout-monorepo",
+      "version": "0.1.0",
+      "scope": "project"
+    }
+  ],
+  "capabilities": [
+    "multi-tenancy",
+    "database-authorization",
+    "transactional-outbox",
+    "accessibility"
+  ],
+  "integrations": {
+    "tracker": null,
+    "ci": null
+  },
+  "workflow": {
+    "feature": "reviewed-slice",
+    "bugfix": "reproduce-fix-verify",
+    "docs": "documentation-change",
+    "research": "investigation",
+    "release": "release-readiness"
+  },
+  "review": {
+    "independent": "required",
+    "external": {
+      "provider": null,
+      "policy": "disabled"
+    }
+  },
+  "state": {
+    "current": "docs/STATUS.md",
+    "roadmap": "ROADMAP.md",
+    "decisions": "docs/adr",
+    "evidence": "docs/sessions",
+    "map": "REPO_GRAPH.md"
+  },
+  "context": {
+    "statusTargetBytes": 8000,
+    "statusWarningBytes": 10000,
+    "skillLoading": "on-demand"
+  },
+  "commands": {},
+  "environments": {
+    "local": {
+      "requirements": [
+        "adoption must confirm real scripts and prerequisites"
+      ],
+      "remote": false
+    }
+  },
+  "gates": [],
+  "overrides": [],
+  "approvals": [],
+  "presets": [],
+  "localProfiles": []
+}

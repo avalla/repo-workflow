@@ -1,0 +1,97 @@
+{
+  "id": "surface-unreal",
+  "version": "0.1.0",
+  "kind": "surface",
+  "applicability": {
+    "surfaces": [
+      "engine"
+    ],
+    "stacks": [
+      "unreal"
+    ],
+    "layouts": []
+  },
+  "requires": [],
+  "conflicts": [],
+  "files": [],
+  "policy": {
+    "invariants": [
+      "Separate input, gameplay state and presentation ownership. Asset edits use engine tooling."
+    ],
+    "verification": [
+      {
+        "id": "engine",
+        "category": "engine",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [
+          "unreal-engine"
+        ],
+        "procedure": null
+      },
+      {
+        "id": "packaging",
+        "category": "packaging",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [
+          "unreal-engine"
+        ],
+        "procedure": null
+      },
+      {
+        "id": "controller",
+        "category": "hardware",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [
+          "unreal-engine"
+        ],
+        "procedure": "Observe applicable physical-controller/player scenarios on the frozen candidate; record hardware and engine version."
+      }
+    ],
+    "references": [
+      "core/POLICY.md"
+    ],
+    "skills": [
+      "deliver-slice",
+      "review-change"
+    ],
+    "prerequisites": [
+      "Unreal editor/build tools",
+      "physical controllers and human observation"
+    ],
+    "resources": [
+      "unreal-engine"
+    ]
+  },
+  "provenance": "specification-derived"
+}

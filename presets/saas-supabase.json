@@ -1,0 +1,26 @@
+{
+  "id": "saas-supabase",
+  "version": "0.1.0",
+  "selections": [
+    {
+      "id": "layout-monorepo",
+      "version": "0.1.0",
+      "scope": "project"
+    },
+    {
+      "id": "surface-web",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    },
+    {
+      "id": "technology-supabase",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    },
+    {
+      "id": "capability-outbox",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    }
+  ]
+}

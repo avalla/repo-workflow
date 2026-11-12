@@ -1,0 +1,15 @@
+{
+  "gateId": "independent-review",
+  "candidate": {
+    "base": null,
+    "files": {
+      "README.md": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "result": "NOT RUN",
+  "evidence": "docs/sessions/example.md",
+  "verifiedAt": "2026-11-12T12:00:00Z",
+  "environment": "synthetic example only",
+  "observation": "No review run; hashes and timestamp are illustrative.",
+  "reviewContext": null
+}

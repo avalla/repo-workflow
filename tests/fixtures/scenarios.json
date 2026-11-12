@@ -1,0 +1,675 @@
+[
+  {
+    "id": "deterministic-render",
+    "milestone": 2,
+    "input": {
+      "config": "tests/fixtures/projects/mixed-monorepo.json",
+      "repeat": 2,
+      "perturb": [
+        "directory-order",
+        "clock",
+        "HOME"
+      ]
+    },
+    "expected": {
+      "equal": "all output bytes and hashes",
+      "origins": "present for every effective rule"
+    }
+  },
+  {
+    "id": "mixed-scope",
+    "milestone": 2,
+    "input": {
+      "config": "tests/fixtures/projects/mixed-monorepo.json",
+      "task": "feature",
+      "affected": [
+        "apps/web/view.ts",
+        "apps/worker/job.ts",
+        "apps/ml/job.py"
+      ]
+    },
+    "expected": {
+      "required": [
+        "project/independent-review",
+        "component:web/browser",
+        "component:web/accessibility",
+        "component:web/database",
+        "component:worker/database",
+        "component:worker/outbox"
+      ],
+      "absent": [
+        "component:worker/browser",
+        "component:ml/database"
+      ],
+      "diagnostics": [
+        "missing-technical-gates:component:ml"
+      ]
+    }
+  },
+  {
+    "id": "unknown-stack",
+    "milestone": 2,
+    "input": {
+      "stack": [
+        "unknown-runtime"
+      ],
+      "profiles": []
+    },
+    "expected": {
+      "core": "retained",
+      "diagnostics": [
+        "missing-technical-gates"
+      ],
+      "verified": false
+    }
+  },
+  {
+    "id": "missing-profile",
+    "milestone": 2,
+    "input": {
+      "selection": {
+        "id": "missing",
+        "version": "0.1.0",
+        "scope": "project"
+      }
+    },
+    "expected": {
+      "error": "unresolved-profile",
+      "writes": []
+    }
+  },
+  {
+    "id": "incompatible-surface",
+    "milestone": 2,
+    "input": {
+      "profile": "surface-web",
+      "component": {
+        "surface": "worker",
+        "stack": [
+          "typescript"
+        ]
+      }
+    },
+    "expected": {
+      "error": "profile-applicability",
+      "writes": []
+    }
+  },
+  {
+    "id": "transitive-requirement",
+    "milestone": 2,
+    "input": {
+      "modules": [
+        {
+          "id": "a",
+          "version": "0.1.0",
+          "requires": [
+            {
+              "id": "b",
+              "version": "0.1.0"
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "version": "0.1.0",
+          "requires": []
+        }
+      ],
+      "selected": [
+        "a"
+      ],
+      "scope": "component:web"
+    },
+    "expected": {
+      "resolved": [
+        "a@0.1.0",
+        "b@0.1.0"
+      ],
+      "scope": "component:web"
+    }
+  },
+  {
+    "id": "requirement-cycle",
+    "milestone": 2,
+    "input": {
+      "modules": [
+        {
+          "id": "a",
+          "requires": [
+            "b"
+          ]
+        },
+        {
+          "id": "b",
+          "requires": [
+            "a"
+          ]
+        }
+      ]
+    },
+    "expected": {
+      "error": "requirement-cycle",
+      "writes": []
+    }
+  },
+  {
+    "id": "conflicting-versions",
+    "milestone": 2,
+    "input": {
+      "selections": [
+        "a@0.1.0",
+        "a@0.2.0"
+      ],
+      "scope": "project"
+    },
+    "expected": {
+      "error": "version-conflict",
+      "writes": []
+    }
+  },
+  {
+    "id": "declared-conflict",
+    "milestone": 2,
+    "input": {
+      "modules": [
+        {
+          "id": "a",
+          "conflicts": [
+            "b"
+          ]
+        },
+        {
+          "id": "b",
+          "conflicts": []
+        }
+      ],
+      "selected": [
+        "a",
+        "b"
+      ],
+      "scope": "project"
+    },
+    "expected": {
+      "error": "profile-conflict",
+      "writes": []
+    }
+  },
+  {
+    "id": "required-gate-retained",
+    "milestone": 2,
+    "input": {
+      "gateContributions": [
+        {
+          "id": "review",
+          "required": true
+        },
+        {
+          "id": "review",
+          "required": false
+        }
+      ],
+      "overrides": []
+    },
+    "expected": {
+      "required": true
+    }
+  },
+  {
+    "id": "selector-clause-union",
+    "milestone": 2,
+    "input": {
+      "clauses": [
+        {
+          "tasks": [
+            "feature"
+          ],
+          "paths": [
+            "apps/a"
+          ]
+        },
+        {
+          "tasks": [
+            "docs"
+          ],
+          "paths": [
+            "apps/b"
+          ]
+        }
+      ],
+      "task": "docs",
+      "affected": [
+        "apps/a/readme.md"
+      ]
+    },
+    "expected": {
+      "applicable": false
+    }
+  },
+  {
+    "id": "unaccepted-override",
+    "milestone": 2,
+    "input": {
+      "override": {
+        "field": "gates.database.required",
+        "value": false,
+        "decisionStatus": "proposed"
+      }
+    },
+    "expected": {
+      "error": "override-not-authorized",
+      "writes": []
+    }
+  },
+  {
+    "id": "adapter-weakening",
+    "milestone": 2,
+    "input": {
+      "adapter": {
+        "independentReview": "optional"
+      }
+    },
+    "expected": {
+      "error": "adapter-policy-forbidden",
+      "writes": []
+    }
+  },
+  {
+    "id": "unsupported-multi-repo",
+    "milestone": 2,
+    "input": {
+      "layout": "multi-repository"
+    },
+    "expected": {
+      "error": "unsupported-layout",
+      "writes": []
+    }
+  },
+  {
+    "id": "duplicate-target",
+    "milestone": 2,
+    "input": {
+      "targets": [
+        ".repo-workflow/core.md",
+        ".repo-workflow/core.md"
+      ]
+    },
+    "expected": {
+      "error": "ownership-collision",
+      "writes": []
+    }
+  },
+  {
+    "id": "stale-plan",
+    "milestone": 2,
+    "input": {
+      "planned": {
+        "file.txt": "old\n"
+      },
+      "beforeApply": {
+        "file.txt": "edited\n"
+      },
+      "new": {
+        "file.txt": "new\n"
+      }
+    },
+    "expected": {
+      "error": "stale-plan",
+      "files": {
+        "file.txt": "edited\n"
+      }
+    }
+  },
+  {
+    "id": "repeat-applied-plan",
+    "milestone": 2,
+    "input": {
+      "planState": "applied"
+    },
+    "expected": {
+      "error": "already-applied-plan",
+      "writes": []
+    }
+  },
+  {
+    "id": "symlink-collision",
+    "milestone": 2,
+    "input": {
+      "target": ".agents/skills/repo-workflow-review-change",
+      "existingSymlink": "../../../../unrelated"
+    },
+    "expected": {
+      "error": "symlink-collision",
+      "writes": []
+    }
+  },
+  {
+    "id": "path-escape",
+    "milestone": 2,
+    "input": {
+      "target": "../outside"
+    },
+    "expected": {
+      "error": "unsafe-path",
+      "writes": []
+    }
+  },
+  {
+    "id": "casefold-collision",
+    "milestone": 2,
+    "input": {
+      "targets": [
+        "AGENTS.md",
+        "agents.md"
+      ]
+    },
+    "expected": {
+      "error": "path-collision",
+      "writes": []
+    }
+  },
+  {
+    "id": "entry-block-preservation",
+    "milestone": 2,
+    "input": {
+      "local": "user before\n<!-- repo-workflow:start -->\nold\n<!-- repo-workflow:end -->\nuser after\n",
+      "newBlock": "new\n"
+    },
+    "expected": {
+      "file": "user before\n<!-- repo-workflow:start -->\nnew\n<!-- repo-workflow:end -->\nuser after\n"
+    }
+  },
+  {
+    "id": "unrelated-skill",
+    "milestone": 2,
+    "input": {
+      "existing": {
+        ".agents/skills/other/SKILL.md": "owned by user\n"
+      },
+      "install": "repo-workflow-handoff"
+    },
+    "expected": {
+      "preserved": {
+        ".agents/skills/other/SKILL.md": "owned by user\n"
+      }
+    }
+  },
+  {
+    "id": "unchanged-managed",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "base\n",
+      "incoming": "new\n"
+    },
+    "expected": {
+      "result": "new\n"
+    }
+  },
+  {
+    "id": "local-only-edit",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "local\n",
+      "incoming": "base\n"
+    },
+    "expected": {
+      "result": "local\n"
+    }
+  },
+  {
+    "id": "converged-edit",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "new\n",
+      "incoming": "new\n"
+    },
+    "expected": {
+      "result": "new\n"
+    }
+  },
+  {
+    "id": "divergent-edit",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "local\n",
+      "incoming": "new\n"
+    },
+    "expected": {
+      "error": "three-way-conflict",
+      "result": "local\n"
+    }
+  },
+  {
+    "id": "unchanged-removal",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "base\n",
+      "incoming": null
+    },
+    "expected": {
+      "result": null
+    }
+  },
+  {
+    "id": "modified-removal",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": "local\n",
+      "incoming": null
+    },
+    "expected": {
+      "error": "modified-removal",
+      "result": "local\n"
+    }
+  },
+  {
+    "id": "local-deletion",
+    "milestone": 3,
+    "input": {
+      "base": "base\n",
+      "local": null,
+      "incoming": "new\n"
+    },
+    "expected": {
+      "error": "three-way-conflict",
+      "result": null
+    }
+  },
+  {
+    "id": "project-memory-preserved",
+    "milestone": 3,
+    "input": {
+      "projectFiles": {
+        "docs/STATUS.md": "local status\n",
+        "docs/adr/0001.md": "accepted decision\n",
+        "docs/sessions/run.md": "observed evidence\n"
+      },
+      "update": "0.2.0"
+    },
+    "expected": {
+      "preservation": "byte-for-byte",
+      "projectWrites": []
+    }
+  },
+  {
+    "id": "partial-failure",
+    "milestone": 3,
+    "input": {
+      "files": {
+        "a.md": "old-a\n",
+        "b.md": "old-b\n"
+      },
+      "incoming": {
+        "a.md": "new-a\n",
+        "b.md": "new-b\n"
+      },
+      "interruptAfterReplacements": 1
+    },
+    "expected": {
+      "journal": "before-images and progress retained",
+      "recovery": "resume or rollback after hash checks",
+      "unrelatedWrites": []
+    }
+  },
+  {
+    "id": "recovery-user-edit",
+    "milestone": 3,
+    "input": {
+      "journalExpected": "new-a\n",
+      "actual": "user-edit\n"
+    },
+    "expected": {
+      "error": "recovery-precondition-failed",
+      "preserved": "user-edit\n"
+    }
+  },
+  {
+    "id": "uninstall-modified",
+    "milestone": 3,
+    "input": {
+      "ownedBase": "base\n",
+      "local": "edited\n",
+      "projectFiles": [
+        "docs/STATUS.md"
+      ]
+    },
+    "expected": {
+      "preserved": [
+        "edited\n",
+        "docs/STATUS.md"
+      ],
+      "diagnostics": [
+        "modified-managed-retained"
+      ]
+    }
+  },
+  {
+    "id": "resume-without-history",
+    "milestone": 2,
+    "input": {
+      "reads": [
+        "AGENTS.md",
+        "docs/STATUS.md",
+        "REPO_GRAPH.md"
+      ],
+      "chatHistory": false
+    },
+    "expected": {
+      "locatable": [
+        "next eligible task",
+        "evidence",
+        "applicable skill"
+      ],
+      "catalogueRead": false
+    }
+  },
+  {
+    "id": "missing-prerequisites",
+    "milestone": 2,
+    "input": {
+      "missing": [
+        "github",
+        "reviewer",
+        "database",
+        "physical-controller"
+      ]
+    },
+    "expected": {
+      "states": {
+        "github": "BLOCKED",
+        "reviewer": "BLOCKED",
+        "database": "BLOCKED",
+        "physical-controller": "BLOCKED"
+      },
+      "completion": false
+    }
+  },
+  {
+    "id": "docs-only",
+    "milestone": 2,
+    "input": {
+      "task": "docs",
+      "affected": [
+        "README.md"
+      ],
+      "projectRequiredReview": true
+    },
+    "expected": {
+      "required": [
+        "project/independent-review"
+      ],
+      "startedServices": [],
+      "deploys": []
+    }
+  },
+  {
+    "id": "commands-never-run",
+    "milestone": 2,
+    "input": {
+      "operations": [
+        "inspect",
+        "plan",
+        "apply",
+        "doctor"
+      ],
+      "bindingArgv": [
+        "python3",
+        "-c",
+        "raise SystemExit('configured command must not execute')"
+      ]
+    },
+    "expected": {
+      "executions": []
+    }
+  },
+  {
+    "id": "pending-ci-not-pass",
+    "milestone": 2,
+    "input": {
+      "gate": "ci",
+      "required": true,
+      "observed": "QUEUED"
+    },
+    "expected": {
+      "recorded": "QUEUED",
+      "completion": false
+    }
+  },
+  {
+    "id": "reviewer-unavailable",
+    "milestone": 2,
+    "input": {
+      "review": {
+        "independent": "required",
+        "external": {
+          "provider": "codex",
+          "policy": "required"
+        }
+      },
+      "externalAvailable": false
+    },
+    "expected": {
+      "externalGate": "BLOCKED",
+      "completion": false
+    }
+  },
+  {
+    "id": "startup-context",
+    "milestone": 2,
+    "input": {
+      "fixture": "tests/fixtures/projects/mixed-monorepo.json",
+      "taskSkill": "deliver-slice"
+    },
+    "expected": {
+      "statusWarningBytes": 10000,
+      "skillLoading": "on-demand",
+      "tokenCount": "not claimed"
+    }
+  }
+]

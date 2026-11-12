@@ -1,0 +1,117 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "framework": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "release": {
+          "$ref": "common.schema.json#/$defs/version"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      },
+      "required": [
+        "release",
+        "commit"
+      ]
+    },
+    "generatorVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/selection"
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "generated": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "base": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "base",
+          "owner"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {},
+          "decision": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "field",
+          "scope",
+          "value",
+          "decision",
+          "authority",
+          "reason"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "framework",
+    "generatorVersion",
+    "profiles",
+    "generated",
+    "overrides"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://repo-workflow.invalid/schemas/lock.schema.json"
+}

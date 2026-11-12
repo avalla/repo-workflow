@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "framework": {
+    "release": "0.1.0",
+    "commit": "0000000000000000000000000000000000000000"
+  },
+  "generatorVersion": "0.1.0",
+  "profiles": [],
+  "generated": [
+    {
+      "path": ".repo-workflow/core.md",
+      "sha256": "98db204eb5195ef959358dd0b58ea6daaf1acb1f2d4e3ea13e515be65196aaca",
+      "base": "managed content\n",
+      "owner": "core"
+    }
+  ],
+  "overrides": []
+}

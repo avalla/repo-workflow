@@ -1,0 +1,31 @@
+{
+  "id": "layout-monorepo",
+  "version": "0.1.0",
+  "kind": "layout",
+  "applicability": {
+    "surfaces": [],
+    "stacks": [],
+    "layouts": [
+      "monorepo"
+    ]
+  },
+  "requires": [],
+  "conflicts": [],
+  "files": [],
+  "policy": {
+    "invariants": [
+      "Shared repository coordination; checks stay component-scoped."
+    ],
+    "verification": [],
+    "references": [
+      "core/POLICY.md"
+    ],
+    "skills": [
+      "deliver-slice",
+      "review-change"
+    ],
+    "prerequisites": [],
+    "resources": []
+  },
+  "provenance": "specification-derived"
+}

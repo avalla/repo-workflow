@@ -1,0 +1,202 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "version": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "kind": {
+      "enum": [
+        "domain",
+        "delivery",
+        "surface",
+        "layout",
+        "technology",
+        "capability"
+      ]
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "stacks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "layouts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "surfaces",
+        "stacks",
+        "layouts"
+      ]
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "version": {
+            "$ref": "common.schema.json#/$defs/version"
+          }
+        },
+        "required": [
+          "id",
+          "version"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "target": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "ownership": {
+            "enum": [
+              "managed",
+              "initialize-once"
+            ]
+          }
+        },
+        "required": [
+          "source",
+          "target",
+          "ownership"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "invariants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "verification": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/gate"
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "uniqueItems": true,
+          "minItems": 0
+        }
+      },
+      "required": [
+        "invariants",
+        "verification",
+        "references",
+        "skills",
+        "prerequisites",
+        "resources"
+      ]
+    },
+    "provenance": {
+      "enum": [
+        "verified-extraction",
+        "specification-derived",
+        "local-extension"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "kind",
+    "applicability",
+    "requires",
+    "conflicts",
+    "files",
+    "policy",
+    "provenance"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://repo-workflow.invalid/schemas/profile.schema.json"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "web-application",
+  "version": "0.1.0",
+  "selections": [
+    {
+      "id": "surface-web",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    }
+  ]
+}

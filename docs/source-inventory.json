@@ -1,0 +1,47 @@
+{
+  "brief": {
+    "name": "Repo_Workflow_Specification_EN.txt",
+    "sha256": "50cb7c47558e7ca1fe38e5fac27cb0b550937ec72497812059352d38e4ef761e"
+  },
+  "repositories": [
+    {
+      "name": "Agile Factory Next",
+      "commit": "012667f26bf97c3ccbecad6574e822c95c3afe87",
+      "method": "read-only git show at pinned commit",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "gitBlob": "aea0ff7a6136deb7ca1f7d002d830e6f2fcb8cd4",
+          "sha256": "a74c1e09a6df67d8d593de07314dfb2beda597ada956c1bcb4ba6df73c3d0944"
+        },
+        {
+          "path": ".agents/skills/slice-delivery/SKILL.md",
+          "gitBlob": "e996c00e8aaecb88df85e66ec0a227eb27340269",
+          "sha256": "1704dd5e31df8693bd7ff78e14d4194ff2ba8b17263b1512589b7a08fbc8806d"
+        },
+        {
+          "path": "docs/adr/0006-background-jobs-outbox-bullmq.md",
+          "gitBlob": "90177f0cf97a74392cf3fc95ea14dbedcbd7170a",
+          "sha256": "2840dd3c2343f9a08f7b5fe608c718e60d3b459a17a7713b89a82e4d61703e89"
+        }
+      ]
+    },
+    {
+      "name": "Pizza Hit",
+      "commit": "bdfe95753bdf6ae98b627166bd6057439be4360d",
+      "method": "read-only git show at pinned commit",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "gitBlob": "69c53b48395debb4301c994bd9f567eac26836f2",
+          "sha256": "487cc657541b8fc23f235352a8775343e179775015e7652babd28453e97bf403"
+        },
+        {
+          "path": "docs/harness/ITERATION_PIPELINE.md",
+          "gitBlob": "5e4b9b04f95753c17ded9312afc666e39da9c964",
+          "sha256": "af832d6791826ab5a4d430708e3534b29d6799d1b2397f44a1512776095f4aae"
+        }
+      ]
+    }
+  ]
+}

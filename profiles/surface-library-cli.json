@@ -1,0 +1,69 @@
+{
+  "id": "surface-library-cli",
+  "version": "0.1.0",
+  "kind": "surface",
+  "applicability": {
+    "surfaces": [
+      "library",
+      "cli"
+    ],
+    "stacks": [],
+    "layouts": []
+  },
+  "requires": [],
+  "conflicts": [],
+  "files": [],
+  "policy": {
+    "invariants": [
+      "Public API/command behavior, compatibility and consumer expectations are explicit."
+    ],
+    "verification": [
+      {
+        "id": "consumer",
+        "category": "consumer",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [],
+        "procedure": null
+      },
+      {
+        "id": "packaging",
+        "category": "packaging",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [],
+        "procedure": null
+      }
+    ],
+    "references": [
+      "core/POLICY.md"
+    ],
+    "skills": [
+      "deliver-slice",
+      "review-change"
+    ],
+    "prerequisites": [
+      "target runtime and packaging tools"
+    ],
+    "resources": []
+  },
+  "provenance": "specification-derived"
+}

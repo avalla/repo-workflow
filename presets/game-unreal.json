@@ -1,0 +1,11 @@
+{
+  "id": "game-unreal",
+  "version": "0.1.0",
+  "selections": [
+    {
+      "id": "surface-unreal",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    }
+  ]
+}

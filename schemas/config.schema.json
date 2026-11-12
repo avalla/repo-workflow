@@ -1,0 +1,565 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "framework": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "$ref": "common.schema.json#/$defs/version"
+        }
+      },
+      "required": [
+        "version"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "delivery": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "layout": {
+          "enum": [
+            "single-package",
+            "monorepo",
+            "multi-repository"
+          ]
+        },
+        "documentationLanguage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "codeLanguage": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "domain",
+        "delivery",
+        "layout",
+        "documentationLanguage",
+        "codeLanguage"
+      ]
+    },
+    "harnesses": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "generic",
+          "codex",
+          "claude-code"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "components": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/path"
+              },
+              {
+                "const": "."
+              }
+            ]
+          },
+          "surface": {
+            "type": "string",
+            "minLength": 1
+          },
+          "stack": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/selection"
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": [
+                "string",
+                "boolean",
+                "number"
+              ]
+            }
+          }
+        },
+        "required": [
+          "path",
+          "surface",
+          "stack",
+          "profiles",
+          "settings"
+        ]
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/selection"
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "integrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tracker": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ci": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "tracker",
+        "ci"
+      ]
+    },
+    "workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "const": "reviewed-slice"
+        },
+        "bugfix": {
+          "const": "reproduce-fix-verify"
+        },
+        "docs": {
+          "const": "documentation-change"
+        },
+        "research": {
+          "const": "investigation"
+        },
+        "release": {
+          "const": "release-readiness"
+        }
+      },
+      "required": [
+        "feature",
+        "bugfix",
+        "docs",
+        "research",
+        "release"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "independent": {
+          "const": "required"
+        },
+        "external": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "policy": {
+              "enum": [
+                "required",
+                "optional",
+                "disabled"
+              ]
+            }
+          },
+          "required": [
+            "provider",
+            "policy"
+          ]
+        }
+      },
+      "required": [
+        "independent",
+        "external"
+      ]
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "current": {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        "roadmap": {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        "decisions": {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        "map": {
+          "$ref": "common.schema.json#/$defs/path"
+        }
+      },
+      "required": [
+        "current",
+        "roadmap",
+        "decisions",
+        "evidence",
+        "map"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "statusTargetBytes": {
+          "type": "integer",
+          "minimum": 4000,
+          "maximum": 8000
+        },
+        "statusWarningBytes": {
+          "const": 10000
+        },
+        "skillLoading": {
+          "const": "on-demand"
+        }
+      },
+      "required": [
+        "statusTargetBytes",
+        "statusWarningBytes",
+        "skillLoading"
+      ]
+    },
+    "commands": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "argv": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": false,
+            "minItems": 1
+          },
+          "cwd": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/path"
+              },
+              {
+                "const": "."
+              }
+            ]
+          },
+          "affectedPaths": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "environment": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "read",
+                "write-local",
+                "network",
+                "destructive",
+                "deploy"
+              ]
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "authorization": {
+            "enum": [
+              "task-scope",
+              "explicit-per-run"
+            ]
+          }
+        },
+        "required": [
+          "argv",
+          "cwd",
+          "affectedPaths",
+          "environment",
+          "effects",
+          "authorization"
+        ]
+      }
+    },
+    "environments": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 0
+          },
+          "remote": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "requirements",
+          "remote"
+        ]
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/gate"
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "pattern": "^(?:gates\\.[a-z][a-z0-9-]*\\.required|components\\.[a-z][a-z0-9-]*\\.gates\\.[a-z][a-z0-9-]*\\.required|review\\.external\\.policy|approvals\\.[a-z][a-z0-9-]*\\.policy)$"
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {},
+          "decision": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "field",
+          "scope",
+          "value",
+          "decision",
+          "authority",
+          "reason"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 0
+    },
+    "approvals": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "scope",
+          "applicability",
+          "policy",
+          "authority"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "applicability": {
+            "$ref": "common.schema.json#/$defs/applicability"
+          },
+          "policy": {
+            "enum": [
+              "required",
+              "optional"
+            ]
+          },
+          "authority": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "presets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "version",
+          "component"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "version": {
+            "$ref": "common.schema.json#/$defs/version"
+          },
+          "component": {
+            "$ref": "common.schema.json#/$defs/id"
+          }
+        }
+      }
+    },
+    "localProfiles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "common.schema.json#/$defs/path"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "framework",
+    "project",
+    "harnesses",
+    "components",
+    "profiles",
+    "capabilities",
+    "integrations",
+    "workflow",
+    "review",
+    "state",
+    "context",
+    "commands",
+    "environments",
+    "gates",
+    "overrides",
+    "approvals",
+    "presets",
+    "localProfiles"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://repo-workflow.invalid/schemas/config.schema.json",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review": {
+            "properties": {
+              "external": {
+                "properties": {
+                  "policy": {
+                    "const": "required"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "review": {
+            "properties": {
+              "external": {
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

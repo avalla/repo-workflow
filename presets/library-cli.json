@@ -1,0 +1,11 @@
+{
+  "id": "library-cli",
+  "version": "0.1.0",
+  "selections": [
+    {
+      "id": "surface-library-cli",
+      "version": "0.1.0",
+      "scope": "component:<selected-component>"
+    }
+  ]
+}

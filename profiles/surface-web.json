@@ -1,0 +1,70 @@
+{
+  "id": "surface-web",
+  "version": "0.1.0",
+  "kind": "surface",
+  "applicability": {
+    "surfaces": [
+      "web"
+    ],
+    "stacks": [],
+    "layouts": []
+  },
+  "requires": [],
+  "conflicts": [],
+  "files": [],
+  "policy": {
+    "invariants": [
+      "Rendering and deployment contracts are explicit; UI behavior and accessibility need browser evidence."
+    ],
+    "verification": [
+      {
+        "id": "browser",
+        "category": "browser",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [],
+        "procedure": null
+      },
+      {
+        "id": "accessibility",
+        "category": "accessibility",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [],
+        "procedure": null
+      }
+    ],
+    "references": [
+      "core/POLICY.md"
+    ],
+    "skills": [
+      "deliver-slice",
+      "review-change"
+    ],
+    "prerequisites": [
+      "browser runtime"
+    ],
+    "resources": []
+  },
+  "provenance": "specification-derived"
+}

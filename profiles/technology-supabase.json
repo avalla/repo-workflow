@@ -1,0 +1,56 @@
+{
+  "id": "technology-supabase",
+  "version": "0.1.0",
+  "kind": "technology",
+  "applicability": {
+    "surfaces": [],
+    "stacks": [
+      "supabase"
+    ],
+    "layouts": []
+  },
+  "requires": [],
+  "conflicts": [],
+  "files": [],
+  "policy": {
+    "invariants": [
+      "SQL/RLS and permissions are authoritative; shared typed data respects application boundaries."
+    ],
+    "verification": [
+      {
+        "id": "database",
+        "category": "database",
+        "required": true,
+        "applicability": {
+          "components": [],
+          "paths": [],
+          "tasks": [
+            "feature",
+            "bugfix",
+            "release"
+          ]
+        },
+        "binding": null,
+        "environment": null,
+        "resources": [
+          "local-database"
+        ],
+        "procedure": null
+      }
+    ],
+    "references": [
+      "core/POLICY.md"
+    ],
+    "skills": [
+      "deliver-slice",
+      "review-change"
+    ],
+    "prerequisites": [
+      "isolated local database"
+    ],
+    "resources": [
+      "local-database"
+    ]
+  },
+  "provenance": "specification-derived"
+}

@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "gateId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "files": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*[\\x00-\\x1f])[^/]+(?:/[^/]+)*$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "required": [
+        "base",
+        "files"
+      ]
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "NOT RUN",
+        "BLOCKED",
+        "UNKNOWN",
+        "QUEUED",
+        "RUNNING",
+        "CANCELLED",
+        "SKIPPED"
+      ]
+    },
+    "evidence": {
+      "$ref": "common.schema.json#/$defs/path"
+    },
+    "verifiedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewContext": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "gateId",
+    "candidate",
+    "result",
+    "evidence",
+    "verifiedAt",
+    "environment",
+    "observation",
+    "reviewContext"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://repo-workflow.invalid/schemas/evidence.schema.json"
+}
