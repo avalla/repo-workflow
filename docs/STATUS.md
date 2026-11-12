@@ -18,12 +18,18 @@ Evidence: [Bun/Ink report](sessions/m3-bun-ink.md), [M2 report](sessions/m2-loca
 [acceptance coverage](../tests/fixtures/README.md), [instruction snapshot experiments](sessions/m3-pilot-snapshots.md).
 Three disposable instruction snapshots passed install/update/persisted-memory checks. These used
 representative configs, not full application copies or verified project bindings.
+Two subsequent [tracked-source experiments](sessions/m3-tracked-copies.md) passed install/update
+on complete pinned Git archives of Agile Factory Next and Pizza Hit with source-verified command
+existence. All original regular files except the managed AGENTS target retained their hashes;
+source worktree status stayed unchanged. Agile Factory's existing STATUS triggered a budget warning.
+Application commands were not executed; these experiments do not close the full pilot gates.
 Native Codex, Claude Code and Antigravity discovery is NOT RUN. Real resume/slice/review/handoff,
 full source-project pilots, CI, engine/hardware validation and independent review are NOT RUN.
 No source projects were modified. Architectural review here is self-review.
 
 AutoÉpoque's legacy versus canonical approval policy needs owner reconciliation before adoption;
 its decommissioned test environment must not be inferred as usable from older instructions.
+The owner elected to leave that decision open and continue the other development work.
 No blocking decision affects this CLI implementation. Weakening overrides and multi-repository
 roots remain unsupported. Unknown prerequisites and unavailable review keep gates incomplete.
 Next work: finish M3 pilots on disposable source-project copies and measure startup context,

@@ -47,6 +47,9 @@ native harness execution remains NOT RUN.
 - [ ] Obtain independent review and applicable CI/native engine/hardware evidence for the pilot candidates.
 
 Evidence: [M3 tooling](docs/sessions/m3-bun-ink.md), [snapshot observations and reconciliation](docs/sessions/m3-pilot-snapshots.md),
-[usage](docs/USAGE.md). Snapshots are not full project pilots. Unavailable checks keep delivery gates incomplete.
+[tracked-source qualification](docs/sessions/m3-tracked-copies.md), [usage](docs/USAGE.md).
+The development deliverables are implemented. Tracked-copy checks passed for both available pilots;
+native sessions and delivery evidence remain outstanding. AutoÉpoque's decision stays open at the
+owner's request. Unavailable checks keep delivery gates incomplete.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.

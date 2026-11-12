@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-12",
+  "toolingCandidate": "6eed4d3003c5166f34bfba1829c490f0704dcede",
+  "scope": "Pinned complete Git archives, without ignored dependencies, credentials or LFS hydration; binding existence verified, application commands not executed. These are filesystem qualification experiments, not completed native delivery pilots.",
+  "results": [
+    {
+      "project": "agile-factory-next",
+      "commit": "012667f26bf97c3ccbecad6574e822c95c3afe87",
+      "trackedRegularFiles": 673,
+      "trackedBytes": 6607391,
+      "lfsPointerFiles": 0,
+      "binding": {
+        "argv": [
+          "bun",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "affectedPaths": [
+          "apps/manager"
+        ],
+        "environment": "local",
+        "effects": [
+          "read",
+          "write-local"
+        ],
+        "authorization": "task-scope"
+      },
+      "bindingVerification": "argv references existing root package script",
+      "planExit": 0,
+      "planError": null,
+      "installConflicts": 0,
+      "commandsExecuted": [],
+      "nativeDiscovery": "NOT RUN",
+      "independentReview": "NOT RUN",
+      "lostContextIncidents": null,
+      "applyExit": 0,
+      "updatePlanExit": 0,
+      "updateConflicts": 0,
+      "updateApplyExit": 0,
+      "inspectExit": 0,
+      "doctorExit": 0,
+      "doctorFindings": [
+        {
+          "code": "status-budget-exceeded:docs/STATUS.md",
+          "result": "WARNING"
+        }
+      ],
+      "originalFilesChanged": [
+        "AGENTS.md"
+      ],
+      "sourceWorktreeStatusUnchanged": true
+    },
+    {
+      "project": "pizza-hit",
+      "commit": "bdfe95753bdf6ae98b627166bd6057439be4360d",
+      "trackedRegularFiles": 1536,
+      "trackedBytes": 673078023,
+      "lfsPointerFiles": 0,
+      "binding": {
+        "argv": [
+          "python3",
+          "scripts/art/test-tamarro-candidate-profiles.py"
+        ],
+        "cwd": ".",
+        "affectedPaths": [
+          "apps/Brawler"
+        ],
+        "environment": "local",
+        "effects": [
+          "read",
+          "write-local"
+        ],
+        "authorization": "task-scope"
+      },
+      "bindingVerification": "argv references existing Python unittest script; no engine required by its stated contract",
+      "planExit": 0,
+      "planError": null,
+      "installConflicts": 0,
+      "commandsExecuted": [],
+      "nativeDiscovery": "NOT RUN",
+      "independentReview": "NOT RUN",
+      "lostContextIncidents": null,
+      "applyExit": 0,
+      "updatePlanExit": 0,
+      "updateConflicts": 0,
+      "updateApplyExit": 0,
+      "inspectExit": 0,
+      "doctorExit": 0,
+      "doctorFindings": [],
+      "originalFilesChanged": [
+        "AGENTS.md"
+      ],
+      "sourceWorktreeStatusUnchanged": true
+    }
+  ]
+}
