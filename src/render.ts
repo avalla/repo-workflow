@@ -22,7 +22,7 @@ export function allowedTarget(name: string, owner: string) {
 }
 export function entryBlock(config: Document) {
   const s = config.state;
-  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nUpdate affected documentation with each implementation change; verify links and examples before handoff.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
+  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nUpdate affected documentation with each implementation change; verify links and examples before handoff.\nKeep \`${s.roadmap}\` as milestone checklists with completed/total counts and percentage summaries; refresh after task or scope changes.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
 }
 export function render(config: Document, effective: Document, target: Inputs, source: Inputs, initial: boolean): Record<string, Output> {
   const outputs: Record<string, Output> = {};
@@ -61,7 +61,6 @@ export function render(config: Document, effective: Document, target: Inputs, so
   }
   add('AGENTS.md', entryBlock(config), 'managed-block');
   if (config.harnesses.includes('claude-code')) add('CLAUDE.md', '# Repo Workflow\n\n@AGENTS.md\n\nRead canonical skills listed in `.repo-workflow/index.md` on demand.\n', 'initialize-once', true);
-  for (const [key, template] of [['current', 'STATUS.md'], ['map', 'REPO_GRAPH.md']]) add(config.state[key], source.text('templates/' + template), 'initialize-once', true);
-  add(config.state.roadmap, '# Roadmap\n\nRecord the next eligible task and its acceptance criteria here.\n', 'initialize-once', true);
+  for (const [key, template] of [['current', 'STATUS.md'], ['map', 'REPO_GRAPH.md'], ['roadmap', 'ROADMAP.md']]) add(config.state[key], source.text('templates/' + template), 'initialize-once', true);
   return outputs;
 }

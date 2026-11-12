@@ -5,7 +5,7 @@
 - `profiles/`, `presets/`: representative modules and pinned selections.
 - `skills/`: canonical bounded procedures, loaded individually.
 - `adapters/`: generic, Codex, Claude Code and Antigravity discovery.
-- `templates/`: initialize-once project memory.
+- `templates/`: initialize-once project memory, including the checklist/progress roadmap.
 - `src/io.ts`: strict JSON, schemas, paths, snapshots and atomic writes.
 - `src/compose.ts`: scoped resolution, origins and monotonic gates.
 - `src/render.ts`: selected content, managed block and ownership boundaries.

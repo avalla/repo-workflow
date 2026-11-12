@@ -15,4 +15,6 @@ Self-review is not independent review. Report the actual candidate and what was 
 
 Run the README contract validation after changes. Update STATUS and the relevant owning
 report; update the map only for structural changes. Read core/WORKFLOWS.md for task routing.
+Keep ROADMAP.md as milestone checklists with completed/total counts and percentage summaries;
+refresh them after task or scope changes and leave unverified work unchecked.
 Do not load the whole catalogue on resume. This file is project-owned in this source repository.

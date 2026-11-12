@@ -41,6 +41,15 @@ Generated AGENTS.md and managed core policy now explicitly require updating affe
 alongside implementation and checking links/examples before handoff. This applies across harnesses
 and is delivered to existing installations through the normal reviewed update workflow.
 
+Roadmap follow-up: the source roadmap is now an evidence-aware checklist with milestone and overall
+counts/percentages. Generated AGENTS/core guidelines require the same convention and refresh after
+task/scope changes. A new initialize-once ROADMAP template starts at 0/1 (0%) with one scope-definition
+task. Existing roadmap files remain project-owned and are not reformatted by install/update.
+Validation: `bun run check` passes (30 tests / 1,310 assertions, strict TypeScript, links and budgets).
+Separate disposable-target checks verify new template output, a configured nondefault roadmap path,
+preservation of existing roadmaps and preservation of local roadmap edits across updates. Recounting
+the source checklist confirms 14/20 items (70%): M1 5/5, M2 4/5, M3 5/10.
+
 Local tooling is verified; full M3 pilot completion is not claimed. Native harness discovery and
 real resume/slice/review/handoff have not run. No source project was adopted or modified; no real
 independent review, live CI or engine/hardware test ran. Startup bytes/files, lost-context incidents

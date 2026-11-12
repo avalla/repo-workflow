@@ -60,6 +60,14 @@ Generated AGENTS.md and core policy require documentation updates alongside impl
 including affected guides, current state and reports; links and examples must be verified before
 handoff. Existing installations receive this guidance through a reviewed update plan.
 
+New installations initialize the configured roadmap path from a checklist template with milestone
+and overall counts/percentages. The initial planning task starts at 0/1 (0%); replace it with agreed
+project tasks. Generated guidelines require refreshing progress after task or scope changes.
+Use equal-weight items, round `100 × completed / total`, and show N/A for no defined items.
+Unchecked blockers remain in the denominator. This is a documentation convention, not an automatic
+progress calculator or delivery certificate. Existing roadmaps are preserved on install and update;
+adopt the format manually there. See [this repository's checklist](../ROADMAP.md) for an example.
+
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`,
 `research`, `release`. Load selected skills on demand. `doctor` reports drift, missing bindings,
 budgets and interrupted transactions. Successful diagnostics do not mean required review,

@@ -57,6 +57,12 @@ candidate/base, changed paths, verification evidence, review status, blockers an
 session must recover those facts from files; `inspect` reconstructs policy, not conversation history.
 Use the [context](../skills/maintain-context/SKILL.md) and [handoff](../skills/handoff/SKILL.md) procedures on demand.
 
+Maintain the roadmap as one flat checklist per milestone. Keep a summary with completed/total items
+and rounded percentage for each milestone and overall; refresh it after task or scope changes.
+Count each item once with equal weight, including blocked items in the total. An empty scope is N/A.
+Link evidence for checked outcomes; implementation alone does not satisfy unavailable review or checks.
+The CLI initializes this format for missing roadmaps and preserves existing project-owned roadmaps.
+
 ## Qualify a harness
 
 Select `generic`, `codex`, `claude-code` or `antigravity` in configuration; combinations share the

@@ -10,6 +10,12 @@ workflow guides must describe the resulting behavior. Update current status and 
 update the roadmap, repository map and ADRs when scope, structure or decisions change. Verify links
 and examples before handoff. If no documentation change is needed, record why in the handoff.
 
+Maintain the project roadmap as a flat checklist of concrete outcomes per milestone, with a summary
+of completed/total items and whole-percent progress for each milestone and overall. Count each item
+once with equal weight: round 100 × completed / total; use N/A for an empty roadmap. Refresh counts
+after task or scope changes. Check items only with acceptance and required-gate evidence; blocked or
+unverified work stays unchecked. Percentages describe scope, not effort or delivery approval.
+
 Separate implementation, independent review, technical verification and owner approval. Bind providers
 in project policy; changing a model name alone does not create independent execution context.
 Reviewers receive the candidate, task, applicable policy and evidence, without implementer conclusions
