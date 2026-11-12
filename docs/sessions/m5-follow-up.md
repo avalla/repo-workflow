@@ -35,7 +35,9 @@ candidate, portable patch, evidence and interventions. Target PR/browser/accessi
 incomplete; the pilot checklist remains unchecked. No target push, merge or deploy performed.
 Native Antigravity executable lookup found none; Claude is installed, but automatic imports/skill
 discovery is not qualified by executable availability. M2 stays open. Remote CI is NOT RUN for this
-candidate. PR #1 is the existing delivery route; its current head must be updated before gate completion.
+candidate at initial review. Implementation commit `d02ea70` was subsequently pushed to
+[PR #1](https://github.com/avalla/repo-workflow/pull/1), targeting `main`; final independent
+review records observed PR-head evidence. This repository PR does not satisfy target-project gates.
 
 No structural map change is needed: composition still owns applicability and CLI owns diagnostics.
 README/usage, coverage, roadmap and status are updated together. Historical M3/M4 reports remain
