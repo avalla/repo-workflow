@@ -22,7 +22,7 @@ export function allowedTarget(name: string, owner: string) {
 }
 export function entryBlock(config: Document) {
   const s = config.state;
-  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
+  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nUpdate affected documentation with each implementation change; verify links and examples before handoff.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
 }
 export function render(config: Document, effective: Document, target: Inputs, source: Inputs, initial: boolean): Record<string, Output> {
   const outputs: Record<string, Output> = {};

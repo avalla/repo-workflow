@@ -5,6 +5,11 @@ software. Read the owning architecture and accepted ADRs. A proposed ADR does no
 accepted through implementation; bounded experiments must label their provisional decisions.
 Use project-owned sources of truth rather than duplicating status across tools.
 
+Update affected documentation in the same change as implementation: usage, configuration, API and
+workflow guides must describe the resulting behavior. Update current status and the owning report;
+update the roadmap, repository map and ADRs when scope, structure or decisions change. Verify links
+and examples before handoff. If no documentation change is needed, record why in the handoff.
+
 Separate implementation, independent review, technical verification and owner approval. Bind providers
 in project policy; changing a model name alone does not create independent execution context.
 Reviewers receive the candidate, task, applicable policy and evidence, without implementer conclusions

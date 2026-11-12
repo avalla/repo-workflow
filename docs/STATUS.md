@@ -8,6 +8,8 @@ The Ink wizard creates validated project configuration, including Antigravity se
 commands cover inspect, doctor, reviewed install/update/migrate/uninstall and interrupted-operation
 resume/rollback. Project memory and local edits follow ownership and three-way rules.
 No configured project command is executed. No diagnostic certifies delivery completion.
+Generated project guidelines explicitly require documentation updates with implementation changes
+and link/example verification before handoff; existing projects receive them through reviewed updates.
 
 Evidence: [Bun/Ink report](sessions/m3-bun-ink.md), [M2 report](sessions/m2-local-tool.md),
 [M1 report](sessions/m1-contracts.md), [source inventory](source-inventory.json),

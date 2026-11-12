@@ -56,6 +56,10 @@ only when absent; add `@AGENTS.md` manually to an existing file if routing is ne
 `antigravity` uses shared instructions and canonical skills; IDE permissions and native discovery
 need separate verification. See [adapters](../adapters/README.md).
 
+Generated AGENTS.md and core policy require documentation updates alongside implementation,
+including affected guides, current state and reports; links and examples must be verified before
+handoff. Existing installations receive this guidance through a reviewed update plan.
+
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`,
 `research`, `release`. Load selected skills on demand. `doctor` reports drift, missing bindings,
 budgets and interrupted transactions. Successful diagnostics do not mean required review,

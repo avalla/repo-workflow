@@ -37,6 +37,10 @@ The [snapshot report](m3-pilot-snapshots.md) records three disposable instructio
 and an explicit AutoÉpoque reconciliation analysis. Its byte counts describe a declared read set,
 not observed native harness context usage.
 
+Generated AGENTS.md and managed core policy now explicitly require updating affected documentation
+alongside implementation and checking links/examples before handoff. This applies across harnesses
+and is delivered to existing installations through the normal reviewed update workflow.
+
 Local tooling is verified; full M3 pilot completion is not claimed. Native harness discovery and
 real resume/slice/review/handoff have not run. No source project was adopted or modified; no real
 independent review, live CI or engine/hardware test ran. Startup bytes/files, lost-context incidents
