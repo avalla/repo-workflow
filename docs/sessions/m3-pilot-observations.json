@@ -1,0 +1,115 @@
+{
+  "date": "2026-11-12",
+  "scope": "Disposable instruction snapshots with representative configs; not full source-project adoption or native workflow execution. Startup is a declared five-file read set, not measured native harness reads. Lost-context incidents require real sessions and remain unmeasured.",
+  "results": [
+    {
+      "project": "Agile Factory Next",
+      "commit": "012667f26bf97c3ccbecad6574e822c95c3afe87",
+      "fixture": "web",
+      "instructionSnapshots": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "a74c1e09a6df67d8d593de07314dfb2beda597ada956c1bcb4ba6df73c3d0944",
+          "bytes": 8809
+        }
+      ],
+      "installConflicts": 0,
+      "updateConflicts": 0,
+      "plannedStartup": {
+        "paths": [
+          "AGENTS.md",
+          "docs/STATUS.md",
+          "REPO_GRAPH.md",
+          ".repo-workflow/core/POLICY.md",
+          ".repo-workflow/core/WORKFLOWS.md"
+        ],
+        "files": 5,
+        "bytes": 13272
+      },
+      "originalInstructionsPreserved": true,
+      "persistedMemorySurvivedUpdate": true,
+      "freshProcessInspect": true,
+      "doctorFindings": [],
+      "commandsExecuted": [],
+      "independentReview": "NOT RUN",
+      "nativeDiscovery": "NOT RUN",
+      "lostContextIncidents": null
+    },
+    {
+      "project": "Pizza Hit",
+      "commit": "bdfe95753bdf6ae98b627166bd6057439be4360d",
+      "fixture": "unreal",
+      "instructionSnapshots": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "487cc657541b8fc23f235352a8775343e179775015e7652babd28453e97bf403",
+          "bytes": 9393
+        }
+      ],
+      "installConflicts": 0,
+      "updateConflicts": 0,
+      "plannedStartup": {
+        "paths": [
+          "AGENTS.md",
+          "docs/STATUS.md",
+          "REPO_GRAPH.md",
+          ".repo-workflow/core/POLICY.md",
+          ".repo-workflow/core/WORKFLOWS.md"
+        ],
+        "files": 5,
+        "bytes": 13856
+      },
+      "originalInstructionsPreserved": true,
+      "persistedMemorySurvivedUpdate": true,
+      "freshProcessInspect": true,
+      "doctorFindings": [],
+      "commandsExecuted": [],
+      "independentReview": "NOT RUN",
+      "nativeDiscovery": "NOT RUN",
+      "lostContextIncidents": null
+    },
+    {
+      "project": "AutoEpoque",
+      "commit": "81e427a1e18894db8b53fed5670320bbe8b90ef2",
+      "fixture": "web",
+      "instructionSnapshots": [
+        {
+          "path": "AGENTS.md",
+          "sha256": "141745e9a6c68b7613cbf85b4ec5474297748d211545dc54d50f8eac5e4ef037",
+          "bytes": 15318
+        },
+        {
+          "path": "CLAUDE.md",
+          "sha256": "1caa9261285d9f671cde862709f7b7daf5b8dd220d22e73a864f5c996c6e0570",
+          "bytes": 11631
+        },
+        {
+          "path": "AI-OFFICE.md",
+          "sha256": "9eb525623313243b81d63c3ac43c5a89c3e3987698dd8e0957eb0071c37cd658",
+          "bytes": 2958
+        }
+      ],
+      "installConflicts": 0,
+      "updateConflicts": 0,
+      "plannedStartup": {
+        "paths": [
+          "AGENTS.md",
+          "docs/STATUS.md",
+          "REPO_GRAPH.md",
+          ".repo-workflow/core/POLICY.md",
+          ".repo-workflow/core/WORKFLOWS.md"
+        ],
+        "files": 5,
+        "bytes": 19781
+      },
+      "originalInstructionsPreserved": true,
+      "persistedMemorySurvivedUpdate": true,
+      "freshProcessInspect": true,
+      "doctorFindings": [],
+      "commandsExecuted": [],
+      "independentReview": "NOT RUN",
+      "nativeDiscovery": "NOT RUN",
+      "lostContextIncidents": null
+    }
+  ]
+}

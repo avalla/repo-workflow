@@ -1,5 +1,9 @@
 # Usage
 
+For project selection, monorepo configuration, daily work and harness qualification, see
+[adoption and customization](ADOPTION.md). Run the CLI from this source checkout; it is not a
+published registry package. `bun run cli --help` prints the command reference.
+
 ## Create project configuration
 
 Run commands from this repository's root with Bun 1.4.0+:
@@ -99,3 +103,22 @@ may leave empty created directories. Valid interrupted M2 journals are accepted.
 
 Outside the wizard output is JSON. Exit codes: 0 successful operation, 1 plan conflicts or blocked
 doctor findings, 2 invalid input or execution failure. Exit 0 is not a delivery certificate.
+
+## Troubleshooting
+
+| Message or finding | Action |
+| --- | --- |
+| `interactive-terminal-required` | Use a real terminal or supply a complete config with `init --from` |
+| `configuration-already-exists` | Edit the existing config deliberately; init never overwrites it |
+| `unresolved-profile` / `profile-applicability` | Check pinned IDs, scope and component surface against the catalogue |
+| `missing-technical-gates` | Add verified project bindings and gates; generic fallback cannot infer them |
+| `stale-plan` | Inspect changes and generate a new plan; do not edit plan JSON |
+| `unresolved-conflicts` | Reconcile local and incoming contents explicitly, then generate a new plan |
+| `managed-content-drift` | Inspect the local edit; preservation by update does not make it generated content |
+| `incomplete-transaction` / `previous-transaction` | Inspect the journal and use recover; keep before-images |
+| `recovery-user-edit` / `recovery-input-changed` | Compare actual files to journal inputs before attempting recovery again |
+| `already-applied-plan` | The plan was consumed; inspect current state and create a new plan if needed |
+
+For a clean uninstall, review modified retained files individually. Uninstall intentionally leaves
+configuration, project memory and transaction evidence. Reinstallation can conflict with retained
+managed paths; archive or reconcile them deliberately before planning again.

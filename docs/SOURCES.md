@@ -42,6 +42,11 @@ grant; adoption must reconcile owner policy. Neither source instruction governs 
 Proposed ADR handling differs too: core forbids implicit acceptance while allowing explicitly scoped
 provisional research. Adoption may impose a stricter project invariant.
 
+M3 additionally inspected AutoÉpoque's AGENTS.md, CLAUDE.md and AI-OFFICE.md at
+`81e427a1e18894db8b53fed5670320bbe8b90ef2`. Exact hashes and disposable installer/update observations
+are recorded separately in the [snapshot report](sessions/m3-pilot-snapshots.md) and its JSON evidence;
+the M1 inventory remains historical. This verifies recorded instructions, not the described live systems.
+
 Not verified: live branches/remotes, source test results, harness discovery, native engine behavior,
-library versions, actual profile command bindings, or future installer/update execution. AutoÉpoque
-is a Milestone 3 case and was not inspected. No blocking owner decision is needed for M1.
+library versions or actual profile command bindings. Full project adoption and native workflow pilots
+remain outstanding. AutoÉpoque authority contradictions require reconciliation before its adoption.

@@ -18,7 +18,9 @@ bun run cli doctor --root /path/to/new-project
 Automation uses `init --from <complete-config.json>`. Configured commands are never executed.
 Use a pinned source checkout. Plans contain project contents; review and store them locally.
 
-The [usage guide](docs/USAGE.md) covers creation, updates, removal and recovery.
+The [usage guide](docs/USAGE.md) covers creation, updates, removal, recovery and troubleshooting.
+The [adoption guide](docs/ADOPTION.md) covers configuration choices, existing instructions,
+daily work, session handoff and harness qualification, including Antigravity.
 [Status](docs/STATUS.md) distinguishes verified behavior from remaining M3 pilot work.
 Bun is the supported CLI; Python sources remain as the frozen M2 reference.
 

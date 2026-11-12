@@ -38,4 +38,7 @@ review independence, or update recovery.
 Current Bun coverage: `tests/contracts.test.ts` checks contracts/catalogue; `tests/tool.test.ts` checks
 composition and lifecycle; `tests/wizard.test.tsx` drives Ink with simulated TTY input. Seven
 base/local/incoming cases run directly from scenarios.json. Other areas use dedicated tests; this
-is not a claim that all 40 cases have one-to-one runners. Native resume and pilots remain outstanding.
+is not a claim that all 40 cases have one-to-one runners. Lifecycle tests inject interruption after
+every write boundary for install/update/uninstall and verify resume and rollback bytes.
+[Instruction-snapshot experiments](../../docs/sessions/m3-pilot-snapshots.md) are separate from automated
+fixtures; native resume and full project pilots remain outstanding.

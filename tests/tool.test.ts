@@ -155,6 +155,29 @@ test('repeated apply and malformed managed delimiters fail explicitly', () => {
   write(root, 'AGENTS.md', text(root, 'AGENTS.md').replace(END, ''));
   expect(() => plan(root, 'update')).toThrow('entry-block-conflict');
 });
+test.each(['install', 'update', 'uninstall'] as const)('every %s write boundary recovers in either direction', operation => {
+  const prepare = () => {
+    const root = fixture();
+    if (operation !== 'install') install(root);
+    if (operation === 'update') {
+      const config = decode(text(root, '.repo-workflow.json'));
+      config.components.main.profiles = [];
+      write(root, '.repo-workflow.json', canonical(config));
+    }
+    return root;
+  };
+  const count = plan(prepare(), operation).changes.length;
+  expect(count).toBeGreaterThan(0);
+  for (const direction of ['resume', 'rollback'] as const) for (let checkpoint = 1; checkpoint <= count; checkpoint++) {
+    const root = prepare(), value = plan(root, operation), id = digest(canonical(value));
+    expect(() => apply(value, root, checkpoint)).toThrow('injected-interruption');
+    expect(recover(root, id, direction).state).toBe(direction === 'resume' ? 'applied' : 'rolled-back');
+    for (const change of value.changes) {
+      const actual = fs.existsSync(root + '/' + change.path) ? text(root, change.path) : null;
+      expect(actual).toBe(direction === 'resume' ? change.content : change.before);
+    }
+  }
+}, 60000);
 test('wizard config contains no synthetic commands, preserves independent review and supports Antigravity', () => {
   const root = fixture(); fs.unlinkSync(root + '/.repo-workflow.json');
   const config = createConfig({name: 'new-project', surface: 'cli', stack: 'typescript,bun', harnesses: 'generic,antigravity', language: 'it'});

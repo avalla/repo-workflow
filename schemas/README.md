@@ -19,4 +19,6 @@ authoring contract, not a backward-compatibility claim for a released product.
 Semantic checks include referential integrity, version cycles/conflicts, selector scope, recognized
 settings, safe canonical paths, environment agreement, accepted override authority, lock base hashes,
 review context and candidate evidence. Schemas alone cannot establish these facts. The M1 validator
-checks schema examples and catalogue integrity; full adoption semantics belong to M2/M3.
+checks schema examples and catalogue integrity. The supported Bun tool additionally checks configuration
+composition and lifecycle inputs; evidence schemas do not constitute an evidence-ingestion engine.
+See [acceptance coverage](../tests/fixtures/README.md) for implemented checks and explicit gaps.

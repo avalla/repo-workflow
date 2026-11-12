@@ -11,12 +11,16 @@ No configured project command is executed. No diagnostic certifies delivery comp
 
 Evidence: [Bun/Ink report](sessions/m3-bun-ink.md), [M2 report](sessions/m2-local-tool.md),
 [M1 report](sessions/m1-contracts.md), [source inventory](source-inventory.json),
-[acceptance coverage](../tests/fixtures/README.md).
+[acceptance coverage](../tests/fixtures/README.md), [instruction snapshot experiments](sessions/m3-pilot-snapshots.md).
+Three disposable instruction snapshots passed install/update/persisted-memory checks. These used
+representative configs, not full application copies or verified project bindings.
 Native Codex, Claude Code and Antigravity discovery is NOT RUN. Real resume/slice/review/handoff,
-source-project pilots, CI, engine/hardware validation and independent review are NOT RUN.
+full source-project pilots, CI, engine/hardware validation and independent review are NOT RUN.
 No source projects were modified. Architectural review here is self-review.
 
-No new blocking architecture decision was identified. Weakening overrides and multi-repository
+AutoÉpoque's legacy versus canonical approval policy needs owner reconciliation before adoption;
+its decommissioned test environment must not be inferred as usable from older instructions.
+No blocking decision affects this CLI implementation. Weakening overrides and multi-repository
 roots remain unsupported. Unknown prerequisites and unavailable review keep gates incomplete.
 Next work: finish M3 pilots on disposable source-project copies and measure startup context,
-conflicts and resume behavior. See [roadmap](../ROADMAP.md) and [usage](USAGE.md).
+conflicts and resume behavior. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).

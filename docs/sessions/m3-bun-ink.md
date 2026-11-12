@@ -14,7 +14,7 @@ and existing contracts/fixtures are preserved.
 
 ## Validation
 
-`bun run check`: strict TypeScript check plus 27 tests / 195 assertions. Coverage includes contracts,
+Initial tooling validation: `bun run check`, strict TypeScript plus 27 tests / 195 assertions. Coverage includes contracts,
 catalogue/links/budgets, deterministic/scoped composition, seven three-way fixtures, collisions,
 stale/tampered plans, memory/mode preservation, update/removal/uninstall, interrupted install
 resume/rollback, interrupted update/uninstall rollback, edits blocking recovery, repeated apply,
@@ -29,10 +29,19 @@ Configured project commands were never executed.
 
 ## Remaining evidence
 
+Follow-up validation adds interruption coverage at every install/update/uninstall write boundary,
+both resume and rollback, plus expanded usage, adoption, customization and troubleshooting documentation.
+Final `bun run check`: strict TypeScript, 30 passing tests / 1,307 assertions; zero failures.
+Schema/catalogue/link/context-budget checks and simulated Ink interactions are included.
+The [snapshot report](m3-pilot-snapshots.md) records three disposable instruction-copy experiments
+and an explicit AutoÉpoque reconciliation analysis. Its byte counts describe a declared read set,
+not observed native harness context usage.
+
 Local tooling is verified; full M3 pilot completion is not claimed. Native harness discovery and
 real resume/slice/review/handoff have not run. No source project was adopted or modified; no real
 independent review, live CI or engine/hardware test ran. Startup bytes/files, lost-context incidents
-and conflicts for Agile Factory Next, Pizza Hit and AutoÉpoque reconciliation remain unmeasured.
+and conflicts in real agent sessions remain unmeasured. Instruction snapshot counts and conflicts
+are recorded separately and cannot substitute for these measurements.
 Original verified extraction remains in docs/source-inventory.json; new runtime behavior is authored
 from repository contracts and the brief, not claimed as extracted source-project functionality.
 Do not publish a release or mark delivery gates passed from these results.
