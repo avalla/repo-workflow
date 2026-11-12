@@ -16,9 +16,11 @@ and `.agents/skills/` as the canonical skill directory. No redundant GEMINI.md, 
 copy or rules wrapper is needed. Sources: [rules](https://antigravity.google/docs/rules.md),
 [skills](https://antigravity.google/docs/skills). Retrieved 2026-11-12 through Context7.
 
-Executable fixtures verify generated files, routing and preservation. Actual native discovery is
-**NOT RUN** for all harnesses; Antigravity is not installed locally. Documentation-backed support
-is distinct from native compatibility verification.
+Executable fixtures verify generated files, routing and preservation. Native Codex retrieved a
+project-instruction token and read canonical skills. Claude explicitly followed CLAUDE.md → AGENTS.md
+→ index → skill; automatic imports and skill registration were not proved. Antigravity native
+discovery is **NOT RUN** because it is absent locally. See [native evidence](../docs/sessions/m3-native-pilots.md).
+Documentation-backed support is distinct from native compatibility verification.
 
 Adapters provide discovery only; they cannot change architecture, requirements or approvals.
 Installed content has no home-instruction, subscription or runtime framework-checkout dependency.

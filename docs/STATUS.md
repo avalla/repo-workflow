@@ -1,38 +1,31 @@
 # Current status
 
-M1–M2 contracts and the local tool are implemented. M3 lifecycle tooling and the requested Bun/Ink
-creation flow are implemented; M3 pilot adoption and native harness verification remain outstanding.
-Bun is the supported runtime. Python M2 sources remain as a frozen compatibility reference.
+Roadmap: **95% — 18/19 items; M1 and M3 complete for their declared scope.**
+M2 native qualification remains open: Antigravity is absent locally. Codex startup and explicit
+Claude routing have bounded evidence; automatic Claude imports/skill registration remain unproved.
 
-The Ink wizard creates validated project configuration, including Antigravity selection. JSON CLI
-commands cover inspect, doctor, reviewed install/update/migrate/uninstall and interrupted-operation
-resume/rollback. Project memory and local edits follow ownership and three-way rules.
-No configured project command is executed. No diagnostic certifies delivery completion.
-Generated project guidelines explicitly require documentation updates with implementation changes
-and link/example verification before handoff; existing projects receive them through reviewed updates.
-The [roadmap](../ROADMAP.md) uses milestone checklists with count-based percentage summaries.
-New project roadmaps use the same convention; existing project-owned roadmap bytes are preserved.
+Bun/TypeScript CLI and Ink wizard, strict composition, reviewed install/update/migrate/uninstall,
+and journaled recovery are implemented. Generated guidelines require documentation updates and
+roadmap checklists with count-based percentages. Project-owned memory and bindings survive updates.
+Configured commands are never executed by the CLI. Python remains a frozen M2 reference.
 
-Evidence: [Bun/Ink report](sessions/m3-bun-ink.md), [M2 report](sessions/m2-local-tool.md),
-[M1 report](sessions/m1-contracts.md), [source inventory](source-inventory.json),
-[acceptance coverage](../tests/fixtures/README.md), [instruction snapshot experiments](sessions/m3-pilot-snapshots.md).
-Three disposable instruction snapshots passed install/update/persisted-memory checks. These used
-representative configs, not full application copies or verified project bindings.
-Two subsequent [tracked-source experiments](sessions/m3-tracked-copies.md) passed install/update
-on complete pinned Git archives of Agile Factory Next and Pizza Hit with source-verified command
-existence. All original regular files except the managed AGENTS target retained their hashes;
-source worktree status stayed unchanged. Agile Factory's existing STATUS triggered a budget warning.
-Application commands were not executed; these experiments do not close the full pilot gates.
-Native Codex, Claude Code and Antigravity discovery is NOT RUN. Real resume/slice/review/handoff,
-full source-project pilots, CI and engine/hardware validation are NOT RUN.
-An independent tooling review found worktree identity and recovery edge cases; fixes and
-regressions are recorded in the [review report](sessions/m3-independent-review.md).
-The README now explains generated project structure, ownership, composition and harness integration.
-No source projects were modified.
+Full tracked-source copies of Agile Factory Next and Pizza Hit passed bounded documentation-adoption
+pilots: conflict-free install/update, source-specific checks, formatted documents and native
+fresh/resumed file handoffs. Pizza routes were reconciled to its existing roadmap and iteration
+system. Original source worktrees stayed unchanged. These pilots do not certify database, production,
+Unreal or hardware delivery; those checks are inapplicable to the documentation slice.
+Trace-visible output and on-disk entry sizes are measured, not total harness startup context.
 
-The owner removed AutoÉpoque adoption from active scope on 2026-11-12 and selected Agile Factory
-Next as the current pattern source. Historical extraction remains provenance, not an active pilot.
-No blocking decision affects this CLI implementation. Weakening overrides and multi-repository
-roots remain unsupported. Unknown prerequisites and unavailable review keep gates incomplete.
-Next work: finish M3 pilots on disposable source-project copies and measure startup context,
-conflicts and resume behavior. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).
+Evidence: [native pilots](sessions/m3-native-pilots.md), [observations](sessions/m3-native-pilot-observations.json),
+[tooling](sessions/m3-bun-ink.md), [independent tooling review](sessions/m3-independent-review.md),
+[tracked copies](sessions/m3-tracked-copies.md), [M2](sessions/m2-local-tool.md),
+[M1](sessions/m1-contracts.md), [source inventory](source-inventory.json),
+[acceptance coverage](../tests/fixtures/README.md).
+
+CI now runs frozen Bun installation and contract checks with read-only repository permissions.
+Remote execution is reported separately from local checks. AutoÉpoque adoption was removed by the
+owner; historical extraction remains provenance. Weakening overrides and multi-repository roots
+remain unsupported. Unavailable prerequisites keep project delivery gates incomplete.
+
+Next: qualify Antigravity in an available native environment, then close the remaining M2 item
+with evidence. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).

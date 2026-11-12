@@ -34,6 +34,11 @@ Inventory AGENTS.md, CLAUDE.md, skills, state, roadmap, map and ADRs. Read their
 before adopting anything. Resolve conflicting approval or deployment instructions explicitly in the
 project's owning policy; an installer cannot choose authority by file order.
 
+Configure `state.current`, `state.roadmap` and `state.evidence` to the project's existing memory
+locations before planning installation. For example, a project that resumes through a roadmap and
+iteration records should point at the active iteration record rather than initialize a competing
+`docs/STATUS.md`. Preserving existing bytes does not by itself reconcile two instruction routes.
+
 Review the installation plan, including its managed AGENTS block, before applying it. Existing
 CLAUDE.md stays byte-identical; add routing deliberately if needed. Preserve unrelated skills and
 existing memory. Initialize-once files are templates for absent paths, not replacements for the

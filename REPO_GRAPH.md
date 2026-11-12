@@ -13,6 +13,7 @@
 - `src/init.tsx`: Ink wizard and noninteractive initialization.
 - `src/cli.tsx`: JSON CLI routing and diagnostics.
 - `package.json`, `bun.lock`, `tsconfig.json`: Bun/React/Ink toolchain.
+- `.github/workflows/ci.yml`: frozen Bun installation and contract checks on GitHub.
 - `repo_workflow/`: preserved, frozen Python M2 implementation.
 - `docs/`: contracts, usage, provenance, ADRs, reports and status.
 - `tests/*.test.ts*`: Bun contracts, lifecycle acceptance and real Ink input tests.

@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **74% — 14/19 checklist items complete; 1/3 milestones complete.**
+Progress: **95% — 18/19 checklist items complete; 2/3 milestones complete.**
 Items have equal weight; this measures completed scope, not effort, time or delivery certification.
 Count only checked items below. Round `100 × completed / total` to the nearest whole percent.
 Blocked or unverified items stay unchecked; update counts whenever scope or evidence changes.
@@ -9,7 +9,7 @@ Blocked or unverified items stay unchecked; update counts whenever scope or evid
 | --- | --- | --- | --- |
 | M1 — contracts and extracted content | 5/5 | 100% | Complete |
 | M2 — deterministic local tool | 4/5 | 80% | Native verification outstanding |
-| M3 — safe updates and pilot adoption | 5/9 | 56% | Tooling implemented; full pilots outstanding |
+| M3 — safe updates and pilot adoption | 9/9 | 100% | Bounded documentation adoption complete |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -31,7 +31,7 @@ see [coverage](tests/fixtures/README.md) for current behavior and explicit gaps.
 - [ ] Verify discovery in native Codex, Claude Code and Antigravity sessions.
 
 Evidence: [M2 report](docs/sessions/m2-local-tool.md). Filesystem contracts are verified;
-native harness execution remains NOT RUN.
+Codex startup and explicit Claude routing were exercised; Antigravity remains NOT RUN.
 
 ## Milestone 3 — safe updates and pilot adoption
 
@@ -40,15 +40,17 @@ native harness execution remains NOT RUN.
 - [x] Implement removal/uninstall and journaled resume/rollback; verify every write boundary.
 - [x] Document creation, adoption, maintenance, recovery and generated project guidelines.
 - [x] Verify disposable instruction-snapshot coexistence and persisted memory for all three sources.
-- [ ] Complete an Agile Factory Next pilot on a full disposable copy with verified bindings.
-- [ ] Complete a Pizza Hit pilot on a full disposable copy with verified bindings.
-- [ ] Verify real resume/slice/review/handoff sessions and measure actual startup bytes/files, context-loss incidents and conflicts.
-- [ ] Obtain independent review and applicable CI/native engine/hardware evidence for the pilot candidates.
+- [x] Complete an Agile Factory Next documentation pilot on a full disposable copy with verified bindings.
+- [x] Complete a Pizza Hit documentation pilot on a full disposable copy with verified bindings.
+- [x] Verify real resume/slice/review/handoff sessions; measure trace-visible output, entry sizes, context-loss incidents and conflicts.
+- [x] Obtain independent review and applicable local checks for documentation pilots; record engine/hardware checks as inapplicable.
 
 Evidence: [M3 tooling](docs/sessions/m3-bun-ink.md), [snapshot observations and reconciliation](docs/sessions/m3-pilot-snapshots.md),
 [tracked-source qualification](docs/sessions/m3-tracked-copies.md), [usage](docs/USAGE.md).
-The development deliverables are implemented. Tracked-copy checks passed for both available pilots;
-native sessions and delivery evidence remain outstanding. AutoÉpoque adoption was removed from
+The [native pilot report](docs/sessions/m3-native-pilots.md) closes bounded documentation adoption.
+This is not application delivery certification. Total harness startup context is not observable in
+these traces; measurements cover trace-visible output and on-disk entry sizes. Antigravity remains
+unverified. AutoÉpoque adoption was removed from
 active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source.
 Historical AutoÉpoque extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
 

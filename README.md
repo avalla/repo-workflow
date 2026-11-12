@@ -5,8 +5,9 @@ how to deliver a bounded change, and what evidence must survive between sessions
 Codex, Claude Code and Google Antigravity use the same core through small discovery adapters.
 
 Repo Workflow installs instructions and project memory. Application scaffolding, dependency
-installation, test execution and deployment remain separate activities. Native discovery remains
-unverified; see [current status](docs/STATUS.md) for implemented versus qualified behavior.
+installation, test execution and deployment remain separate activities. Codex startup and explicit
+Claude routing have bounded native evidence; Antigravity remains unverified.
+See [current status](docs/STATUS.md) for implemented versus qualified behavior.
 
 ## Start a project
 
@@ -28,7 +29,7 @@ Use a pinned source checkout. Plans contain project contents; review and store t
 The [usage guide](docs/USAGE.md) covers creation, updates, removal, recovery and troubleshooting.
 The [adoption guide](docs/ADOPTION.md) covers configuration choices, existing instructions,
 daily work, session handoff and harness qualification, including Antigravity.
-[Status](docs/STATUS.md) distinguishes verified behavior from remaining M3 pilot work.
+[Status](docs/STATUS.md) distinguishes verified behavior from remaining native qualification.
 Bun is the supported CLI; Python sources remain as the frozen M2 reference.
 
 ```sh
@@ -124,7 +125,7 @@ no extra GEMINI.md or legacy `.agent/` directory is generated. The [adapter cont
 record discovery assumptions and native verification limits, including Antigravity's absence locally.
 
 The intended reading sequence is AGENTS.md → current STATUS and relevant map entry → core policy
-and task route → selected profiles or skills as needed. This bounds startup context while keeping
+and task route → selected profiles or skills as needed. This supports selective reading while keeping
 decisions and evidence in repository files. Installed instructions are repository-local; reading
 them does not require a running service or access to this generator checkout.
 
@@ -176,3 +177,9 @@ conflicts or recovering an operation. This is a source-checkout tool, not a publ
 `bun run check` runs TypeScript checking and Bun tests, including Markdown link and contract
 validation. See [acceptance coverage](tests/fixtures/README.md) for gaps and [provenance](docs/SOURCES.md)
 for specification-derived versus extracted content.
+
+GitHub Actions runs the same checks on pushes and pull requests using a frozen Bun installation.
+The [native pilot report](docs/sessions/m3-native-pilots.md) records documentation adoption on full
+disposable copies of Agile Factory Next and Pizza Hit, with source-specific checks and native
+handoffs. It distinguishes observed routing from automatic discovery, and documentation adoption
+from application delivery. The [roadmap](ROADMAP.md) remains at 95% until native qualification is complete.

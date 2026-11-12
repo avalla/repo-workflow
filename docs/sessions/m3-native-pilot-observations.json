@@ -1,0 +1,473 @@
+{
+  "date": "2026-11-12",
+  "toolingBase": "d3d53879981ab8942cfac18ff56956bcf7128d7a",
+  "versions": {
+    "bun": "1.4.0",
+    "codex": "0.167.0",
+    "claudeCode": "2.1.285"
+  },
+  "scope": "Bounded documentation-adoption pilots, not application delivery certification.",
+  "antigravity": "NOT RUN: app/CLI absent locally; native automatic discovery unverified.",
+  "review": "Independent review by /root/independent_review on 2026-11-12: no remaining blocking findings in bounded documentation pilot records, observations and summary; not application delivery or automatic Claude registration certification.",
+  "results": [
+    {
+      "project": "agile-factory-next",
+      "sourceCommit": "012667f26bf97c3ccbecad6574e822c95c3afe87",
+      "export": "Complete git archive of pinned revision; no ignored credentials, dependencies or build outputs copied.",
+      "configuredState": {
+        "current": "docs/STATUS.md",
+        "roadmap": "ROADMAP.md",
+        "decisions": "docs/adr",
+        "evidence": "docs/sessions",
+        "map": "REPO_GRAPH.md"
+      },
+      "commandBinding": {
+        "argv": [
+          "bun",
+          "run",
+          "typecheck"
+        ],
+        "cwd": ".",
+        "affectedPaths": [
+          "apps/manager"
+        ],
+        "environment": "local",
+        "effects": [
+          "read",
+          "write-local"
+        ],
+        "authorization": "task-scope"
+      },
+      "installConflicts": 0,
+      "updateConflicts": 0,
+      "sourceWorktreeStatusUnchanged": true,
+      "originalChangesAfterInstall": [
+        "AGENTS.md"
+      ],
+      "entryFootprintUtf8Bytes": {
+        "AGENTS.md": 9627,
+        "CLAUDE.md": 524
+      },
+      "entryFootprintScope": "On-disk entry sizes at final qualification; not observed automatic injection bytes.",
+      "checks": [
+        {
+          "argv": [
+            "bun",
+            "install",
+            "--frozen-lockfile",
+            "--ignore-scripts"
+          ],
+          "exit": 0,
+          "seconds": 1.31,
+          "stdoutSha256": "d322020002b3c49394f67178485bb790772e647e672f6c31b8354ef838134c13",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "argv": [
+            "bun",
+            "run",
+            "typecheck"
+          ],
+          "exit": 0,
+          "seconds": 14.41,
+          "stdoutSha256": "729e21d03e80792efb009c5a1be93d4773cc09e842085b75f24ec3e012b0aeb2",
+          "stderrSha256": "70f300eb2ad77c2e22db583afe1e0184f0c59738c869da5035fdc0cbee8d18aa"
+        },
+        {
+          "argv": [
+            "bun",
+            "run",
+            "test:unit"
+          ],
+          "exit": 0,
+          "seconds": 19.93,
+          "stdoutSha256": "4180aa50ba9139e152f4a98aaeabc6231f3d608d34de427168a582a14b837360",
+          "stderrSha256": "46d6d3124719fa499a83b4dfe22134a4ebde0bdba48870cc203e82666b54ef22"
+        },
+        {
+          "argv": [
+            "npx",
+            "--yes",
+            "prettier@3",
+            "--write",
+            "docs/sessions/repo-workflow-qualification.md",
+            "docs/STATUS.md"
+          ],
+          "exit": 0,
+          "seconds": 1.8,
+          "stdoutSha256": "ea7eb9c23df8aba86424975eb649a431b9654de895b09d8558ae691c74e5c032",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "argv": [
+            "npx",
+            "--yes",
+            "prettier@3",
+            "--check",
+            "docs/sessions/repo-workflow-qualification.md",
+            "docs/STATUS.md"
+          ],
+          "exit": 0,
+          "seconds": 1.3,
+          "stdoutSha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "nativeProbes": [
+        {
+          "stage": "slice",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 37.81,
+          "traceSha256": "784a2219f53f21a3c3a92cb0212e400d79d152ec7b6ff2dcfd5522a3f81c57ba",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 354021,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".agents/skills/repo-workflow-maintain-context/SKILL.md",
+              ".repo-workflow/core/POLICY.md",
+              ".repo-workflow/core/WORKFLOWS.md",
+              ".repo-workflow/effective.json",
+              ".repo-workflow/index.md",
+              ".repo-workflow/profiles/component-main--surface-web.json",
+              "AGENTS.md",
+              "REPO_GRAPH.md",
+              "docs/STATUS.md"
+            ],
+            "uniqueReferencedProjectPaths": 9
+          }
+        },
+        {
+          "stage": "initial-handoff-probes",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 73.04,
+          "traceSha256": "34a692046caf1b7b913cae05314057b8e8b14d6e4ed7644d844b06c70881fced",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 196310,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".",
+              ".agents/skills/repo-workflow-handoff/SKILL.md",
+              ".repo-workflow/core/POLICY.md",
+              ".repo-workflow/core/WORKFLOWS.md",
+              ".repo-workflow/effective.json",
+              ".repo-workflow/index.md",
+              "AGENTS.md",
+              "CLAUDE.md",
+              "README.md",
+              "STATE.md",
+              "docs/STATUS.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 12
+          },
+          "handoffMarkerRecovered": true
+        },
+        {
+          "stage": "initial-handoff-probes",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 14.73,
+          "traceSha256": "5147371414f72ec3fc09773af50ad42522464cd331430b962fcbe73c61bce8f1",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 0,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [],
+            "uniqueReferencedProjectPaths": 0
+          },
+          "handoffMarkerRecovered": false
+        },
+        {
+          "stage": "corrected-handoff-probes",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 17.67,
+          "traceSha256": "c1200eb60db1b68f6938cd3b0f724bac502b69bac0d98c300561010e14822284",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 5584,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              "docs/STATUS.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 2
+          },
+          "handoffMarkerRecovered": true,
+          "response": "Leggo lo stato corrente e il report di qualificazione che referenzia, usando soltanto comandi di lettura dei file.\nHandoff recuperato dai file correnti:\n\n```text\nHandoff marker: cc21e4ceac654986a6a704b4fef929ec\n```\n\n- **Prossima azione:** review indipendente di questo pilot documentale.\n- **Review indipendente:** `pending`.\n- **Certificazione:** il pilot non certifica produzione né delivery dell’engine nativo. Le qualificazioni tecniche relative restano non eseguite; i risultati locali riportati non verificano CI remota, database, hardware o produzione.\n\nPercorsi effettivamente letti, relativi alla radice del progetto:\n\n- `docs/STATUS.md` — ricerca dell’handoff e lettura della sezione di qualificazione.\n- `docs/sessions/repo-workflow-qualification.md` — rapporto completo.\n\nNessuna modifica, verifica applicativa, accesso di rete o uso di altri agenti."
+        },
+        {
+          "stage": "corrected-handoff-probes",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 68.07,
+          "traceSha256": "6ec53ce26bf9bee66a8a23540db9a75969af433bb8a91503872b674729cdd467",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 200305,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".agents/skills/repo-workflow-handoff/SKILL.md",
+              ".repo-workflow/core/POLICY.md",
+              ".repo-workflow/core/WORKFLOWS.md",
+              ".repo-workflow/effective.json",
+              ".repo-workflow/index.md",
+              ".repo-workflow/state/current.md",
+              "AGENTS.md",
+              "CURRENT_STATE.md",
+              "README.md",
+              "docs/CURRENT_STATE.md",
+              "docs/STATUS.md",
+              "docs/current-state.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 13
+          },
+          "handoffMarkerRecovered": true,
+          "response": "I found the handoff in a section titled \"Qualificazione documentale isolata Repo Workflow\" at the very end of `docs/STATUS.md` (lines 630–635). It points to `docs/sessions/repo-workflow-qualification.md`, and both files give the same marker, next action and review status.\n\n**Handoff marker (verbatim):** `cc21e4ceac654986a6a704b4fef929ec`\n\n**Next action:** \"review indipendente di questo pilot documentale\" (an independent review of this documentation pilot).\n\n**Review status:** \"Review indipendente: pending.\" The workflow's `project/independent-review` gate is still not satisfied.\n\n**Does it certify production or native-engine delivery? No.** The report (lines 11–15) says:\n- Installation and update had zero conflicts. Dependency install from the lockfile without lifecycle scripts, `typecheck` and `test:unit` all exited with code zero.\n- These local results are not a check of remote CI, the database, hardware or production.\n- Database, deploy and the product's native checks don't apply to this documentation-only change, and those technical qualifications were never run.\n- The original repositories were not modified.\n\nThe report also says the pilot section doesn't replace the roadmap or the project's decisions. The rest of `docs/STATUS.md` is the normal application state: its \"Ultimo aggiornamento\" header and \"Prossimi passi\" list don't mention the pilot. Its own next step is to bring migrations `640`–`710` to staging. It also notes that those migrations have never been applied to staging or production.\n\n**Paths read** (all under `/private<temporary-copy-root>/agile-factory-next/`):\n- `README.md`\n- `AGENTS.md`\n- `docs/STATUS.md` (lines 1–374 and 590–636; lines 375–589 not read)\n- `.repo-workflow/index.md`\n- `.repo-workflow/effective.json`\n- `.repo-workflow/core/WORKFLOWS.md`\n- `.repo-workflow/core/POLICY.md`\n- `.agents/skills/repo-workflow-handoff/SKILL.md`\n- `docs/sessions/repo-workflow-qualification.md`\n\nThese paths didn't exist: `CURRENT_STATE.md`, `docs/CURRENT_STATE.md`, `docs/current-state.md`, `.repo-workflow/state/current.md`.\n\nI only read files: nothing was edited, no checks were run, and nothing went to the network."
+        }
+      ],
+      "protocolFailures": 1,
+      "observedLostContextIncidents": 0,
+      "lostContextScope": "Zero among corrected marker retrieval probes; two initial Codex probes across the pilots were tool/prompt failures, not context-loss evidence. Small bounded sample only.",
+      "coordinatorPersistence": "Coordinator authored/persisted agent-proposed documentation and seeded handoff marker; agent did not autonomously write state.",
+      "reconciliation": null,
+      "pilotRecordSha256": "07f244071445db8c2a5c0ee6914b54a777bcd5062eac1d1616e38ce9e1b7363a"
+    },
+    {
+      "project": "pizza-hit",
+      "sourceCommit": "bdfe95753bdf6ae98b627166bd6057439be4360d",
+      "export": "Complete git archive of pinned revision; no ignored credentials, dependencies or build outputs copied.",
+      "configuredState": {
+        "current": "docs/prototypes/repo-workflow-qualification.md",
+        "roadmap": "docs/ROADMAP.md",
+        "decisions": "docs/adr",
+        "evidence": "docs/prototypes",
+        "map": "docs/harness/README.md"
+      },
+      "commandBinding": {
+        "argv": [
+          "python3",
+          "scripts/art/test-tamarro-candidate-profiles.py"
+        ],
+        "cwd": ".",
+        "affectedPaths": [
+          "apps/Brawler"
+        ],
+        "environment": "local",
+        "effects": [
+          "read",
+          "write-local"
+        ],
+        "authorization": "task-scope"
+      },
+      "installConflicts": 0,
+      "updateConflicts": 0,
+      "sourceWorktreeStatusUnchanged": true,
+      "originalChangesAfterInstall": [
+        "AGENTS.md"
+      ],
+      "entryFootprintUtf8Bytes": {
+        "AGENTS.md": 10264,
+        "CLAUDE.md": 685
+      },
+      "entryFootprintScope": "On-disk entry sizes at final qualification; not observed automatic injection bytes.",
+      "checks": [
+        {
+          "argv": [
+            "python3",
+            "scripts/art/test-tamarro-candidate-profiles.py"
+          ],
+          "exit": 0,
+          "seconds": 0.18,
+          "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderrSha256": "366214e037e800df36bd4eaf068f7397611388601a0c8804ece86d9e294674e4"
+        },
+        {
+          "argv": [
+            "npx",
+            "--yes",
+            "prettier@3",
+            "--write",
+            "docs/prototypes/repo-workflow-qualification.md",
+            "docs/ROADMAP.md"
+          ],
+          "exit": 0,
+          "seconds": 0.91,
+          "stdoutSha256": "fb5fe1cb3441ca977625a67bd38d37e455a755568c90389dd4bd3ea0a3a9216a",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "argv": [
+            "npx",
+            "--yes",
+            "prettier@3",
+            "--check",
+            "docs/prototypes/repo-workflow-qualification.md",
+            "docs/ROADMAP.md"
+          ],
+          "exit": 0,
+          "seconds": 0.63,
+          "stdoutSha256": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+          "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "nativeProbes": [
+        {
+          "stage": "slice",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 25.26,
+          "traceSha256": "c74637432b86ff226eefd25a41c9a9ef6e2883ed8ab8d8fee0b5018f09c73739",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 12304,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".agents/skills/repo-workflow-maintain-context/SKILL.md",
+              ".repo-workflow/index.md",
+              "AGENTS.md",
+              "docs/STATUS.md"
+            ],
+            "uniqueReferencedProjectPaths": 4
+          }
+        },
+        {
+          "stage": "initial-handoff-probes",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 16.42,
+          "traceSha256": "ff83a8d6f4b3f4eb48bc18103cf94370498214f37d601cff94e7c3a859cf2d26",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 0,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [],
+            "uniqueReferencedProjectPaths": 0
+          },
+          "handoffMarkerRecovered": false
+        },
+        {
+          "stage": "initial-handoff-probes",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 15.69,
+          "traceSha256": "19af89f1cb403aab551911581d8a6cccf7262e2b1bd0ef6747894fbd77e46486",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 4504,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              "docs/STATUS.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 2
+          },
+          "handoffMarkerRecovered": true
+        },
+        {
+          "stage": "corrected-handoff-probes",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 13.8,
+          "traceSha256": "21a18a92d577501b9961bacf694ea657b25edaa259862701adccb65e3f7ea658",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 1726,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              "docs/STATUS.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 2
+          },
+          "handoffMarkerRecovered": true
+        },
+        {
+          "stage": "corrected-handoff-probes",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 16.29,
+          "traceSha256": "8af389c9cd5e5ad4a3bcfbbedc5e48d296ad167966098202489837a6f26880bf",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 1648,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              "docs/STATUS.md",
+              "docs/sessions/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 2
+          },
+          "handoffMarkerRecovered": true
+        },
+        {
+          "stage": "final-memory-routes",
+          "harness": "claude",
+          "processExit": 0,
+          "seconds": 35.43,
+          "traceSha256": "aa3ec25c0fb0d18f60e7ddd95197b37994b51d09d514bcb443a65bec54d53180",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 17338,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".repo-workflow/index.md",
+              ".repo-workflow/manifest.json",
+              "AGENTS.md",
+              "ROADMAP.md",
+              "docs/ROADMAP.md",
+              "docs/STATUS.md",
+              "docs/harness/README.md",
+              "docs/prototypes/repo-workflow-qualification.md",
+              "repo-workflow.json"
+            ],
+            "uniqueReferencedProjectPaths": 9
+          },
+          "handoffMarkerRecovered": true,
+          "response": "The handoff resolves cleanly. The four state paths agree across the routing block, the record and the harness guide. I couldn't open the raw configuration file, so those paths are confirmed from the documents, not from the configuration itself.\n\n- **Handoff marker:** `2b1fb9586f474243877bd720ef145b1e` (`docs/prototypes/repo-workflow-qualification.md:49`)\n- **Next action:** \"independent review of this documentation pilot.\" (record lines 48–49). The roadmap annex says the same: \"independent review of the documentation adoption\" (`docs/ROADMAP.md:1771–1772`).\n- **Review status:** Independent review is pending (record lines 3, 25, 35, 49). The `independent_review` agent's result hasn't been recorded, and I didn't do a review.\n- **Delivery:** I'm not claiming any production or Unreal certification. The record says those checks weren't run and don't apply to this documentation edit (lines 9–11, 41–42).\n\n**Configured paths:**\n\n| Key       | Configured path (record lines 15–16)              | `AGENTS.md` routing block                    | Consistent with harness guide                                              |\n| --------- | ------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------- |\n| current   | `docs/prototypes/repo-workflow-qualification.md`  | line 138: \"for the next eligible task\"       | Yes: iteration records hold handoffs (`docs/harness/README.md:26, 45`)     |\n| roadmap   | `docs/ROADMAP.md`                                 | lines 139, 143                               | Yes: `../ROADMAP.md` from `docs/harness/` means `docs/ROADMAP.md`          |\n| evidence  | `docs/prototypes`                                 | line 139                                     | Yes: \"Prototype/iteration records\" (line 45)                               |\n| map       | `docs/harness/README.md`                          | line 138: \"to locate owners\"                 | Yes: this is the guide itself, with its \"Where project memory lives\" table |\n\n- **Routing change:** The map used to be `REPO_GRAPH.md`. It is now `docs/harness/README.md`, both in the routing block and in record line 16.\n- **Raw config not found:** I couldn't confirm the raw `state.*` values. `.repo-workflow/manifest.json` and a root `repo-workflow.json` don't exist, and I have no directory-listing tool to search further.\n- **Roadmap section not checked:** I didn't confirm that `docs/ROADMAP.md` contains the `#progress-tracking` anchor the harness guide links to. That section wasn't in the parts of the roadmap I read.\n\n**Neither file is needed.**\n- **`docs/STATUS.md`:** It doesn't exist; reading it failed. The record says it was deleted as a competing pilot-generated status file, and the original repo never had one (lines 16–19). The harness guide forbids competing or duplicate status files (`docs/harness/README.md:27, 101`), and nothing routes to it.\n- **Root `ROADMAP.md`:** It doesn't exist either. The routing block and the record both name `docs/ROADMAP.md`, and the harness guide's relative links resolve there.\n\n**Claims I didn't check:** The record says install and update had zero conflicts, 12 Python tests passed and Prettier formatting was applied. I'm repeating the record; I didn't run anything.\n\n**Files read:**\n- `/private<temporary-copy-root>/pizza-hit/AGENTS.md` (lines 130–147)\n- `/private<temporary-copy-root>/pizza-hit/docs/harness/README.md`\n- `/private<temporary-copy-root>/pizza-hit/docs/ROADMAP.md` (lines 1760–1773)\n- `/private<temporary-copy-root>/pizza-hit/.repo-workflow/index.md`\n- `/private<temporary-copy-root>/pizza-hit/docs/prototypes/repo-workflow-qualification.md`\n\n**Tried but missing:**\n- `/private<temporary-copy-root>/pizza-hit/docs/STATUS.md`\n- `/private<temporary-copy-root>/pizza-hit/ROADMAP.md`\n- `/private<temporary-copy-root>/pizza-hit/.repo-workflow/manifest.json`\n- `/private<temporary-copy-root>/pizza-hit/repo-workflow.json`"
+        },
+        {
+          "stage": "final-memory-routes",
+          "harness": "codex",
+          "processExit": 0,
+          "seconds": 30.84,
+          "traceSha256": "db6dd08d6d447996cefc90a749a9a6215c8690f7a820a92e17dd95ce1a71d8bc",
+          "reads": {
+            "projectToolOutputUtf8Bytes": 758270,
+            "metricScope": "Trace-visible matching project tool output, including failed probes, formatting/compression and possible truncation. Referenced paths are heuristic command references or attempted Read paths, including nonexistent paths and directories; not confirmed reads or a lower bound on loaded files. Excludes unobserved automatic/global/history context. Not total startup context.",
+            "referencedProjectPaths": [
+              ".repo-workflow.json",
+              ".repo-workflow/core/POLICY.md",
+              ".repo-workflow/core/WORKFLOWS.md",
+              ".repo-workflow/effective.json",
+              ".repo-workflow/index.md",
+              ".repo-workflow/profiles/component-main--surface-unreal.json",
+              "AGENTS.md",
+              "README.md",
+              "docs/ROADMAP.md",
+              "docs/harness/README.md",
+              "docs/prototypes/repo-workflow-qualification.md"
+            ],
+            "uniqueReferencedProjectPaths": 11
+          },
+          "handoffMarkerRecovered": true,
+          "response": "I’ll read the routing and linked qualification records, verify the configured paths, and report the handoff state without changing anything.\nHandoff marker: `2b1fb9586f474243877bd720ef145b1e`\n\nNext action: independent review of the documentation pilot.\nReview status: **pending**; the record says “implemented; independent review pending.”\n\nVerified configuration in `.repo-workflow.json`; all four targets exist and agree with the routing and iteration record:\n\n| State key | Configured path |\n| --- | --- |\n| `current` | `docs/prototypes/repo-workflow-qualification.md` |\n| `roadmap` | `docs/ROADMAP.md` |\n| `evidence` | `docs/prototypes` |\n| `map` | `docs/harness/README.md` |\n\nNeither `docs/STATUS.md` nor root `ROADMAP.md` is needed. Both are absent; creating them would duplicate the authoritative records.\n\nFiles read:\n\n- `AGENTS.md`\n- `README.md`\n- `docs/harness/README.md`\n- `docs/ROADMAP.md` — including its pilot annex; bulk output was truncated, then the annex was read separately\n- `docs/prototypes/repo-workflow-qualification.md`\n- `.repo-workflow.json`\n- `.repo-workflow/core/POLICY.md`\n- `.repo-workflow/core/WORKFLOWS.md`\n- `.repo-workflow/index.md`\n- `.repo-workflow/effective.json`\n- `.repo-workflow/profiles/component-main--surface-unreal.json`\n\nA broad text search also accessed `.repo-workflow/lock.json` and four transaction JSON records; that output was truncated.\n\nOnly shell reads/searches were performed. No application commands, edits, network or agents were used. This establishes documentation recovery only; it does not certify production or Unreal delivery."
+        }
+      ],
+      "protocolFailures": 1,
+      "observedLostContextIncidents": 0,
+      "lostContextScope": "Zero among corrected marker retrieval probes; two initial Codex probes across the pilots were tool/prompt failures, not context-loss evidence. Small bounded sample only.",
+      "coordinatorPersistence": "Coordinator authored/persisted agent-proposed documentation and seeded handoff marker; agent did not autonomously write state.",
+      "reconciliation": {
+        "conflicts": 0,
+        "state": {
+          "current": "docs/prototypes/repo-workflow-qualification.md",
+          "roadmap": "docs/ROADMAP.md",
+          "decisions": "docs/adr",
+          "evidence": "docs/prototypes",
+          "map": "docs/harness/README.md"
+        },
+        "removedPilotOnlyDefaults": [
+          "docs/STATUS.md",
+          "ROADMAP.md",
+          "REPO_GRAPH.md"
+        ]
+      },
+      "pilotRecordSha256": "aa5eac6e4d53fca28fd57ee9919dbc3a6b1217a9dafea8b9a56d8d0dc7a21b1f"
+    }
+  ]
+}
