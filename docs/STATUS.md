@@ -1,6 +1,6 @@
 # Current status
 
-Roadmap: **95% — 18/19 items; M1 and M3 complete for their declared scope.**
+Roadmap: **82% — 18/22 items; M1 and M3 complete for their declared scope.**
 M2 native qualification remains open: Antigravity is absent locally. Codex startup and explicit
 Claude routing have bounded evidence; automatic Claude imports/skill registration remain unproved.
 
@@ -27,5 +27,14 @@ Remote execution is reported separately from local checks. AutoÉpoque adoption 
 owner; historical extraction remains provenance. Weakening overrides and multi-repository roots
 remain unsupported. Unavailable prerequisites keep project delivery gates incomplete.
 
-Next: qualify Antigravity in an available native environment, then close the remaining M2 item
-with evidence. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).
+Review follow-up (2026-11-12, candidate bd05d9a): M4 adds three unchecked outcomes for
+acceptance-documentation consistency, missing affected-path diagnostics and a real application
+bugfix pilot. Progress changed because scope increased, not because completed work was invalidated.
+This update records planned work only; no implementation or new pilot validation is claimed.
+
+Next:
+1. Reconcile acceptance coverage with the bounded native pilot evidence.
+2. Clarify inspect/doctor behavior without affected paths and verify it with regression coverage.
+3. Qualify remaining M2 harness behavior and arrange the authorized M4 application pilot.
+M2 closure must explicitly resolve Claude automatic discovery versus supported explicit routing,
+as well as native Antigravity evidence. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).

@@ -182,4 +182,5 @@ GitHub Actions runs the same checks on pushes and pull requests using a frozen B
 The [native pilot report](docs/sessions/m3-native-pilots.md) records documentation adoption on full
 disposable copies of Agile Factory Next and Pizza Hit, with source-specific checks and native
 handoffs. It distinguishes observed routing from automatic discovery, and documentation adoption
-from application delivery. The [roadmap](ROADMAP.md) remains at 95% until native qualification is complete.
+from application delivery. The [roadmap](ROADMAP.md) is at 82% (18/22 items), including newly planned review follow-up and an
+application bugfix pilot. Native harness qualification remains open.
