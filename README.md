@@ -134,6 +134,16 @@ publication/deployment authority must be established in the project environment.
 
 ## Daily workflow and handoff
 
+Canonical on-demand procedures include `security-assessment` for bounded threat analysis, validated
+findings and remediation evidence, and `review-change` for independent review of a frozen candidate.
+Both are listed in the installed index. An unavailable independent reviewer keeps review BLOCKED;
+an assessment does not certify security or satisfy unrelated gates. Neither procedure executes automatically.
+
+Additional installed procedures: `debug-investigation` for evidence-driven bug fixes,
+`architecture-review` for design tradeoffs and boundaries, `software-versioning` for compatibility,
+version changes and release notes, and `release-readiness` for the final gate report.
+They follow project policy; version preparation and readiness do not authorize publication.
+
 1. Read current state; identify a bounded task, acceptance criteria and affected paths.
 2. Inspect applicable policy and gates; confirm actual commands and prerequisites.
 3. Implement the slice and update affected documentation alongside the change.
@@ -182,4 +192,13 @@ GitHub Actions runs the same checks on pushes and pull requests using a frozen B
 The [native pilot report](docs/sessions/m3-native-pilots.md) records documentation adoption on full
 disposable copies of Agile Factory Next and Pizza Hit, with source-specific checks and native
 handoffs. It distinguishes observed routing from automatic discovery, and documentation adoption
-from application delivery. The [roadmap](ROADMAP.md) remains at 95% until native qualification is complete.
+from application delivery. The [roadmap](ROADMAP.md) tracks native qualification and independent review of the assessment procedures.
+
+Project execution is selected by optional `execution: {"mode": "single-agent"}` or
+`execution: {"mode": "orchestrated"}` in configuration; omission defaults to single-agent.
+The wizard asks for this choice. Effective policy and inspect expose the resolved mode.
+Orchestrated execution uses a principal to assign workers, parallelize independent work,
+inspect results and verify the integrated candidate; independent review remains separate.
+The CLI installs guidance and reports gates; it does not launch agents or create PRs.
+Required core gates include documentation-current and pull-request: update affected docs,
+verify links/examples and record the PR URL/base/head. Unavailable access leaves gates incomplete.

@@ -22,7 +22,7 @@ export function allowedTarget(name: string, owner: string) {
 }
 export function entryBlock(config: Document) {
   const s = config.state;
-  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nUpdate affected documentation with each implementation change; verify links and examples before handoff.\nKeep \`${s.roadmap}\` as milestone checklists with completed/total counts and percentage summaries; refresh after task or scope changes.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
+  return `${START}\n# Repo Workflow\n\nRead \`${s.current}\` for the next eligible task and \`${s.map}\` to locate owners.\nEvidence: \`${s.evidence}\`. Decisions: \`${s.decisions}\`. Roadmap: \`${s.roadmap}\`.\nRead \`.repo-workflow/core/POLICY.md\` and the applicable route in \`.repo-workflow/core/WORKFLOWS.md\`.\nUse \`.repo-workflow/index.md\` to locate selected profiles and on-demand canonical skills.\nExecution mode: \`${config.execution?.mode ?? 'single-agent'}\`. In orchestrated mode load the orchestrate-delivery skill.\nCreate a PR for each change and record its URL and candidate head.\nUpdate affected documentation with each implementation change; verify links and examples before handoff.\nKeep \`${s.roadmap}\` as milestone checklists with completed/total counts and percentage summaries; refresh after task or scope changes.\nRequired checks, independent review and owner approvals remain incomplete until evidenced.\nAdapters grant no execution, publishing or deployment authority.\n${END}`;
 }
 export function render(config: Document, effective: Document, target: Inputs, source: Inputs, initial: boolean): Record<string, Output> {
   const outputs: Record<string, Output> = {};
@@ -34,7 +34,7 @@ export function render(config: Document, effective: Document, target: Inputs, so
     outputs[p] = {content, owner};
   }
   for (const name of ['POLICY.md', 'WORKFLOWS.md']) add('.repo-workflow/core/' + name, source.text('core/' + name));
-  const skills = new Set(['assess-project', 'deliver-slice', 'review-change', 'record-decision', 'maintain-context', 'handoff']);
+  const skills = new Set(['orchestrate-delivery', 'assess-project', 'security-assessment', 'release-readiness', 'debug-investigation', 'architecture-review', 'software-versioning', 'deliver-slice', 'review-change', 'record-decision', 'maintain-context', 'handoff']);
   const references = new Set<string>();
   const index = ['# Selected workflow content', '', 'Core: `core/POLICY.md`, `core/WORKFLOWS.md`.', 'Effective scoped policy and origins: `effective.json`.', '', '## Profiles', ''];
   for (const item of effective.profiles) {

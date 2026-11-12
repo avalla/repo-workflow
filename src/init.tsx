@@ -5,12 +5,13 @@ import * as path from 'node:path';
 import {canonical, checked, Inputs, requireThat as req, SOURCE, type Document} from './io';
 import {resolve} from './compose';
 
-export type Answers = {name: string; surface: string; stack: string; harnesses: string; language: string};
+export type Answers = {name: string; surface: string; stack: string; harnesses: string; language: string; executionMode?: string};
 const fields = [
   {key: 'name', label: 'Project name (lowercase, digits, hyphens)', initial: 'my-project'},
   {key: 'surface', label: 'Surface: cli, library, web, other', initial: 'cli'},
   {key: 'stack', label: 'Stack labels, comma separated (e.g. typescript,bun)', initial: 'typescript,bun'},
   {key: 'harnesses', label: 'Harnesses: generic,codex,claude-code,antigravity', initial: 'generic,codex'},
+  {key: 'executionMode', label: 'Execution: single-agent, orchestrated', initial: 'single-agent'},
   {key: 'language', label: 'Documentation language', initial: 'en'},
 ] as const;
 const list = (s: string) => s.split(',').map(s => s.trim()).filter(Boolean);
@@ -23,6 +24,7 @@ export function createConfig(a: Answers): Document {
     schemaVersion: 1, framework: {version: '0.1.0'},
     project: {name: a.name, domain: 'business-application', delivery: ['source'], layout: 'single-package', documentationLanguage: a.language.trim(), codeLanguage: 'en'},
     harnesses: list(a.harnesses), components: {main: {path: '.', surface: a.surface, stack: list(a.stack), profiles: profile ? [{id: profile, version: '0.1.0', scope: 'component:main'}] : [], settings: {}}},
+    execution: {mode: a.executionMode ?? 'single-agent'},
     profiles: [], capabilities: [], integrations: {tracker: null, ci: null},
     workflow: {feature: 'reviewed-slice', bugfix: 'reproduce-fix-verify', docs: 'documentation-change', research: 'investigation', release: 'release-readiness'},
     review: {independent: 'required', external: {provider: null, policy: 'disabled'}},

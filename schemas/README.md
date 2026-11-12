@@ -22,3 +22,12 @@ review context and candidate evidence. Schemas alone cannot establish these fact
 checks schema examples and catalogue integrity. The supported Bun tool additionally checks configuration
 composition and lifecycle inputs; evidence schemas do not constitute an evidence-ingestion engine.
 See [acceptance coverage](../tests/fixtures/README.md) for implemented checks and explicit gaps.
+
+Project execution is selected by optional `execution: {"mode": "single-agent"}` or
+`execution: {"mode": "orchestrated"}` in configuration; omission defaults to single-agent.
+The wizard asks for this choice. Effective policy and inspect expose the resolved mode.
+Orchestrated execution uses a principal to assign workers, parallelize independent work,
+inspect results and verify the integrated candidate; independent review remains separate.
+The CLI installs guidance and reports gates; it does not launch agents or create PRs.
+Required core gates include documentation-current and pull-request: update affected docs,
+verify links/examples and record the PR URL/base/head. Unavailable access leaves gates incomplete.

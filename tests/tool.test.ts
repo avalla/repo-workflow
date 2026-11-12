@@ -116,6 +116,12 @@ test('install preserves existing memory, unrelated skills, modes and entry text'
   expect(fs.statSync(root + '/AGENTS.md').mode & 0o777).toBe(0o600);
   expect(text(root, '.agents/skills/other/SKILL.md')).toBe('other');
   expect(text(root, '.agents/skills/repo-workflow-handoff/SKILL.md')).toContain('name: repo-workflow-handoff');
+  expect(text(root, '.agents/skills/repo-workflow-security-assessment/SKILL.md')).toContain('name: repo-workflow-security-assessment');
+  expect(text(root, '.repo-workflow/index.md')).toContain('repo-workflow-security-assessment/SKILL.md');
+  for (const skill of ['release-readiness', 'debug-investigation', 'architecture-review', 'software-versioning']) {
+    expect(text(root, `.agents/skills/repo-workflow-${skill}/SKILL.md`)).toContain(`name: repo-workflow-${skill}\n`);
+    expect(text(root, '.repo-workflow/index.md')).toContain(`repo-workflow-${skill}/SKILL.md`);
+  }
   expect(doctor(root).findings).toEqual([]);
 });
 test('stale, tampered and conflicting plans cannot write', () => {
@@ -264,4 +270,31 @@ test('CLI is JSON automatable; no TTY fails clearly and dry-run creates nothing'
   const result = run('inspect', '--root', root); expect(result.exitCode).toBe(0); expect(decode(result.stdout).commandsExecuted).toEqual([]);
   expect(run('init', '--root', root).stderr.toString()).toContain('interactive-terminal-required');
   expect(run('invalid').exitCode).toBe(2); expect(run('plan', '--unknown').exitCode).toBe(2);
+});
+
+test('execution modes are strict and delivery gates cannot be weakened', () => {
+  const root = fixture();
+  expect(inspect(root).execution).toEqual({mode: 'single-agent'});
+  const config = decode(text(root, '.repo-workflow.json'));
+  config.execution = {mode: 'orchestrated'};
+  write(root, '.repo-workflow.json', canonical(config));
+  const result = inspect(root);
+  expect(result.execution.mode).toBe('orchestrated');
+  for (const id of ['documentation-current', 'pull-request', 'independent-review']) {
+    expect(result.gates['project/' + id].required).toBe(true);
+    expect(result.gates['project/' + id].result).not.toBe('PASS');
+  }
+  config.gates.push({id: 'pull-request', category: 'delivery', required: false,
+    applicability: {components: [], paths: [], tasks: []}, binding: null, environment: null, procedure: null, resources: []});
+  write(root, '.repo-workflow.json', canonical(config));
+  expect(inspect(root).gates['project/pull-request'].required).toBe(true);
+  install(root);
+  expect(text(root, 'AGENTS.md')).toContain('orchestrated');
+  expect(text(root, '.agents/skills/repo-workflow-orchestrate-delivery/SKILL.md')).toContain('integrated candidate');
+  config.execution.mode = 'automatic';
+  write(root, '.repo-workflow.json', canonical(config));
+  expect(() => inspect(root)).toThrow();
+  config.execution = {mode: 'single-agent', parallel: true};
+  write(root, '.repo-workflow.json', canonical(config));
+  expect(() => inspect(root)).toThrow();
 });

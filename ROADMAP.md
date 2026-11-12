@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **95% — 18/19 checklist items complete; 2/3 milestones complete.**
+Progress: **72% — 18/25 checklist items complete; 2/4 milestones complete.**
 Items have equal weight; this measures completed scope, not effort, time or delivery certification.
 Count only checked items below. Round `100 × completed / total` to the nearest whole percent.
 Blocked or unverified items stay unchecked; update counts whenever scope or evidence changes.
@@ -10,6 +10,7 @@ Blocked or unverified items stay unchecked; update counts whenever scope or evid
 | M1 — contracts and extracted content | 5/5 | 100% | Complete |
 | M2 — deterministic local tool | 4/5 | 80% | Native verification outstanding |
 | M3 — safe updates and pilot adoption | 9/9 | 100% | Bounded documentation adoption complete |
+| M4 — assessment and review procedures | 0/6 | 0% | Independent review pending |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -53,5 +54,20 @@ these traces; measurements cover trace-visible output and on-disk entry sizes. A
 unverified. AutoÉpoque adoption was removed from
 active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source.
 Historical AutoÉpoque extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
+
+## Milestone 4 — assessment and review procedures
+
+- [ ] Deliver installed security assessment and expanded independent review procedures with contract checks and independent review evidence.
+- [ ] Deliver release-readiness with contract checks and independent review evidence.
+- [ ] Deliver debug-investigation with contract checks and independent review evidence.
+- [ ] Deliver architecture-review with contract checks and independent review evidence.
+- [ ] Deliver software-versioning with contract checks and independent review evidence.
+
+Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md).
+Additional procedures: [delivery skills report](docs/sessions/delivery-skills.md).
+- [ ] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review evidence.
+
+See [delivery workflow report](docs/sessions/delivery-workflow.md).
+Independent review remains pending; implementation alone does not close this item.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.

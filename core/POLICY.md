@@ -8,7 +8,9 @@ Use project-owned sources of truth rather than duplicating status across tools.
 Update affected documentation in the same change as implementation: usage, configuration, API and
 workflow guides must describe the resulting behavior. Update current status and the owning report;
 update the roadmap, repository map and ADRs when scope, structure or decisions change. Verify links
-and examples before handoff. If no documentation change is needed, record why in the handoff.
+and examples before handoff. The documentation-current gate requires this evidence; record why any document needs no change.
+Create a PR for each change; record its URL, base and current head. The pull-request gate stays
+incomplete without access or authority. PR creation grants no merge, publish or deploy authority.
 
 Maintain the project roadmap as a flat checklist of concrete outcomes per milestone, with a summary
 of completed/total items and whole-percent progress for each milestone and overall. Count each item

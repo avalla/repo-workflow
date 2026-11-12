@@ -9,7 +9,7 @@ import {initialize, interactiveInit} from './init';
 
 export function inspect(root: string, task = 'feature', affected: string[] = []) {
   const {config, effective} = configuration(root);
-  return {project: config.project, harnesses: [...config.harnesses].sort(), profiles: effective.profiles.map(({id, version, scope, origins}: Document) => ({id, version, scope, origins})),
+  return {project: config.project, execution: effective.execution, harnesses: [...config.harnesses].sort(), profiles: effective.profiles.map(({id, version, scope, origins}: Document) => ({id, version, scope, origins})),
     rules: effective.rules, diagnostics: effective.diagnostics, workflow: config.workflow[task], gates: gateReport(effective, config, task, affected), completion: false, commandsExecuted: []};
 }
 export function doctor(root: string, task = 'feature', affected: string[] = []) {
