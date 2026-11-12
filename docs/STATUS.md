@@ -1,20 +1,22 @@
 # Current status
 
-Milestones 1–2 are implemented for [avalla/repo-workflow](https://github.com/avalla/repo-workflow).
-The local CLI implements inspect, plan, reviewed initial apply and doctor. Google Antigravity uses
-shared AGENTS.md and canonical `.agents/skills` paths. Native harness discovery is NOT RUN.
+M1–M2 contracts and the local tool are implemented. M3 lifecycle tooling and the requested Bun/Ink
+creation flow are implemented; M3 pilot adoption and native harness verification remain outstanding.
+Bun is the supported runtime. Python M2 sources remain as a frozen compatibility reference.
 
-Evidence: [M2 report](sessions/m2-local-tool.md), [M1 report](sessions/m1-contracts.md),
-[source inventory](source-inventory.json), [acceptance coverage](../tests/fixtures/README.md).
-No source projects were modified. No configured commands were executed. No independent review,
-live CI, source-project tests, engine/hardware checks or actual native harness discovery were performed.
-Local architectural review is self-review; delivery review gates are not claimed passed.
+The Ink wizard creates validated project configuration, including Antigravity selection. JSON CLI
+commands cover inspect, doctor, reviewed install/update/migrate/uninstall and interrupted-operation
+resume/rollback. Project memory and local edits follow ownership and three-way rules.
+No configured project command is executed. No diagnostic certifies delivery completion.
 
-No blocking architectural decision remains for the initial tool. All weakening overrides fail closed
-until owner authorization can be verified. Multi-repository roots remain unsupported. Prerequisites
-are UNKNOWN and gates remain NOT RUN or BLOCKED; doctor cannot certify delivery.
-Antigravity was unavailable locally; installed Codex and Claude versions alone do not prove discovery.
+Evidence: [Bun/Ink report](sessions/m3-bun-ink.md), [M2 report](sessions/m2-local-tool.md),
+[M1 report](sessions/m1-contracts.md), [source inventory](source-inventory.json),
+[acceptance coverage](../tests/fixtures/README.md).
+Native Codex, Claude Code and Antigravity discovery is NOT RUN. Real resume/slice/review/handoff,
+source-project pilots, CI, engine/hardware validation and independent review are NOT RUN.
+No source projects were modified. Architectural review here is self-review.
 
-Next milestone: M3, safe three-way updates, migrations, recovery, removal and explicitly authorized
-pilot adoption. M3 has not started. See [roadmap](../ROADMAP.md) and
-[local-tool decision](adr/0004-local-tool-and-shared-discovery.md).
+No new blocking architecture decision was identified. Weakening overrides and multi-repository
+roots remain unsupported. Unknown prerequisites and unavailable review keep gates incomplete.
+Next work: finish M3 pilots on disposable source-project copies and measure startup context,
+conflicts and resume behavior. See [roadmap](../ROADMAP.md) and [usage](USAGE.md).

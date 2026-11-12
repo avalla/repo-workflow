@@ -17,10 +17,12 @@ Evidence: [M2 report](docs/sessions/m2-local-tool.md).
 Exit: composition/workflow and initial install safety scenarios execute successfully on disposable targets;
 no configured command runs from inspect/plan/apply/doctor. No source project adoption.
 
-## Milestone 3 — safe updates and pilot adoption: not started
+## Milestone 3 — safe updates and pilot adoption: tooling implemented; pilots outstanding
 
-Implement locked three-way updates, migrations, recovery, removal and uninstall. Execute update safety
-scenarios. Pilot only on copies or dedicated authorized branches of Agile Factory Next and Pizza Hit;
+Implemented Bun/TypeScript, Ink creation, three-way updates, compatible v1 lock normalization,
+recovery, removal and uninstall. Local update safety scenarios execute; see
+[M3 tooling report](docs/sessions/m3-bun-ink.md) and [usage](docs/USAGE.md).
+Remaining: Pilot only on copies or dedicated authorized branches of Agile Factory Next and Pizza Hit;
 then deliberately reconcile AutoÉpoque's older instructions. Verify real resume/slice/review/handoff.
 Measure startup bytes, files read, lost-context incidents and conflicts. Record actual engine/hardware
 and reviewer gaps. Publish releases only under separate authorization after verified compatibility/release evidence.

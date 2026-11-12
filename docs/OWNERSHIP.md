@@ -6,7 +6,8 @@ with at most one managed `<!-- repo-workflow:start -->` / `<!-- repo-workflow:en
 The installation lock is `.repo-workflow/lock.json`; `.repo-workflow.json` and any explicitly listed
 local profile source files are project-owned, outside the managed namespace.
 Preserve all bytes outside it. Missing/duplicate delimiters in an installed block are conflicts.
-CLAUDE.md is initialize-once if absent; an unrelated existing adapter is a collision to review.
+CLAUDE.md is initialize-once if absent; an existing file remains project-owned and is preserved.
+Add routing manually when needed; see USAGE.md.
 Installed canonical skills live in `.agents/skills/repo-workflow-<name>/`; install one owned skill
 at a time, never replace a directory. Optional discovery links must stay repository-local; existing
 files/links are collisions, never followed or overwritten implicitly.
@@ -22,7 +23,7 @@ exact profiles, generated paths, original UTF-8 base contents and SHA-256 hashes
 Base bytes must hash to the recorded hash. Binary managed content is outside version 1. Milestone 1
 does not issue an install lock. A release tag without a commit is insufficient.
 
-Future operations: inspect discovers read-only; plan outputs config, ownership, diff, conflicts and
+Local operations: inspect discovers read-only; plan outputs config, ownership, diff, conflicts and
 precondition hashes; apply consumes a reviewed plan; doctor checks configuration, links, budgets and
 prerequisites without starting services; update plans against an explicit selected release.
 

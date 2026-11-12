@@ -4,13 +4,13 @@ Executable now: strict schema definitions, four valid project examples, six prof
 five invalid configurations, nested unknown-field rejection, command/environment references,
 lock base hash, evidence states/dates, catalogue references, local links and byte budgets.
 Gate binding/procedure exclusivity, external reviewer binding and forbidden override fields are also checked.
-Run `python3 tests/validate_contracts.py` after installing the pinned development requirement.
+Run `bun run check` with pinned Bun dependencies. Python validation remains as M1/M2 reference.
 The synthetic command binding deliberately fails if run; validation reads it as data only.
 The lock/evidence examples use placeholder identities and are not installation or passing gate records.
 
-`scenarios.json` contains 40 declarative future acceptance cases with inputs and expected outcomes.
+`scenarios.json` contains 40 declarative acceptance cases with inputs and expected outcomes.
 Their inventory/structure is checked. `tests/test_tool.py` executes M2 composition and initial-install
-behavior on disposable targets. M3 updates/removal/recovery execution remains **NOT RUN**.
+behavior on disposable targets. Bun tests execute M3 updates, removal, uninstall and interrupted transaction recovery.
 Compact synthetic dependency graphs specify relationships, not full profile-schema objects.
 Fixtures requiring files specify literal UTF-8 content or preconditions for a disposable test harness.
 
@@ -29,8 +29,13 @@ Fixtures requiring files specify literal UTF-8 content or preconditions for a di
 | Honest gaps and safe docs | missing-prerequisites, docs-only, commands-never-run, pending-ci-not-pass, reviewer-unavailable | 2 |
 | Explicit support limits | unsupported-multi-repo | 2 |
 
-Executable M2 tests compare real outputs/bytes; the scenario inventory itself is not a one-to-one
+Executable Bun and historical M2 tests compare real outputs/bytes; the scenario inventory itself is not a one-to-one
 executable runner. Evidence ingestion (including pending CI), native resume and real independent
 review remain NOT RUN. A successful fixture
 inventory check is not evidence of deterministic rendering, safe installation, controller support,
 review independence, or update recovery.
+
+Current Bun coverage: `tests/contracts.test.ts` checks contracts/catalogue; `tests/tool.test.ts` checks
+composition and lifecycle; `tests/wizard.test.tsx` drives Ink with simulated TTY input. Seven
+base/local/incoming cases run directly from scenarios.json. Other areas use dedicated tests; this
+is not a claim that all 40 cases have one-to-one runners. Native resume and pilots remain outstanding.
