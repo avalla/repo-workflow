@@ -1,6 +1,6 @@
 # Current status
 
-Roadmap: **96% — 24/25 items; M1, M3 and M4 complete for their declared scope.**
+Roadmap: **93% — 26/28 items; M1, M3 and M4 complete for their declared scope.**
 M2 native qualification remains open: Antigravity is absent locally. Codex startup and explicit
 Claude routing have bounded evidence; automatic Claude imports/skill registration remain unproved.
 
@@ -33,9 +33,20 @@ local validation PASS (37 tests, 2309 assertions). See [review](sessions/m4-inde
 [assessment](sessions/assessment-skills.md), [delivery skills](sessions/delivery-skills.md) and
 [workflow controls](sessions/delivery-workflow.md). Native multi-agent/application execution remains NOT RUN.
 
-Implementation candidate: `26153826db27d275acdff6663e7936e983929b27`.
+M4 implementation candidate: `26153826db27d275acdff6663e7936e983929b27`.
 Pushed branch: `feat/assessment-delivery-workflows`; [PR #1](https://github.com/avalla/repo-workflow/pull/1)
 targets `main`. No merge or deployment performed. Remote CI is separate from local validation.
 
-Next: inspect PR CI and owner disposition; qualify Antigravity in an available native environment
-to close the remaining M2 item. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).
+M5 preserves the three planned outcomes from Astra's review on main (74a1505):
+acceptance-coverage documentation, omitted affected-path diagnostics, and an authorized isolated
+Agile Factory Next application bugfix pilot. M4 remains complete; M5 is 2/3 for documentation and scope diagnostics.
+The authorized isolated AF Next pilot fixed a real safeNext redirect defect; typecheck, 1,229 unit
+tests, independent review and fresh-session handoff passed. Target PR/browser/accessibility gates
+remain incomplete, so the pilot checklist stays unchecked. See [pilot](sessions/m5-application-pilot.md).
+See [planning reconciliation](sessions/m5-planning.md) and [implementation evidence](sessions/m5-follow-up.md). Progress changed because scope increased.
+
+Next:
+1. Present the reviewed AF Next patch for a target PR-publication decision; finish its required gates.
+2. Complete remaining M2 harness qualification; Antigravity is absent locally.
+M2 closure must resolve Claude automatic discovery versus accepted explicit routing,
+as well as native Antigravity evidence. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).

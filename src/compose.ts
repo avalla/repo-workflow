@@ -131,7 +131,15 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
 export function gateReport(effective: Document, config: Document, task: string, affected: string[]): Document {
   affected.forEach(p => relative(p));
   const touches = (p: string, root: string) => root === '.' || p === root || p.startsWith(root + '/');
-  return Object.fromEntries((Object.entries(effective.gates) as [string, Document][]).map(([key, g]) => [key, {...g,
-    applicable: g.clauses.some((c: Document) => (!c.tasks.length || c.tasks.includes(task)) && (!c.paths.length || c.paths.some((root: string) => affected.some(p => touches(p, root)))) && (!c.components.length || c.components.some((name: string) => affected.some(p => touches(p, config.components[name].path))))),
-    result: g.required && !(g.binding || g.procedure) ? 'BLOCKED' : 'NOT RUN'}]));
+  return Object.fromEntries((Object.entries(effective.gates) as [string, Document][]).map(([key, g]) => {
+    const clauses = g.clauses.map((c: Document) => {
+      if (c.tasks.length && !c.tasks.includes(task)) return false;
+      if (!affected.length && (c.paths.length || c.components.length)) return null;
+      return (!c.paths.length || c.paths.some((root: string) => affected.some(p => touches(p, root)))) &&
+        (!c.components.length || c.components.some((name: string) => affected.some(p => touches(p, config.components[name].path))));
+    });
+    const applicable = clauses.includes(true) ? true : clauses.includes(null) ? null : false;
+    return [key, {...g, applicable, applicabilityDiagnostic: applicable === null ? 'missing-affected-paths' : null,
+      result: g.required && !(g.binding || g.procedure) ? 'BLOCKED' : 'NOT RUN'}];
+  }));
 }

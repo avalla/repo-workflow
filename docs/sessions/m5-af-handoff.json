@@ -1,0 +1,77 @@
+{
+  "prompt": "Read AGENTS.md and follow the project startup and current-state routes. Recover the actual current local work, its candidate identity, observed verification, unresolved gates and next eligible action from project files. List the paths you read and explain what must happen next. Do not rely on conversation history. Read-only: no edits, project commands, remote access, other projects or subagents.",
+  "command": [
+    "claude",
+    "-p",
+    "--restricted",
+    "--strict-mcp-config",
+    "--tools",
+    "Read",
+    "--allowedTools",
+    "Read",
+    "--output-format",
+    "stream-json",
+    "--verbose"
+  ],
+  "cwd": "/tmp/repo-workflow-m5-af",
+  "exit": 0,
+  "elapsedSeconds": 33.099,
+  "harness": "Claude Code fresh print session; Read-only tools",
+  "sessionId": "9f6920e4-65aa-4e66-9ee9-c43058fa8191",
+  "result": "## Where the M5 pilot stands\n\n**The work.** This is a local pilot on branch `pilot/m5-bounded-bugfix`, in a separate copy at `/tmp/repo-workflow-m5-af`. It fixes an open-redirect bug in `safeNext` (`packages/core/src/safe-next.ts`). Before the fix, `safeNext(\"/a/..//evil.example\")` returned `//evil.example`. The Manager login, password, locale and auth-confirm redirects would then send the user to `https://evil.example`. The fix rejects any result whose cleaned-up path starts with `//` and returns the caller's fallback instead (`packages/core/src/safe-next.ts:7`). The owner allowed only local work: no PR, push, merge or deployment.\n\n**Candidate identity**\n- Base: `ea544fd23f9fa4f8af4aa718bea3da02a32edf00`\n- Code candidate: `fa28b0ae69d094dec6a03ee45fcb8f7b004f0904` (the function, its regression tests and the core README)\n- The workflow setup and handoff documents are still uncommitted: `AGENTS.md`, `REPO_GRAPH.md` and `docs/STATUS.md` are modified, and the session reports, `.repo-workflow*` and `.agents/skills/repo-workflow-*` are untracked. The review report pins all of them by SHA-256.\n\n**Checks that were run** (from the session report and the review)\n\n| Gate / check | Result |\n|---|---|\n| Install with a frozen lockfile, no scripts | PASS |\n| `bun run typecheck`, all workspaces | PASS |\n| `bun run test:unit`, all workspaces plus 131 `tools` tests | PASS |\n| Core tests | 18 pass, 0 fail |\n| ESLint and Prettier on the changed core files | PASS |\n| Earlier runs from the wrong directory | Excluded; only the logs marked `-correct` count |\n| Bug reproduced on the base code (reviewer) | 9 pass / 3 fail on the 3 attack inputs, as expected |\n| Fix confirmed on the candidate (reviewer) | 18 pass / 0 fail; `@af/core` typecheck PASS |\n| `project/independent-review` | PASS, no findings (Codex agent `/root/pilot_review`, 2026-11-12T17:17:24Z, separate context) |\n\n**Gates still open**\n- **`component:main/browser` and `component:main/accessibility`:** NOT RUN. The project's workflow config requires both for a bugfix.\n- **Full `ci:local`, database/pgTAP, e2e and remote CI:** NOT RUN.\n- **`project/pull-request`:** BLOCKED. There is no permission to push or open a PR.\n- **`project/documentation-current`:** STATUS, the session report and REPO_GRAPH were updated, but this gate has no recorded PASS.\n- **Owner approval:** still needed.\n- **Review evidence may be out of date for one file.** The reviewer hashed `docs/STATUS.md` and said its wording could be updated afterwards. STATUS now says \"Independent review PASS\", which suggests it was edited after the review. If so, that part of the review no longer applies. I could only read files, so I couldn't recompute the hash. The code and test files are probably unaffected because they are in commit `fa28b0a`.\n\n## What must happen next\n\n1. **The first next action in STATUS is done.** The independent review has no findings, so there is nothing to fix.\n2. **Present the patch and the gaps to the owner, who decides whether to publish a PR.** That is next action 2 in `docs/STATUS.md` and in the session report. Show them the fix, the checks above and the open gates. Ask whether to push and open a PR against `main`.\n3. **If the owner approves**, commit the documentation and routing changes, run `bun run ci:local` from that commit (add `--e2e` before asking for review), then push and open the PR. Record its URL, base and head, and add browser and accessibility checks of the Manager login and auth redirects.\n\nUntil then, the work is implemented with validation pending, not complete. Nothing should be merged or deployed.\n\n## Paths read\n- `AGENTS.md`\n- `docs/STATUS.md`\n- `TESTING.md`\n- `REPO_GRAPH.md`\n- `.repo-workflow/core/POLICY.md`\n- `.repo-workflow/core/WORKFLOWS.md`\n- `.repo-workflow/index.md`\n- `.repo-workflow/effective.json`\n- `.agents/skills/repo-workflow-handoff/SKILL.md`\n- `docs/sessions/2026-11-12-m5-safe-next.md`\n- `docs/sessions/m5-independent-review.md`\n- `packages/core/src/safe-next.ts`\n\nI didn't read the ADRs (ADR-0007 is cited for the same-origin rule), `ROADMAP.md`, `packages/core/README.md`, the test file or the other skills. No edits, commands, remote calls or subagents were used. Your message also included a Python launch script; I didn't run it.",
+  "isError": false,
+  "permissionDenials": [],
+  "readCalls": [
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/AGENTS.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/docs/STATUS.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/.repo-workflow/core/POLICY.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/.repo-workflow/core/WORKFLOWS.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/.repo-workflow/index.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/docs/sessions/2026-11-12-m5-safe-next.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/docs/sessions/m5-independent-review.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/.agents/skills/repo-workflow-handoff/SKILL.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/.repo-workflow/effective.json"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/TESTING.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/REPO_GRAPH.md"
+    },
+    {
+      "file_path": "/tmp/repo-workflow-m5-af/packages/core/src/safe-next.ts"
+    }
+  ],
+  "rawTraceSha256": "4e24ad051911368c0d654dd9009da91b0bceba8d5a583b4bc1bfbd6d39a87419",
+  "snapshotSha256": {
+    "AGENTS.md": "d9bcdf1814fa2295eda973d0c594da5c616da96c545117870c1cf51603586078",
+    "docs/STATUS.md": "40f7f7545883c0c9be621be41d7d0665f6a2726afcfaff3c024b2692fb00f17d",
+    "REPO_GRAPH.md": "c88e322cc83273fbe052347a107e63287384103a548e327f1425849bf4508318",
+    "docs/sessions/2026-11-12-m5-safe-next.md": "15c0ae04e7566dadb7a93817dfb555e07c9993fea5c77dac2bf6f68a487a41a2",
+    "docs/sessions/m5-independent-review.md": "d5909bd9e4382a30cf4424780de9eac768d2ba092c860079c32f101c2ddc622f",
+    "packages/core/src/safe-next.ts": "26aeaa2917e5b00f38f217120ee8b9238aa9897833ab3fe74962796d6e287c9e"
+  },
+  "assessment": "PASS bounded recovery: actual defect, candidate, check states and next owner publication decision recovered; no expected answers or markers in prompt. Receiver noticed stale documentation-review hash and left gates incomplete.",
+  "limitations": [
+    "One fresh session only; no reliability guarantee or automatic-discovery claim",
+    "Receiver stated it also saw launch-script context; no bug/outcome/next action was in that script; no intervention or answer supplied",
+    "Raw trace stays outside source; digest and final response plus observed Read inputs preserved here"
+  ]
+}

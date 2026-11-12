@@ -6,6 +6,7 @@ import {canonical, checked, decode, digest, Inputs, SOURCE, sourceCommit, valida
 import {apply, configuration, plan, recover, threeWay} from '../src/lifecycle';
 import {createConfig, initialize} from '../src/init';
 import {doctor, inspect} from '../src/cli';
+import {gateReport} from '../src/compose';
 import {block, END, START} from '../src/render';
 
 const roots: string[] = [];
@@ -122,7 +123,7 @@ test('install preserves existing memory, unrelated skills, modes and entry text'
     expect(text(root, `.agents/skills/repo-workflow-${skill}/SKILL.md`)).toContain(`name: repo-workflow-${skill}\n`);
     expect(text(root, '.repo-workflow/index.md')).toContain(`repo-workflow-${skill}/SKILL.md`);
   }
-  expect(doctor(root).findings).toEqual([]);
+  expect(doctor(root, 'feature', ['src/main.ts']).findings).toEqual([]);
 });
 test('stale, tampered and conflicting plans cannot write', () => {
   const root = fixture(), initial = plan(root); initial.changes[0].content = 'tamper';
@@ -297,4 +298,37 @@ test('execution modes are strict and delivery gates cannot be weakened', () => {
   config.execution = {mode: 'single-agent', parallel: true};
   write(root, '.repo-workflow.json', canonical(config));
   expect(() => inspect(root)).toThrow();
+});
+
+
+test('inspect and doctor distinguish omitted, matching and unrelated affected paths', () => {
+  const root = fixture('mixed-monorepo'); install(root);
+  for (const report of [inspect, doctor]) {
+    const omitted = report(root).gates['component:web/browser'];
+    expect(omitted.applicable).toBeNull();
+    expect(omitted.applicabilityDiagnostic).toBe('missing-affected-paths');
+    expect(omitted.required).toBe(true);
+    expect(omitted.result).toBe('BLOCKED');
+    expect(report(root, 'feature', ['apps/web/view.ts']).gates['component:web/browser'].applicable).toBe(true);
+    expect(report(root, 'feature', ['apps/worker/job.ts']).gates['component:web/browser'].applicable).toBe(false);
+    expect(report(root).gates['project/independent-review'].applicable).toBe(true);
+    expect(report(root).completion).toBe(false);
+    expect(report(root).commandsExecuted).toEqual([]);
+  }
+  expect(doctor(root).findings).toContainEqual({code: 'missing-affected-paths:component:web/browser', result: 'BLOCKED'});
+});
+
+
+test('scope uncertainty respects task exclusions and whole-clause union', () => {
+  const config = {components: {web: {path: 'apps/web'}}};
+  const scoped = {tasks: ['feature'], paths: ['apps/web'], components: ['web']};
+  const gate = {required: true, procedure: 'Review', clauses: [scoped]};
+  const report = (clauses: any[], task = 'feature', affected: string[] = []) =>
+    gateReport({gates: {example: {...gate, clauses}}}, config, task, affected).example;
+  expect(report([scoped], 'docs').applicable).toBe(false);
+  expect(report([scoped]).applicable).toBeNull();
+  expect(report([scoped, {tasks: ['feature'], paths: [], components: []}]).applicable).toBe(true);
+  expect(report([scoped], 'feature', ['apps/web-other/page.ts']).applicable).toBe(false);
+  expect(report([{...scoped, paths: ['shared']}], 'feature', ['shared/a.ts']).applicable).toBe(false);
+  expect(report([{...scoped, paths: ['shared']}], 'feature', ['shared/a.ts', 'apps/web/a.ts']).applicable).toBe(true);
 });

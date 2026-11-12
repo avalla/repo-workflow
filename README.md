@@ -103,7 +103,9 @@ and its origins. See [composition](docs/COMPOSITION.md).
 
 These are representative configurations, not verified application setups. For a monorepo,
 components point at paths such as `apps/web` and `apps/worker`. Task and affected-path arguments
-select relevant policy. One configuration describes one repository root; independent multi-repository
+select relevant policy. Without affected paths, path/component selectors remain unknown
+(`applicable: null`); required unknown scope blocks `doctor`. See [diagnostic semantics](docs/USAGE.md).
+One configuration describes one repository root; independent multi-repository
 roots remain unsupported. The wizard's stack labels do not install technologies, and its language
 setting does not translate the bundled English instructions.
 

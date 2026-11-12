@@ -1,0 +1,49 @@
+diff --git a/packages/core/README.md b/packages/core/README.md
+index 0b874f3..618ef0b 100644
+--- a/packages/core/README.md
++++ b/packages/core/README.md
+@@ -5,7 +5,7 @@ Pure domain logic with no I/O, used by every app and package. Isomorphic (browse
+ ## API
+ 
+ - `computeOee({ plannedSeconds, runSeconds, idealCycleSeconds, totalCount, goodCount })` → availability, performance, quality, oee (0..1). Rejects negative or inconsistent inputs.
+-- `safeNext(value, fallback)`: same-origin relative redirect target, or the fallback.
++- `safeNext(value, fallback)`: same-origin relative redirect target, or the caller-supplied trusted fallback. Rejects normalized paths beginning with `//` so dot-segment normalization cannot produce a network-path redirect.
+ - `@af/core/testing`: `rejection(promise)` returns the error of a promise that must reject (Bun types declare `rejects.toThrow()` as void).
+ 
+ ## Rules
+diff --git a/packages/core/src/safe-next.test.ts b/packages/core/src/safe-next.test.ts
+index d0e0faf..a47ac2b 100644
+--- a/packages/core/src/safe-next.test.ts
++++ b/packages/core/src/safe-next.test.ts
+@@ -16,3 +16,16 @@ test.each([
+ test("uses the given fallback", () => {
+   expect(safeNext("https://evil.com", "/orgs")).toBe("/orgs");
+ });
++
++test.each(["/a/..//evil.example", "/%2e%2e//evil.example", "/a/..///evil.example"])(
++  "normalized next %p cannot become a network-path redirect",
++  (input) => {
++    const next = safeNext(input, "/orgs");
++    expect(next).toBe("/orgs");
++    expect(new URL(next, "https://manager.example").origin).toBe("https://manager.example");
++  },
++);
++
++test("preserves same-origin normalized routes, queries and fragments", () => {
++  expect(safeNext("/a/../orders?next=//example.test#top")).toBe("/orders?next=//example.test#top");
++});
+diff --git a/packages/core/src/safe-next.ts b/packages/core/src/safe-next.ts
+index b795c48..0cd4e93 100644
+--- a/packages/core/src/safe-next.ts
++++ b/packages/core/src/safe-next.ts
+@@ -4,7 +4,9 @@ export function safeNext(value: unknown, fallback = "/"): string {
+   if (!next.startsWith("/")) return fallback;
+   try {
+     const url = new URL(next, "http://n.invalid");
+-    return url.origin === "http://n.invalid" ? url.pathname + url.search + url.hash : fallback;
++    return url.origin === "http://n.invalid" && !url.pathname.startsWith("//")
++      ? url.pathname + url.search + url.hash
++      : fallback;
+   } catch {
+     return fallback;
+   }
