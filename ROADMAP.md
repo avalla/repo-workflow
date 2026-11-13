@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **93% — 27/29 checklist items complete; 4/6 milestones complete.** Items have equal weight; this measures
+Progress: **93% — 28/30 checklist items complete; 4/6 milestones complete.** Items have equal weight; this measures
 completed scope, not effort, time or delivery certification. Count only checked items below. Round
 `100 × completed / total` to the nearest whole percent. Blocked or unverified items stay unchecked; update counts
 whenever scope or evidence changes.
@@ -12,7 +12,7 @@ whenever scope or evidence changes.
 | M3 — safe updates and pilot adoption        | 9/9   | 100%     | Bounded documentation adoption complete              |
 | M4 — assessment and review procedures       | 6/6   | 100%     | Installed procedures independently reviewed          |
 | M5 — review follow-up and application pilot | 2/3   | 67%      | Local pilot passed; target delivery gates incomplete |
-| M6 — documentation and design requirements  | 1/1   | 100%     | Independently reviewed; PR #2 open                   |
+| M6 — documentation and design requirements  | 2/2   | 100%     | Independently reviewed; PRs #2 and #4 open           |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -121,3 +121,8 @@ Release publication is outside this checklist and needs separate authorization p
       review.
 
 Candidate and verification: [requirements report](docs/sessions/documentation-design-requirements.md).
+
+- [x] Deliver Supabase SaaS schema snapshots and typed migration guidance with explicit pre-live/live rules; validate
+      installed guidance and obtain independent review.
+
+Evidence: [Supabase SaaS follow-up](docs/sessions/supabase-saas-guidance.md).

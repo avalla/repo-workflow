@@ -15,7 +15,8 @@
   "policy": {
     "invariants": [
       "SQL/RLS and permissions are authoritative; shared typed data respects application boundaries.",
-      "Load the official supabase skill for Supabase tasks and supabase-postgres-best-practices before database changes or diagnosis. Follow the project-owned external skill setup guide; missing skills keep applicable verification incomplete."
+      "Load the official supabase skill for Supabase tasks and supabase-postgres-best-practices before database changes or diagnosis. Follow the project-owned external skill setup guide; missing skills keep applicable verification incomplete.",
+      "For SaaS projects, regenerate and commit supabase/schema.sql after database structure changes for LLM context; separate migrations by type and follow the installed guide for pre-live resets and immutable live migration history."
     ],
     "verification": [
       {
