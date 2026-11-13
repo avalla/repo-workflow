@@ -3,10 +3,10 @@
 - `core/`: shared authority, evidence and workflows.
 - `schemas/`: configuration, profile, preset, lock and evidence contracts.
 - `profiles/`, `presets/`: representative modules and pinned selections.
-- `skills/`: canonical bounded procedures, loaded individually.
-  `security-assessment` owns security assessment; `review-change` owns independent candidate review.
-  `debug-investigation` owns defect investigation; `architecture-review` owns design review;
-  `software-versioning` owns version decisions; `release-readiness` owns release gate reports.
+- `skills/`: canonical bounded procedures, loaded individually. `security-assessment` owns security assessment;
+  `review-change` owns independent candidate review. `debug-investigation` owns defect investigation;
+  `architecture-review` owns design review; `software-versioning` owns version decisions; `release-readiness` owns
+  release gate reports.
 - `adapters/`: generic, Codex, Claude Code and Antigravity discovery.
 - `templates/`: initialize-once project memory, including the checklist/progress roadmap.
 - `src/io.ts`: strict JSON, schemas, paths, snapshots and atomic writes.
@@ -25,4 +25,8 @@
 
 ROADMAP.md owns milestone order. docs/STATUS.md owns evidence and remaining work.
 
-Execution configuration: schemas/config.schema.json → src/init.tsx → src/compose.ts → src/render.ts; procedure: skills/orchestrate-delivery/SKILL.md.
+Execution configuration: schemas/config.schema.json → src/init.tsx → src/compose.ts → src/render.ts; procedure:
+skills/orchestrate-delivery/SKILL.md.
+
+`docs/SUPABASE-SKILLS.md` owns official external Supabase skill setup and is installed by the Supabase profile.
+`.prettierrc.json` owns source-repository Markdown formatting.

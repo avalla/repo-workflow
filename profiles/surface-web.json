@@ -14,7 +14,9 @@
   "files": [],
   "policy": {
     "invariants": [
-      "Rendering and deployment contracts are explicit; UI behavior and accessibility need browser evidence."
+      "Rendering and deployment contracts are explicit; UI behavior and accessibility need browser evidence.",
+      "Every web project must maintain a documented design system: tokens, typography, colors, spacing, reusable components, interaction states, responsive behavior and accessibility. Reuse and evolve the existing system; record its owning path.",
+      "Use Impeccable and Hallmark for web UI design and review. Record their source, version, invoked skill or procedure, findings and fixes alongside browser/accessibility evidence. Missing tools or unresolved findings leave the applicable delivery verification incomplete; never substitute a claimed PASS."
     ],
     "verification": [
       {
@@ -62,7 +64,10 @@
       "review-change"
     ],
     "prerequisites": [
-      "browser runtime"
+      "browser runtime",
+      "project-owned design system",
+      "Impeccable",
+      "Hallmark"
     ],
     "resources": []
   },
