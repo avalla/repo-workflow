@@ -1,8 +1,9 @@
 # Current status
 
 Roadmap: **93% — 27/29 items; M1, M3, M4 and M6 complete for their declared scope.** M2 native qualification remains
-open: Antigravity is absent locally. Codex startup and explicit Claude routing have bounded evidence; automatic Claude
-imports/skill registration remain unproved.
+open: Antigravity is absent locally. Codex startup and Claude automatic entry loading plus explicit canonical-skill
+routing have bounded evidence; Claude native skill registration is not claimed. See
+[Claude qualification](sessions/m2-claude-native.md).
 
 Bun/TypeScript CLI and Ink wizard, strict composition, reviewed install/update/migrate/uninstall, and journaled recovery
 are implemented. Generated guidelines require documentation updates and roadmap checklists with count-based percentages.
@@ -46,9 +47,9 @@ PR/browser/accessibility gates remain incomplete, so the pilot checklist stays u
 Next:
 
 1. Present the reviewed AF Next patch for a target PR-publication decision; finish its required gates.
-2. Complete remaining M2 harness qualification; Antigravity is absent locally. M2 closure must resolve Claude automatic
-   discovery versus accepted explicit routing, as well as native Antigravity evidence. See [roadmap](../ROADMAP.md),
-   [usage](USAGE.md) and [adoption](ADOPTION.md).
+2. Complete native Antigravity qualification when available. Claude automatic entry loading has bounded CLI evidence;
+   explicit canonical-skill reading is the supported fallback, with no native skill-registration claim. See
+   [roadmap](../ROADMAP.md), [Claude qualification](sessions/m2-claude-native.md) and [adoption](ADOPTION.md).
 
 M6 adds module README ownership, documentation refresh at every session end, Prettier 3 Markdown formatting (120
 columns, proseWrap always), web design systems with Impeccable/Hallmark, and official Supabase skill prerequisites.
