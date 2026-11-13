@@ -7,6 +7,17 @@
 | `claude-code` | New CLAUDE.md routes with `@AGENTS.md` | Read canonical paths explicitly                |
 | `antigravity` | AGENTS.md                              | `.agents/skills/repo-workflow-<name>/SKILL.md` |
 
+## Roadmap maintenance in every harness
+
+Generic, Codex, Claude Code and Antigravity must follow the shared AGENTS.md roadmap instructions. At the end of every
+work session, and after changes to scope, progress or verification evidence, update the configured project-owned
+roadmap. Preserve milestone checklists; refresh completed/total counts and rounded percentages for each milestone and
+overall. Link evidence for completed work and keep blocked or unverified items unchecked. Use the existing roadmap path
+from the generated entry; do not create a competing roadmap. Persist the next eligible action in the owning
+status/report so another harness can resume.
+
+## Entry and skill discovery
+
 The installer generates one shared entry block and one canonical copy per skill. Existing CLAUDE.md is a collision
 requiring project reconciliation; the tool never replaces it. Claude native skill links are not generated. Explicit path
 reading is the fallback.

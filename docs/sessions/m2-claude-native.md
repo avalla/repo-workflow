@@ -24,6 +24,12 @@ configuration, and explicit canonical skill reading. It does not isolate whether
 versus direct AGENTS discovery. Native skill registration is not claimed: this adapter deliberately installs no
 `.claude/skills` links and supports canonical-path reading instead. No adapter behavior or permission boundary changed.
 
+## Shared harness requirement
+
+The adapter guidelines now explicitly require every harness to update the existing configured roadmap at session end and
+after scope/progress/evidence changes, preserving checklists and refreshing counts/percentages. This clarifies the
+already generated AGENTS.md rule; no adapter-specific copy or runtime behavior is added.
+
 ## Sources and remaining gates
 
 Current documentation was fetched through Context7 (`/websites/code_claude`), resolving the library first. Official
