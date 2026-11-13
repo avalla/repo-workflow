@@ -35,9 +35,10 @@ Evidence: [M1 report](docs/sessions/m1-contracts.md). Declarative scenarios are 
 - [ ] Verify discovery in native Codex, Claude Code and Antigravity sessions.
 
 Evidence: [M2 report](docs/sessions/m2-local-tool.md). Filesystem contracts are verified; Codex startup and explicit
-Claude routing were exercised; Antigravity remains NOT RUN. Closure requires native Antigravity discovery evidence and
-an explicit Claude qualification result: verify automatic imports and native skill discovery, or document and accept
-explicit canonical-path routing as the supported contract. Explicit reads must not be reported as automatic discovery.
+Claude routing were exercised. [Claude qualification](docs/sessions/m2-claude-native.md) now observes automatic entry
+loading and explicit canonical-skill reading; native skill registration is not claimed. Antigravity remains NOT RUN.
+Closure still requires native Antigravity evidence. Claude uses the documented canonical-path fallback; explicit skill
+reads must not be reported as native skill registration.
 
 ## Milestone 3 — safe updates and pilot adoption
 

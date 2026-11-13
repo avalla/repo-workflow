@@ -1,0 +1,116 @@
+{
+  "observedAt": "2026-11-13T08:44:04.203209+00:00",
+  "sourceCommit": "bcc3907f9edbbda0c825d7524cdcc0d0bf6029b8",
+  "harnessVersion": "Claude Code 2.1.285",
+  "fixture": "tests/fixtures/projects/library-cli.json",
+  "fixtureChange": "harnesses = [claude-code]",
+  "generatedHashes": {
+    "AGENTS.md": "cc07c0600bdc247c0c0da432349e08a2104c03dd0cbdec04e3b56ab9b3d8c71b",
+    "CLAUDE.md": "ccfd876eb36d86666f2b657f827001f707d7386b40d65ab2e549382824c01022",
+    ".repo-workflow/index.md": "5b54df848a21a8d1ea215e943b3d700f375a1d562b77b3488f672a94ee9bb1ea",
+    ".agents/skills/repo-workflow-handoff/SKILL.md": "d4164632f9405b82313b98662077f95653fb431d0101fd6f196824af63967a4a"
+  },
+  "runs": [
+    {
+      "name": "automatic-entry",
+      "command": {
+        "cwd": "/var/folders/2b/9f73b3nj5pbb7b8z5tnwz9640000gn/T/rw-claude-native-z1La5Y",
+        "args": [
+          "claude",
+          "-p",
+          "Without using tools or reading any files, state the project instructions already loaded for this session: documentation obligations, execution mode, and whether adapters authorize publishing. Quote the relevant sentences if present; report absent instructions honestly.",
+          "--output-format",
+          "json",
+          "--tools",
+          "",
+          "--setting-sources",
+          "project",
+          "--strict-mcp-config",
+          "--mcp-config",
+          "{\"mcpServers\":{}}",
+          "--permission-mode",
+          "dontAsk",
+          "--no-session-persistence"
+        ]
+      },
+      "sessionId": "2a60a890-5b4c-4d3c-ac65-0a6d80b0c289",
+      "subtype": "success",
+      "isError": false,
+      "result": "Here's what's loaded from `CLAUDE.md`, which imports `AGENTS.md`, quoted verbatim.\n\n**Documentation obligations**\n\n- \"Every logical module must have a local README.md. Update affected documentation, status and the owning report at the end of every work session.\"\n- \"Format added/edited .md files with Prettier 3 (proseWrap: always, printWidth: 120) and verify --check; verify links and examples before handoff.\"\n- \"Keep `ROADMAP.md` as milestone checklists with completed/total counts and percentage summaries; refresh after task or scope changes.\"\n- Related pointers: \"Evidence: `docs/sessions`. Decisions: `docs/adr`. Roadmap: `ROADMAP.md`.\" and \"Read `docs/STATUS.md` for the next eligible task and `REPO_GRAPH.md` to locate owners.\"\n- Also: \"Create a PR for each change and record its URL and candidate head.\"\n\n**Execution mode**\n\n- \"Execution mode: `single-agent`. In orchestrated mode load the orchestrate-delivery skill.\"\n\n**Do adapters authorize publishing?**\n\nNo. The instructions say: \"Adapters grant no execution, publishing or deployment authority.\" A related line says: \"Required checks, independent review and owner approvals remain incomplete until evidenced.\"\n\n**What isn't loaded**\n\nThe instructions point to other files: `.repo-workflow/core/POLICY.md`, `.repo-workflow/core/WORKFLOWS.md`, `.repo-workflow/index.md`, and the canonical skills. Their contents aren't in this session's context. I haven't read them, so I can't say what they contain.",
+      "rawSha256": "c12f0c9636fe291c3b2c6513890fb3dc067c27a6dfe0945de057e78e0fd60828"
+    },
+    {
+      "name": "empty-directory-control",
+      "command": {
+        "cwd": "/var/folders/2b/9f73b3nj5pbb7b8z5tnwz9640000gn/T/rw-claude-control-utgu1E",
+        "args": [
+          "claude",
+          "-p",
+          "Without using tools or reading any files, state the project instructions already loaded for this session: documentation obligations, execution mode, and whether adapters authorize publishing. Quote the relevant sentences if present; report absent instructions honestly.",
+          "--output-format",
+          "json",
+          "--tools",
+          "",
+          "--setting-sources",
+          "project",
+          "--strict-mcp-config",
+          "--mcp-config",
+          "{\"mcpServers\":{}}",
+          "--permission-mode",
+          "dontAsk",
+          "--no-session-persistence"
+        ]
+      },
+      "sessionId": "65b352c7-0eca-46fb-a98e-113f0df3976c",
+      "subtype": "success",
+      "isError": false,
+      "result": "No project instructions are loaded for this session. No CLAUDE.md content, project-level rules file, or `MEMORY.md` index appears in my context. So:\n\n- **Documentation obligations:** None. Nothing tells me to maintain docs, changelogs, or READMEs alongside changes.\n- **Execution mode:** None specified by the project. The only related guidance is from the harness: tools run under a permission mode you choose, and a denied call means you declined it.\n- **Adapters authorizing publishing:** There is nothing about adapters, and nothing grants authorization to publish. The harness says the opposite of a standing authorization: *\"For actions that are hard to reverse or outward-facing, confirm first unless durably authorized or explicitly told to proceed without asking; approval in one context doesn't extend to the next.\"* It also notes: *\"Sending content to an external service publishes it; it may be cached or indexed even if later deleted.\"*\n\nUnless you tell me otherwise, I'll ask before publishing or sending anything externally.",
+      "rawSha256": "05657afa439b67eeaf2616da71341320252d50d324130986907710a1de45164d"
+    },
+    {
+      "name": "explicit-canonical-handoff",
+      "command": {
+        "cwd": "/var/folders/2b/9f73b3nj5pbb7b8z5tnwz9640000gn/T/rw-claude-native-z1La5Y",
+        "args": [
+          "claude",
+          "-p",
+          "Read the project workflow index and its canonical handoff procedure. State the required handoff steps and identify the file you read. Do not edit files or run commands.",
+          "--output-format",
+          "stream-json",
+          "--verbose",
+          "--tools",
+          "Read",
+          "--allowedTools",
+          "Read",
+          "--setting-sources",
+          "project",
+          "--strict-mcp-config",
+          "--mcp-config",
+          "{\"mcpServers\":{}}",
+          "--permission-mode",
+          "dontAsk",
+          "--no-session-persistence"
+        ]
+      },
+      "sessionId": "8ab5fcfa-5013-493a-9238-ca5e36e6b72d",
+      "subtype": "success",
+      "isError": false,
+      "toolCalls": [
+        {
+          "name": "Read",
+          "input": {
+            "file_path": "/private/var/folders/2b/9f73b3nj5pbb7b8z5tnwz9640000gn/T/rw-claude-native-z1La5Y/.repo-workflow/index.md"
+          }
+        },
+        {
+          "name": "Read",
+          "input": {
+            "file_path": "/private/var/folders/2b/9f73b3nj5pbb7b8z5tnwz9640000gn/T/rw-claude-native-z1La5Y/.agents/skills/repo-workflow-handoff/SKILL.md"
+          }
+        }
+      ],
+      "result": "I read two files:\n\n1. `.repo-workflow/index.md`, the workflow index. Its `handoff` entry points to the skill file below.\n2. `.agents/skills/repo-workflow-handoff/SKILL.md`, the canonical handoff procedure. The handoff steps below come from this file.\n\n## Required handoff steps\n\n1. **Persist resumable state** in the existing owning status/report. Don't create a new one. Record:\n   - the objective\n   - the candidate identity\n   - checks, with their actual states\n   - environment gaps\n   - blockers\n   - no more than three next actions\n\n   Link to details instead of copying them in. A fresh session must be able to resume without the chat history.\n2. **Make sure each logical module has a local `README.md`.** A logical module is an application, package or independently owned subsystem. Each README covers its purpose, boundaries, public interfaces, dependencies, checks and links to the documents that own it.\n3. **Refresh documentation at the end of every session.** This includes research, interrupted and blocked sessions. Update the affected docs, the current status and the owning report with actual results, pending checks and next actions.\n4. **Format every added or edited `.md` file with Prettier 3**, then verify with `--check`.\n   - Settings: `proseWrap: always`, `printWidth: 120`, aligned tables. Long URLs and tables may go past 120 characters.\n   - Merge Markdown overrides into the existing config rather than replacing it.\n   - Don't reformat files you didn't touch.\n5. **Include evidence in `documentation-current`:** README coverage for each module, session updates and the formatting results.\n6. **Load the applicable core policy and profile extensions as needed** (`core/POLICY.md`, `core/WORKFLOWS.md`, `profiles/component-main--surface-library-cli.json`). No provider or harness is required.\n\nAs you asked, I didn't edit any files or run any commands.",
+      "rawSha256": "f0df307a956d39fa9360eb6c6bc35f37f0e009d07429052f2a098efecf92401f"
+    }
+  ]
+}

@@ -1,8 +1,9 @@
 # Current status
 
 Roadmap: **93% — 27/29 items; M1, M3, M4 and M6 complete for their declared scope.** M2 native qualification remains
-open: Antigravity is absent locally. Codex startup and explicit Claude routing have bounded evidence; automatic Claude
-imports/skill registration remain unproved.
+open: Antigravity is absent locally. Codex startup and Claude automatic entry loading plus explicit canonical-skill
+routing have bounded evidence; Claude native skill registration is not claimed. See
+[Claude qualification](sessions/m2-claude-native.md).
 
 Bun/TypeScript CLI and Ink wizard, strict composition, reviewed install/update/migrate/uninstall, and journaled recovery
 are implemented. Generated guidelines require documentation updates and roadmap checklists with count-based percentages.
