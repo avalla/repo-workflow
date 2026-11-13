@@ -42,6 +42,9 @@ interactive IDE behavior, all harness configurations, native skill registration,
 delivery or repeatability. M2 stays unchecked; roadmap remains 27/29 (93%). M5 remains incomplete and no AF Next
 publication is authorized by this experiment.
 
-Validation and independent review: pending for these evidence documents. Next: validate links/contracts/formatting,
-independently review this bounded evidence, and record its PR. Antigravity qualification still requires the native
-application.
+Validation: contract/link/context-budget checks PASS (5 tests, 169 assertions); changed Markdown Prettier check PASS,
+whitespace check PASS. [PR #3](https://github.com/avalla/repo-workflow/pull/3) targets
+`feat/documentation-design-requirements` (PR #2). Evidence candidate: `3dcd330d765d348baab97b187f0496c1199de27a`, plus
+this administrative validation/PR record. Independent review is tracked in `docs/sessions/m2-claude-native-review.md`;
+its result applies only to its frozen manifest. No merge or deployment performed. Next: complete independent review;
+Antigravity qualification still requires the native application.
