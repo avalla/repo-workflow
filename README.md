@@ -103,7 +103,9 @@ and its origins. See [composition](docs/COMPOSITION.md).
 
 These are representative configurations, not verified application setups. For a monorepo,
 components point at paths such as `apps/web` and `apps/worker`. Task and affected-path arguments
-select relevant policy. One configuration describes one repository root; independent multi-repository
+select relevant policy. Without affected paths, path/component selectors remain unknown
+(`applicable: null`); required unknown scope blocks `doctor`. See [diagnostic semantics](docs/USAGE.md).
+One configuration describes one repository root; independent multi-repository
 roots remain unsupported. The wizard's stack labels do not install technologies, and its language
 setting does not translate the bundled English instructions.
 
@@ -133,6 +135,16 @@ Adapters provide discovery. Actual harness permissions, available tools, indepen
 publication/deployment authority must be established in the project environment.
 
 ## Daily workflow and handoff
+
+Canonical on-demand procedures include `security-assessment` for bounded threat analysis, validated
+findings and remediation evidence, and `review-change` for independent review of a frozen candidate.
+Both are listed in the installed index. An unavailable independent reviewer keeps review BLOCKED;
+an assessment does not certify security or satisfy unrelated gates. Neither procedure executes automatically.
+
+Additional installed procedures: `debug-investigation` for evidence-driven bug fixes,
+`architecture-review` for design tradeoffs and boundaries, `software-versioning` for compatibility,
+version changes and release notes, and `release-readiness` for the final gate report.
+They follow project policy; version preparation and readiness do not authorize publication.
 
 1. Read current state; identify a bounded task, acceptance criteria and affected paths.
 2. Inspect applicable policy and gates; confirm actual commands and prerequisites.
@@ -182,5 +194,13 @@ GitHub Actions runs the same checks on pushes and pull requests using a frozen B
 The [native pilot report](docs/sessions/m3-native-pilots.md) records documentation adoption on full
 disposable copies of Agile Factory Next and Pizza Hit, with source-specific checks and native
 handoffs. It distinguishes observed routing from automatic discovery, and documentation adoption
-from application delivery. The [roadmap](ROADMAP.md) is at 82% (18/22 items), including newly planned review follow-up and an
-application bugfix pilot. Native harness qualification remains open.
+from application delivery. The [roadmap](ROADMAP.md) tracks native qualification and independent review of the assessment procedures.
+
+Project execution is selected by optional `execution: {"mode": "single-agent"}` or
+`execution: {"mode": "orchestrated"}` in configuration; omission defaults to single-agent.
+The wizard asks for this choice. Effective policy and inspect expose the resolved mode.
+Orchestrated execution uses a principal to assign workers, parallelize independent work,
+inspect results and verify the integrated candidate; independent review remains separate.
+The CLI installs guidance and reports gates; it does not launch agents or create PRs.
+Required core gates include documentation-current and pull-request: update affected docs,
+verify links/examples and record the PR URL/base/head. Unavailable access leaves gates incomplete.

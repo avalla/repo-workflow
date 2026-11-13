@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **82% — 18/22 checklist items complete; 2/4 milestones complete.**
+Progress: **93% — 26/28 checklist items complete; 3/5 milestones complete.**
 Items have equal weight; this measures completed scope, not effort, time or delivery certification.
 Count only checked items below. Round `100 × completed / total` to the nearest whole percent.
 Blocked or unverified items stay unchecked; update counts whenever scope or evidence changes.
@@ -10,7 +10,8 @@ Blocked or unverified items stay unchecked; update counts whenever scope or evid
 | M1 — contracts and extracted content | 5/5 | 100% | Complete |
 | M2 — deterministic local tool | 4/5 | 80% | Native verification outstanding |
 | M3 — safe updates and pilot adoption | 9/9 | 100% | Bounded documentation adoption complete |
-| M4 — review follow-up and application pilot | 0/3 | 0% | Planned |
+| M4 — assessment and review procedures | 6/6 | 100% | Installed procedures independently reviewed |
+| M5 — review follow-up and application pilot | 2/3 | 67% | Local pilot passed; target delivery gates incomplete |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -58,14 +59,31 @@ unverified. AutoÉpoque adoption was removed from
 active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source.
 Historical AutoÉpoque extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
 
-## Milestone 4 — review follow-up and application pilot
+## Milestone 4 — assessment and review procedures
+
+- [x] Deliver installed security assessment and expanded independent review procedures with contract checks and independent review evidence.
+- [x] Deliver release-readiness with contract checks and independent review evidence.
+- [x] Deliver debug-investigation with contract checks and independent review evidence.
+- [x] Deliver architecture-review with contract checks and independent review evidence.
+- [x] Deliver software-versioning with contract checks and independent review evidence.
+
+Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md).
+Additional procedures: [delivery skills report](docs/sessions/delivery-skills.md).
+- [x] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review evidence.
+
+See [delivery workflow report](docs/sessions/delivery-workflow.md).
+Independent review PASS: [review report](docs/sessions/m4-independent-review.md).
+Scope: installed procedures and local contracts; native agent/application execution remains NOT RUN.
+PR: [#1](https://github.com/avalla/repo-workflow/pull/1); no merge or deployment performed.
+
+## Milestone 5 — review follow-up and application pilot
 
 Added after the 2026-11-12 review of `bd05d9a566717b5bfec8eb71c74c0d0d38a38da8`.
-The lower overall percentage reflects added scope; completed M1/M3 evidence is unchanged.
-These items are planned, not implemented or validated by this roadmap update.
+The lower overall percentage reflects added scope; completed M1/M3/M4 evidence is unchanged.
+The first two items are implemented with local regression evidence; independent review is recorded in the M5 report.
 
-- [ ] Reconcile acceptance-coverage documentation with completed bounded native pilots. Update tests/fixtures/README.md to distinguish automated fixture coverage, observed native handoffs and still-unverified application delivery; verify consistency with STATUS and the native pilot report.
-- [ ] Make missing affected-path scope explicit in inspect/doctor. Report omitted scope as unknown or incomplete rather than silently presenting scoped gates as inapplicable; document the chosen semantics and add regression coverage for omitted scope, matching paths and genuinely unrelated paths.
+- [x] Reconcile acceptance-coverage documentation with completed bounded native pilots. Update tests/fixtures/README.md to distinguish automated fixture coverage, observed native handoffs and still-unverified application delivery; verify consistency with STATUS and the native pilot report.
+- [x] Make missing affected-path scope explicit in inspect/doctor. Report omitted scope as unknown or incomplete rather than silently presenting scoped gates as inapplicable; document the chosen semantics and add regression coverage for omitted scope, matching paths and genuinely unrelated paths.
 - [ ] Complete one bounded real application bugfix pilot on Agile Factory Next in an isolated branch/worktree, subject to project authorization. Record a reproducer, acceptance criteria, candidate identity, applicable checks, independent review and fixes, agent-written documentation/memory, and a fresh-session handoff. The receiving session must recover the actual result and next action without coordinator-seeded markers or manual reconstruction of the handoff; record interventions and unavailable checks explicitly.
 
 Prioritize the documentation correction and scope diagnostic before the application pilot.
@@ -73,5 +91,10 @@ Keep native harness qualification in M2; this milestone does not duplicate that 
 The application pilot must respect the target project's instructions and permissions; this roadmap
 does not itself authorize modifying another repository, publishing, merging or deploying.
 Record pilot evidence in a dedicated session report and link it here before checking the item.
+
+Planning reconciliation: [planning report](docs/sessions/m5-planning.md).
+Implementation: [M5 follow-up](docs/sessions/m5-follow-up.md).
+Local application pilot executed with review/handoff PASS: [evidence](docs/sessions/m5-application-pilot.md).
+Its target PR/browser/accessibility gates remain incomplete; the checklist item stays unchecked.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.

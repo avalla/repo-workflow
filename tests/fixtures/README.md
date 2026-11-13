@@ -30,8 +30,8 @@ Fixtures requiring files specify literal UTF-8 content or preconditions for a di
 | Explicit support limits | unsupported-multi-repo | 2 |
 
 Executable Bun and historical M2 tests compare real outputs/bytes; the scenario inventory itself is not a one-to-one
-executable runner. Evidence ingestion (including pending CI), native resume and real independent
-review remain NOT RUN. A successful fixture
+executable runner. Evidence ingestion (including pending CI) is not exercised by an executable ingestion runner.
+Native handoffs and independent pilot reviews have separate evidence below. A successful fixture
 inventory check is not evidence of deterministic rendering, safe installation, controller support,
 review independence, or update recovery.
 
@@ -41,4 +41,14 @@ base/local/incoming cases run directly from scenarios.json. Other areas use dedi
 is not a claim that all 40 cases have one-to-one runners. Lifecycle tests inject interruption after
 every write boundary for install/update/uninstall and verify resume and rollback bytes.
 [Instruction-snapshot experiments](../../docs/sessions/m3-pilot-snapshots.md) are separate from automated
-fixtures; native resume and full project pilots remain outstanding.
+fixtures. [Bounded native documentation pilots](../../docs/sessions/m3-native-pilots.md) on full
+tracked copies of Agile Factory Next and Pizza Hit exercised fresh/resumed Codex and Claude file
+handoffs, source-specific checks and independent final review. The coordinator persisted the drafts
+and seeded retrieval markers; these observations prove bounded file retrieval, not autonomous
+memory generation or application delivery. Explicit Claude reads do not prove automatic discovery.
+Antigravity discovery, an unseeded application bugfix handoff and full application delivery remain
+unverified. See [status](../../docs/STATUS.md) and [M5](../../ROADMAP.md).
+
+M5 regression coverage in `tests/tool.test.ts` distinguishes omitted affected-path scope (`null`),
+matching scope (`true`) and unrelated scope (`false`) for inspect/doctor. Unknown required scope
+blocks doctor diagnostics without executing commands or completing any gate.

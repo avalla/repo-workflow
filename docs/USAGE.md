@@ -69,7 +69,14 @@ progress calculator or delivery certificate. Existing roadmaps are preserved on 
 adopt the format manually there. See [this repository's checklist](../ROADMAP.md) for an example.
 
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`,
-`research`, `release`. Load selected skills on demand. `doctor` reports drift, missing bindings,
+`research`, `release`. Omitted paths (including an empty API array) mean scope is unknown,
+not that no files changed. Gate `applicable` is `null` with `applicabilityDiagnostic:
+"missing-affected-paths"` when a task-eligible selector needs paths/components. It is `true` if
+any complete selector matches, and `false` if all selectors are excluded (including task mismatch).
+Task-only/global selectors can resolve without paths. `doctor` emits a BLOCKED finding for each
+required gate with unknown scope and exits 1; `inspect` remains informational. Supply the complete
+affected-path list to resolve scope. Applicability never proves execution or gate completion.
+Load selected skills on demand. `doctor` reports drift, missing bindings,
 budgets and interrupted transactions. Successful diagnostics do not mean required review,
 CI, engine or hardware checks ran. No completion PASS is issued.
 

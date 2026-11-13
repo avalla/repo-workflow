@@ -22,8 +22,8 @@ test('Ink wizard handles input, validation, confirmation and completion', async 
     tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('INVALID'); await Bun.sleep(20); tty.stdin.write('\r');
     await until(() => tty.output().includes('invalid-project-name'));
     tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('demo'); await Bun.sleep(20); tty.stdin.write('\r');
-    await until(() => tty.output().includes('2/5'));
-    for (const step of ['3/5', '4/5', '5/5', 'Type yes']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    await until(() => tty.output().includes('2/6'));
+    for (const step of ['3/6', '4/6', '5/6', '6/6', 'Type yes']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     expect(config).toBeUndefined(); tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('yes'); await Bun.sleep(20); tty.stdin.write('\r');
     await app.waitUntilExit(); expect(config.project.name).toBe('demo'); expect(config.commands).toEqual({});
   } finally {app.unmount(); tty.stdin.end(); tty.stdout.end(); tty.stderr.end();}

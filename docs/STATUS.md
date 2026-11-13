@@ -1,6 +1,6 @@
 # Current status
 
-Roadmap: **82% — 18/22 items; M1 and M3 complete for their declared scope.**
+Roadmap: **93% — 26/28 items; M1, M3 and M4 complete for their declared scope.**
 M2 native qualification remains open: Antigravity is absent locally. Codex startup and explicit
 Claude routing have bounded evidence; automatic Claude imports/skill registration remain unproved.
 
@@ -27,14 +27,26 @@ Remote execution is reported separately from local checks. AutoÉpoque adoption 
 owner; historical extraction remains provenance. Weakening overrides and multi-repository roots
 remain unsupported. Unavailable prerequisites keep project delivery gates incomplete.
 
-Review follow-up (2026-11-12, candidate bd05d9a): M4 adds three unchecked outcomes for
-acceptance-documentation consistency, missing affected-path diagnostics and a real application
-bugfix pilot. Progress changed because scope increased, not because completed work was invalidated.
-This update records planned work only; no implementation or new pilot validation is claimed.
+M4 installed assessment, independent review, delivery/versioning and orchestration procedures are
+complete for their source-and-contract scope. Independent review PASS with no actionable findings;
+local validation PASS (37 tests, 2309 assertions). See [review](sessions/m4-independent-review.md),
+[assessment](sessions/assessment-skills.md), [delivery skills](sessions/delivery-skills.md) and
+[workflow controls](sessions/delivery-workflow.md). Native multi-agent/application execution remains NOT RUN.
+
+M4 implementation candidate: `26153826db27d275acdff6663e7936e983929b27`.
+Pushed branch: `feat/assessment-delivery-workflows`; [PR #1](https://github.com/avalla/repo-workflow/pull/1)
+targets `main`. No merge or deployment performed. Remote CI is separate from local validation.
+
+M5 preserves the three planned outcomes from Astra's review on main (74a1505):
+acceptance-coverage documentation, omitted affected-path diagnostics, and an authorized isolated
+Agile Factory Next application bugfix pilot. M4 remains complete; M5 is 2/3 for documentation and scope diagnostics.
+The authorized isolated AF Next pilot fixed a real safeNext redirect defect; typecheck, 1,229 unit
+tests, independent review and fresh-session handoff passed. Target PR/browser/accessibility gates
+remain incomplete, so the pilot checklist stays unchecked. See [pilot](sessions/m5-application-pilot.md).
+See [planning reconciliation](sessions/m5-planning.md) and [implementation evidence](sessions/m5-follow-up.md). Progress changed because scope increased.
 
 Next:
-1. Reconcile acceptance coverage with the bounded native pilot evidence.
-2. Clarify inspect/doctor behavior without affected paths and verify it with regression coverage.
-3. Qualify remaining M2 harness behavior and arrange the authorized M4 application pilot.
-M2 closure must explicitly resolve Claude automatic discovery versus supported explicit routing,
+1. Present the reviewed AF Next patch for a target PR-publication decision; finish its required gates.
+2. Complete remaining M2 harness qualification; Antigravity is absent locally.
+M2 closure must resolve Claude automatic discovery versus accepted explicit routing,
 as well as native Antigravity evidence. See [roadmap](../ROADMAP.md), [usage](USAGE.md) and [adoption](ADOPTION.md).

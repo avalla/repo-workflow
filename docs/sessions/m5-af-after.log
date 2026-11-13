@@ -1,0 +1,30 @@
+bun test v1.4.0 (34cbb9a40)
+
+../../../../../private/tmp/repo-workflow-m5-af/packages/core/src/safe-next.test.ts:
+(pass) safeNext("/orders?status=open#top") = "/orders?status=open#top" [0.11ms]
+(pass) safeNext("https://evil.com") = "/"
+(pass) safeNext("//evil.com") = "/"
+(pass) safeNext("/\\evil.com") = "/"
+(pass) safeNext("/\t/evil.com") = "/"
+(pass) safeNext(null) = "/"
+(pass) safeNext(42) = "/"
+(pass) uses the given fallback
+(pass) normalized next "/a/..//evil.example" cannot become a network-path redirect [0.01ms]
+(pass) normalized next "/%2e%2e//evil.example" cannot become a network-path redirect
+(pass) normalized next "/a/..///evil.example" cannot become a network-path redirect
+(pass) preserves same-origin normalized routes, queries and fragments
+
+../../../../../private/tmp/repo-workflow-m5-af/packages/core/src/testing.test.ts:
+(pass) returns the rejection error [0.15ms]
+(pass) wraps non-error rejections and fails on resolution [0.05ms]
+
+../../../../../private/tmp/repo-workflow-m5-af/packages/core/src/oee.test.ts:
+(pass) computeOee > multiplies availability, performance and quality [0.16ms]
+(pass) computeOee > returns zero instead of dividing by zero [0.03ms]
+(pass) computeOee > caps performance at 100% when the ideal cycle is underestimated
+(pass) computeOee > rejects negative or inconsistent inputs [0.28ms]
+
+ 18 pass
+ 0 fail
+ 27 expect() calls
+Ran 18 tests across 3 files. [8.00ms]

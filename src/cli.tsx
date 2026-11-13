@@ -9,12 +9,15 @@ import {initialize, interactiveInit} from './init';
 
 export function inspect(root: string, task = 'feature', affected: string[] = []) {
   const {config, effective} = configuration(root);
-  return {project: config.project, harnesses: [...config.harnesses].sort(), profiles: effective.profiles.map(({id, version, scope, origins}: Document) => ({id, version, scope, origins})),
+  return {project: config.project, execution: effective.execution, harnesses: [...config.harnesses].sort(), profiles: effective.profiles.map(({id, version, scope, origins}: Document) => ({id, version, scope, origins})),
     rules: effective.rules, diagnostics: effective.diagnostics, workflow: config.workflow[task], gates: gateReport(effective, config, task, affected), completion: false, commandsExecuted: []};
 }
 export function doctor(root: string, task = 'feature', affected: string[] = []) {
   const {config, effective, target, source} = configuration(root);
   const findings: {code: string; result: string}[] = effective.diagnostics.map((code: string) => ({code, result: 'BLOCKED'}));
+  const gates = gateReport(effective, config, task, affected);
+  for (const [key, gate] of Object.entries(gates)) if (gate.required && gate.applicable === null)
+    findings.push({code: 'missing-affected-paths:' + key, result: 'BLOCKED'});
   if (!fs.existsSync(target.track('.repo-workflow/lock.json'))) findings.push({code: 'not-installed', result: 'BLOCKED'});
   else for (const item of readLock(target, source).generated) {
     if (item.owner === 'initialize-once') continue;
@@ -31,7 +34,7 @@ export function doctor(root: string, task = 'feature', affected: string[] = []) 
     if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/active'))) findings.push({code: 'active-transaction', result: 'BLOCKED'});
     if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/recovery-owner'))) findings.push({code: 'recovery-in-progress', result: 'BLOCKED'});
   }
-  return {findings, gates: gateReport(effective, config, task, affected), prerequisites: effective.profiles.flatMap((p: Document) => p.profile.policy.prerequisites.map((requirement: string) => ({scope: p.scope, requirement, result: 'UNKNOWN'}))), completion: false, commandsExecuted: [], discovery: 'filesystem contract only; native harness execution is separate evidence'};
+  return {findings, gates, prerequisites: effective.profiles.flatMap((p: Document) => p.profile.policy.prerequisites.map((requirement: string) => ({scope: p.scope, requirement, result: 'UNKNOWN'}))), completion: false, commandsExecuted: [], discovery: 'filesystem contract only; native harness execution is separate evidence'};
 }
 const HELP = `Repo Workflow (Bun) — local workflow configuration; never executes configured commands
 

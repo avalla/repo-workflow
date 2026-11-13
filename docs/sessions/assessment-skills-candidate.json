@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-11-12T16:26:33Z",
+  "files": {
+    "README.md": "b0b5eaa948a4597d6310b68ac0022ac25a9f10cbbff211de594b5557b6a0f137",
+    "REPO_GRAPH.md": "3e0adf96f26bd0da7044d8fbae6a464c0de5d7a9da1c3b0f09b5d3fc7a7d76d1",
+    "ROADMAP.md": "2e9e2f6aef6f6937606ace3c95876cc045562dc21dc92db84c744190ede1b4b0",
+    "docs/STATUS.md": "48e84ed62d651b657b258124931cec606b58f7c7c9e40d55cd4b05dfae34278a",
+    "skills/review-change/SKILL.md": "5de8bf15e3823e8e41329a709a1cfdd7870979d60f5dc663533e8a2269bce36a",
+    "skills/security-assessment/SKILL.md": "6eb76308bdf76dc5a0c0ae0418a86c2072968ae7084dece79d7e305a7559e330",
+    "src/render.ts": "e9b8f7d9d0db38592b35f5c137d4a430897d718959fae700a0c66552aa1ab95b",
+    "tests/tool.test.ts": "4c14a8b04c7f188eabff4f8ea4c51a3214180c93fed51f2c990d531334568e17"
+  },
+  "independentReview": "BLOCKED"
+}

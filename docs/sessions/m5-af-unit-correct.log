@@ -1,0 +1,58 @@
+Extracted summary of full observed unit log; not the full log.
+Raw SHA-256: 02c6af42cc4c80338722aacb382e677195bfa8bb7c9bc8e1acc05c77ed677b74
+@af/ui test:  15 pass
+@af/ui test:  0 fail
+@af/ui test: Exited with code 0
+@af/core test:  18 pass
+@af/core test:  0 fail
+@af/core test: Exited with code 0
+@af/billing test:  3 pass
+@af/billing test:  0 fail
+@af/billing test: Exited with code 0
+@af/notifications test:  12 pass
+@af/notifications test:  0 fail
+@af/logger test:  2 pass
+@af/logger test:  0 fail
+@af/notifications test: Exited with code 0
+@af/logger test: Exited with code 0
+@af/i18n test:  23 pass
+@af/i18n test:  0 fail
+@af/i18n test: Exited with code 0
+@af/emails test:  5 pass
+@af/emails test:  0 fail
+@af/emails test: Exited with code 0
+@af/data test:  344 pass
+@af/data test:  0 fail
+@af/simulation test:  31 pass
+@af/simulation test:  0 fail
+@af/data test: Exited with code 0
+@af/simulation test: Exited with code 0
+@af/ai test:  6 pass
+@af/ai test:  0 fail
+@af/ai test: Exited with code 0
+@af/queue test:  15 pass
+@af/queue test:  0 fail
+@af/queue test: Exited with code 0
+@af/mcp test:  19 pass
+@af/mcp test:  0 fail
+@af/mcp test: Exited with code 0
+@af/supabase test:  19 pass
+@af/supabase test:  0 fail
+@af/supabase test: Exited with code 0
+@af/worker test:  57 pass
+@af/worker test:  0 fail
+@af/worker test: Exited with code 0
+@af/simulator test:  80 pass
+@af/simulator test:  0 fail
+@af/simulator test: Exited with code 0
+@af/hmi test:  105 pass
+@af/hmi test:  0 fail
+@af/hmi test: Exited with code 0
+@af/engine test:  171 pass
+@af/engine test:  0 fail
+@af/engine test: Exited with code 0
+@af/manager test:  173 pass
+@af/manager test:  0 fail
+@af/manager test: Exited with code 0
+ 131 pass
+ 0 fail

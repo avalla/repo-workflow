@@ -95,6 +95,10 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
   const profiles = [...resolved.values()].sort((a, b) => (a.scope + '/' + a.id).localeCompare(b.scope + '/' + b.id));
   const gates: Document = {}, rules: Document[] = [], files: Document[] = [];
   mergeGate(gates, 'project', manual('independent-review', 'Obtain independent candidate review.'), origin('core', VERSION, 'project', 'review.independent'), config);
+  for (const [id, category, procedure] of [
+    ['documentation-current', 'documentation', 'Update affected documentation, status and owning report; verify links/examples; record a reason for any unaffected documents.'],
+    ['pull-request', 'delivery', 'Create a PR against the declared base; record URL and current head, checks, independent review and unresolved findings. Missing remote access leaves this gate incomplete.'],
+  ]) mergeGate(gates, 'project', {...manual(id, procedure), category}, origin('core', VERSION, 'project', 'delivery.' + id), config);
   for (const item of profiles) {
     const {profile, scope} = item;
     for (const [field, values] of Object.entries(profile.policy) as [string, any[]][]) {
@@ -122,12 +126,20 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
     const key = canonical([rule.scope, rule.field, rule.value]), previous = merged.get(key);
     if (previous) previous.origins = unique([...previous.origins, ...rule.origins]); else merged.set(key, rule);
   }
-  return {profiles, gates, rules: [...merged.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, v]) => v), files, diagnostics};
+  return {execution: config.execution ?? {mode: 'single-agent'}, profiles, gates, rules: [...merged.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, v]) => v), files, diagnostics};
 }
 export function gateReport(effective: Document, config: Document, task: string, affected: string[]): Document {
   affected.forEach(p => relative(p));
   const touches = (p: string, root: string) => root === '.' || p === root || p.startsWith(root + '/');
-  return Object.fromEntries((Object.entries(effective.gates) as [string, Document][]).map(([key, g]) => [key, {...g,
-    applicable: g.clauses.some((c: Document) => (!c.tasks.length || c.tasks.includes(task)) && (!c.paths.length || c.paths.some((root: string) => affected.some(p => touches(p, root)))) && (!c.components.length || c.components.some((name: string) => affected.some(p => touches(p, config.components[name].path))))),
-    result: g.required && !(g.binding || g.procedure) ? 'BLOCKED' : 'NOT RUN'}]));
+  return Object.fromEntries((Object.entries(effective.gates) as [string, Document][]).map(([key, g]) => {
+    const clauses = g.clauses.map((c: Document) => {
+      if (c.tasks.length && !c.tasks.includes(task)) return false;
+      if (!affected.length && (c.paths.length || c.components.length)) return null;
+      return (!c.paths.length || c.paths.some((root: string) => affected.some(p => touches(p, root)))) &&
+        (!c.components.length || c.components.some((name: string) => affected.some(p => touches(p, config.components[name].path))));
+    });
+    const applicable = clauses.includes(true) ? true : clauses.includes(null) ? null : false;
+    return [key, {...g, applicable, applicabilityDiagnostic: applicable === null ? 'missing-affected-paths' : null,
+      result: g.required && !(g.binding || g.procedure) ? 'BLOCKED' : 'NOT RUN'}];
+  }));
 }

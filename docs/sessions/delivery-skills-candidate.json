@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-11-12T16:30:31Z",
+  "files": {
+    "README.md": "48c780d943b86e939714226eba2ec86018da8d70df1e4675cc4069ac8061de55",
+    "REPO_GRAPH.md": "89dc706702cbde4cf52a68bb6ea01fde8704e151e10fa7772e1c5b5d9a6eff9d",
+    "ROADMAP.md": "fac01ca9192dea20be337aef2b91fce34eb9fb7c006d5f493b20b49ee6085021",
+    "docs/STATUS.md": "65fa33cee40497ddf7ec821dd520ff7e7b46d796bac52fbfc4421b48f078e223",
+    "core/WORKFLOWS.md": "ceed1257110bc29bacc2290bf315541392c789717c87d56bff59750a72c38750",
+    "src/render.ts": "7e69db554b49fa76b73972994d881b369d642888545932a7117795d33273f4ac",
+    "tests/tool.test.ts": "f69a0f241e58e5dabe6a0f5b4b4cfc9205a7b225916201ee49ec802e7b1c78d0",
+    "skills/architecture-review/SKILL.md": "13334513971da7263865e44499739a8373bb3171012bd8c72657dd736e3ba622",
+    "skills/assess-project/SKILL.md": "5b067793f4b6f379f71d461700703bf3a0b56b5606a0d4d48449aff6376dac15",
+    "skills/debug-investigation/SKILL.md": "873e8d214a2cc15ebf7087a55722f00d35dcf9e673bfd27d6a26b352d19d618a",
+    "skills/deliver-slice/SKILL.md": "3ba1a11a437b72a2a511031709aebb4972a3dd343ed7d29ddb6793ef2805ab36",
+    "skills/handoff/SKILL.md": "feb9080ed929154710fe011fbccb61240b5f45d68f7325205953fedb6fc6cecf",
+    "skills/maintain-context/SKILL.md": "c17b6247edc745862957872c9ee496dc3913c17ddc23027b8d67b89a2b836e88",
+    "skills/record-decision/SKILL.md": "90cd5eef03a9d3db0e1c0c6b2089ec5483e8ea58f2948c974f1d76446a3d219f",
+    "skills/release-readiness/SKILL.md": "d74611816e0010a8e4f4c3c98ea3ee2755e856460dd0930c42e06864c51a28b1",
+    "skills/review-change/SKILL.md": "5de8bf15e3823e8e41329a709a1cfdd7870979d60f5dc663533e8a2269bce36a",
+    "skills/security-assessment/SKILL.md": "6eb76308bdf76dc5a0c0ae0418a86c2072968ae7084dece79d7e305a7559e330",
+    "skills/software-versioning/SKILL.md": "587f22e22ae0a7858cd252d397a62d5d3e8d152c8072e4fc4530d1b605025a6b"
+  },
+  "independentReview": "BLOCKED"
+}

@@ -1,0 +1,13 @@
+bun install v1.4.0 (34cbb9a40)
+
++ @eslint/js@10.0.1
++ @types/bun@1.4.3
++ eslint@10.13.0
++ eslint-plugin-jsx-a11y@6.10.2
++ eslint-plugin-react-hooks@7.1.1
++ prettier@3.9.10
++ supabase@2.121.0
++ typescript@5.9.3
++ typescript-eslint@8.72.0
+
+563 packages installed [992.00ms]

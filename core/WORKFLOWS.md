@@ -1,17 +1,24 @@
 # Task routes
 
-Every route starts with scope, owning documents, candidate identity, applicable gate plan and actual
-authority. Every route ends with persisted evidence, limitations and next eligible action.
-Project review and approval requirements remain in force on every route.
+Start with scope, owning documents, candidate identity, gate plan and actual authority.
+End with persisted evidence, limitations and next action. All routes retain project review
+and approvals, documentation-current (update affected docs, verify links/examples, justify
+unaffected documents) and pull-request (record URL, base and current head) gates.
 
-| Task / workflow | Bounded sequence | Technical applicability |
-| --- | --- | --- |
-| feature / reviewed-slice | acceptance → implement → verify → independent review → fix/review → handoff | affected components/paths |
-| bugfix / reproduce-fix-verify | reproduce → cause → minimal fix → regression → review/fix/review | reproducer and affected regressions |
-| docs / documentation-change | inspect sources → edit → links/schema/consistency → independent review | no database, engine or deploy by default |
-| research / investigation | question → sources → alternatives/evidence → review → findings | no feature completion claim |
-| release / release-readiness | freeze → CI/native/package checks → review → approval report | missing access blocks gate; report does not deploy |
+| Task / workflow | Sequence and on-demand skills |
+| --- | --- |
+| feature / reviewed-slice | acceptance → deliver-slice → verify → independent review → fix/re-review → handoff |
+| bugfix / reproduce-fix-verify | debug-investigation → cause → fix → affected regressions → review |
+| docs / documentation-change | sources → edit → links/schema/consistency → review; no database/engine/deploy by default |
+| research / investigation | question → sources → alternatives/evidence → review → findings; no feature completion |
+| release / release-readiness | software-versioning → freeze → CI/native/package checks → review → approval report; no deploy |
 
-Branches/PRs follow project policy. Record base and final candidate; bring base changes in without
-rewriting history unless authorized. Green local checks and green CI are distinct facts. Publishing,
-push, merge, remote database access and deployment require actual authority, never a preset.
+Design decisions use architecture-review; security uses security-assessment; independent
+candidate review uses review-change.
+
+Read effective execution.mode: default single-agent; orchestrated uses orchestrate-delivery
+for principal/worker ownership, safe parallel work and integrated verification. Authoring
+workers and the principal do not satisfy independent review. CLI launches no agents.
+
+Record base/final candidate; preserve history unless authorized. Distinguish local/CI evidence.
+Push, merge, publish, remote access and deploy require actual authority.

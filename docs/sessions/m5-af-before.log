@@ -1,0 +1,59 @@
+bun test v1.4.0 (34cbb9a40)
+
+../../../../../private/tmp/repo-workflow-m5-af/packages/core/src/safe-next.test.ts:
+(pass) safeNext("/orders?status=open#top") = "/orders?status=open#top" [0.55ms]
+(pass) safeNext("https://evil.com") = "/"
+(pass) safeNext("//evil.com") = "/"
+(pass) safeNext("/\\evil.com") = "/"
+(pass) safeNext("/\t/evil.com") = "/"
+(pass) safeNext(null) = "/"
+(pass) safeNext(42) = "/"
+(pass) uses the given fallback
+20 | 
+21 | test.each(["/a/..//evil.example", "/%2e%2e//evil.example", "/a/..///evil.example"])(
+22 |   "normalized next %p cannot become a network-path redirect",
+23 |   (input) => {
+24 |     const next = safeNext(input, "/orgs");
+25 |     expect(next).toBe("/orgs");
+                      ^
+error: expect(received).toBe(expected)
+
+Expected: "/orgs"
+Received: "//evil.example"
+
+      at <anonymous> (/private/tmp/repo-workflow-m5-af/packages/core/src/safe-next.test.ts:25:18)
+(fail) normalized next "/a/..//evil.example" cannot become a network-path redirect [1.77ms]
+20 | 
+21 | test.each(["/a/..//evil.example", "/%2e%2e//evil.example", "/a/..///evil.example"])(
+22 |   "normalized next %p cannot become a network-path redirect",
+23 |   (input) => {
+24 |     const next = safeNext(input, "/orgs");
+25 |     expect(next).toBe("/orgs");
+                      ^
+error: expect(received).toBe(expected)
+
+Expected: "/orgs"
+Received: "//evil.example"
+
+      at <anonymous> (/private/tmp/repo-workflow-m5-af/packages/core/src/safe-next.test.ts:25:18)
+(fail) normalized next "/%2e%2e//evil.example" cannot become a network-path redirect [0.03ms]
+20 | 
+21 | test.each(["/a/..//evil.example", "/%2e%2e//evil.example", "/a/..///evil.example"])(
+22 |   "normalized next %p cannot become a network-path redirect",
+23 |   (input) => {
+24 |     const next = safeNext(input, "/orgs");
+25 |     expect(next).toBe("/orgs");
+                      ^
+error: expect(received).toBe(expected)
+
+Expected: "/orgs"
+Received: "///evil.example"
+
+      at <anonymous> (/private/tmp/repo-workflow-m5-af/packages/core/src/safe-next.test.ts:25:18)
+(fail) normalized next "/a/..///evil.example" cannot become a network-path redirect [0.03ms]
+(pass) preserves same-origin normalized routes, queries and fragments
+
+ 9 pass
+ 3 fail
+ 12 expect() calls
+Ran 12 tests across 1 file. [9.00ms]

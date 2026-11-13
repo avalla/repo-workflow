@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-11-12T16:38:56Z",
+  "files": {
+    "src/init.tsx": "a45b953b6ebc17a7ee4158a44f0f6f536635599797c22e85fbd85a4428ba6de0",
+    "src/compose.ts": "57371e458d4df623663d7b941997155c4eb8857146e08e749702be97264200ef",
+    "src/render.ts": "d8c057a06070f009a9d616843b2e70fd84bc60a96d18a7eaf07d169a0d02c4fc",
+    "src/cli.tsx": "7d1e6074e9e887e4c226529c91bcc0853812583cf21080b8f80367a06923ba34",
+    "schemas/config.schema.json": "e89a178db852bb15a55c129c42a21d5e7af620c0202d3eb7837f447251f23b65",
+    "schemas/README.md": "173f5c68725570f92b25f43ab6aaeccc0e4802203aca4de61fab35df8c9d0d76",
+    "core/POLICY.md": "fe745b904ab6a27032bf452a172001cbb72acd1bdd3cf4a29b44d0d7e8cdbdf1",
+    "core/WORKFLOWS.md": "001f80ac1b00aac8f9c3e0a7796ccb2ed1296c19526b57884e6d4276ad13ffab",
+    "skills/orchestrate-delivery/SKILL.md": "ebcfac0c128d63b420b41f8eb5bd53abcc2ef45fdb4551a548ac2d5b70ba3836",
+    "tests/tool.test.ts": "1a52042efddd5e65fb9c32396ec0eb92a40dfcaec6e3752641647d7167b31b1f",
+    "tests/wizard.test.tsx": "73bde895132afaf51f3619be3f2ef290774c2b3da22625b94893af4c26d15682",
+    "README.md": "40761114b3978782f7139d179045200a6a12d8ddacaede30907f07d55651867a",
+    "REPO_GRAPH.md": "6c625ec89dfb4c1a74997a76ae20f236c3a464b2674a814bf0dd9316175233de",
+    "ROADMAP.md": "60ca20f27801be9bc7d144c30a0f1ff3c0e4342e58b4e7959e5843d11b4453f6",
+    "docs/STATUS.md": "097fdc5f9f32036ae83eee7cede6e1cbedf46d925c3cdbd09187426d9a83ebb7",
+    "docs/sessions/delivery-workflow.md": "5d8ee233f6531d1b8301fee74f4ac90bbf60fccfe80538f9cf1ee1991d3ea32b"
+  },
+  "independentReview": "NOT RUN",
+  "pullRequest": "NOT RUN",
+  "nativeAgentExecution": "NOT RUN"
+}

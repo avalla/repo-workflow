@@ -1,0 +1,22 @@
+$ bun run --filter '@af/*' typecheck
+@af/core typecheck: Exited with code 0
+@af/logger typecheck: Exited with code 0
+@af/billing typecheck: Exited with code 0
+@af/notifications typecheck: Exited with code 0
+@af/i18n typecheck: Exited with code 0
+@af/db typecheck: Exited with code 0
+@af/simulation typecheck: Exited with code 0
+@af/ui typecheck: Exited with code 0
+@af/emails typecheck: Exited with code 0
+@af/queue typecheck: Exited with code 0
+@af/supabase typecheck: Exited with code 0
+@af/engine typecheck: Exited with code 0
+@af/simulator typecheck: Exited with code 0
+@af/worker typecheck: Exited with code 0
+@af/data typecheck: Exited with code 0
+@af/manager typecheck: (node:4825) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+@af/manager typecheck: (Use `node --trace-deprecation ...` to show where the warning was created)
+@af/ai typecheck: Exited with code 0
+@af/mcp typecheck: Exited with code 0
+@af/hmi typecheck: Exited with code 0
+@af/manager typecheck: Exited with code 0
