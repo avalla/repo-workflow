@@ -14,7 +14,8 @@
   "files": [],
   "policy": {
     "invariants": [
-      "SQL/RLS and permissions are authoritative; shared typed data respects application boundaries."
+      "SQL/RLS and permissions are authoritative; shared typed data respects application boundaries.",
+      "Load the official supabase skill for Supabase tasks and supabase-postgres-best-practices before database changes or diagnosis. Follow the project-owned external skill setup guide; missing skills keep applicable verification incomplete."
     ],
     "verification": [
       {
@@ -39,14 +40,17 @@
       }
     ],
     "references": [
-      "core/POLICY.md"
+      "core/POLICY.md",
+      "docs/SUPABASE-SKILLS.md"
     ],
     "skills": [
       "deliver-slice",
       "review-change"
     ],
     "prerequisites": [
-      "isolated local database"
+      "isolated local database",
+      "official supabase/agent-skills: supabase",
+      "official supabase/agent-skills: supabase-postgres-best-practices for database work"
     ],
     "resources": [
       "local-database"

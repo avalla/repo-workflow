@@ -1,17 +1,18 @@
 # Roadmap
 
-Progress: **93% — 26/28 checklist items complete; 3/5 milestones complete.**
-Items have equal weight; this measures completed scope, not effort, time or delivery certification.
-Count only checked items below. Round `100 × completed / total` to the nearest whole percent.
-Blocked or unverified items stay unchecked; update counts whenever scope or evidence changes.
+Progress: **90% — 26/29 checklist items complete; 3/6 milestones complete.** Items have equal weight; this measures
+completed scope, not effort, time or delivery certification. Count only checked items below. Round
+`100 × completed / total` to the nearest whole percent. Blocked or unverified items stay unchecked; update counts
+whenever scope or evidence changes.
 
-| Milestone | Items | Progress | State |
-| --- | --- | --- | --- |
-| M1 — contracts and extracted content | 5/5 | 100% | Complete |
-| M2 — deterministic local tool | 4/5 | 80% | Native verification outstanding |
-| M3 — safe updates and pilot adoption | 9/9 | 100% | Bounded documentation adoption complete |
-| M4 — assessment and review procedures | 6/6 | 100% | Installed procedures independently reviewed |
-| M5 — review follow-up and application pilot | 2/3 | 67% | Local pilot passed; target delivery gates incomplete |
+| Milestone                                   | Items | Progress | State                                                |
+| ------------------------------------------- | ----- | -------- | ---------------------------------------------------- |
+| M1 — contracts and extracted content        | 5/5   | 100%     | Complete                                             |
+| M2 — deterministic local tool               | 4/5   | 80%      | Native verification outstanding                      |
+| M3 — safe updates and pilot adoption        | 9/9   | 100%     | Bounded documentation adoption complete              |
+| M4 — assessment and review procedures       | 6/6   | 100%     | Installed procedures independently reviewed          |
+| M5 — review follow-up and application pilot | 2/3   | 67%      | Local pilot passed; target delivery gates incomplete |
+| M6 — documentation and design requirements  | 0/1   | 0%       | Implemented; independent review pending              |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -21,22 +22,22 @@ Blocked or unverified items stay unchecked; update counts whenever scope or evid
 - [x] Define core workflows, evidence and release/update contracts.
 - [x] Add representative configurations, acceptance fixtures and local contract validation.
 
-Evidence: [M1 report](docs/sessions/m1-contracts.md). Declarative scenarios are not all executable;
-see [coverage](tests/fixtures/README.md) for current behavior and explicit gaps.
+Evidence: [M1 report](docs/sessions/m1-contracts.md). Declarative scenarios are not all executable; see
+[coverage](tests/fixtures/README.md) for current behavior and explicit gaps.
 
 ## Milestone 2 — deterministic local tool
 
 - [x] Implement inspect/doctor with selected content and honest missing-check diagnostics.
 - [x] Test deterministic resolution, origins, scoping, compatibility and gate retention.
 - [x] Implement reviewed install plans, stale/collision rejection and project-byte preservation.
-- [x] Provide generic Markdown, Codex, Claude Code and Antigravity discovery contracts without executing configured commands.
+- [x] Provide generic Markdown, Codex, Claude Code and Antigravity discovery contracts without executing configured
+      commands.
 - [ ] Verify discovery in native Codex, Claude Code and Antigravity sessions.
 
-Evidence: [M2 report](docs/sessions/m2-local-tool.md). Filesystem contracts are verified;
-Codex startup and explicit Claude routing were exercised; Antigravity remains NOT RUN.
-Closure requires native Antigravity discovery evidence and an explicit Claude qualification result:
-verify automatic imports and native skill discovery, or document and accept explicit canonical-path
-routing as the supported contract. Explicit reads must not be reported as automatic discovery.
+Evidence: [M2 report](docs/sessions/m2-local-tool.md). Filesystem contracts are verified; Codex startup and explicit
+Claude routing were exercised; Antigravity remains NOT RUN. Closure requires native Antigravity discovery evidence and
+an explicit Claude qualification result: verify automatic imports and native skill discovery, or document and accept
+explicit canonical-path routing as the supported contract. Explicit reads must not be reported as automatic discovery.
 
 ## Milestone 3 — safe updates and pilot adoption
 
@@ -47,54 +48,75 @@ routing as the supported contract. Explicit reads must not be reported as automa
 - [x] Verify disposable instruction-snapshot coexistence and persisted memory for all three sources.
 - [x] Complete an Agile Factory Next documentation pilot on a full disposable copy with verified bindings.
 - [x] Complete a Pizza Hit documentation pilot on a full disposable copy with verified bindings.
-- [x] Verify real resume/slice/review/handoff sessions; measure trace-visible output, entry sizes, context-loss incidents and conflicts.
-- [x] Obtain independent review and applicable local checks for documentation pilots; record engine/hardware checks as inapplicable.
+- [x] Verify real resume/slice/review/handoff sessions; measure trace-visible output, entry sizes, context-loss
+      incidents and conflicts.
+- [x] Obtain independent review and applicable local checks for documentation pilots; record engine/hardware checks as
+      inapplicable.
 
-Evidence: [M3 tooling](docs/sessions/m3-bun-ink.md), [snapshot observations and reconciliation](docs/sessions/m3-pilot-snapshots.md),
-[tracked-source qualification](docs/sessions/m3-tracked-copies.md), [usage](docs/USAGE.md).
-The [native pilot report](docs/sessions/m3-native-pilots.md) closes bounded documentation adoption.
-This is not application delivery certification. Total harness startup context is not observable in
-these traces; measurements cover trace-visible output and on-disk entry sizes. Antigravity remains
-unverified. AutoÉpoque adoption was removed from
-active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source.
-Historical AutoÉpoque extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
+Evidence: [M3 tooling](docs/sessions/m3-bun-ink.md),
+[snapshot observations and reconciliation](docs/sessions/m3-pilot-snapshots.md),
+[tracked-source qualification](docs/sessions/m3-tracked-copies.md), [usage](docs/USAGE.md). The
+[native pilot report](docs/sessions/m3-native-pilots.md) closes bounded documentation adoption. This is not application
+delivery certification. Total harness startup context is not observable in these traces; measurements cover
+trace-visible output and on-disk entry sizes. Antigravity remains unverified. AutoÉpoque adoption was removed from
+active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source. Historical AutoÉpoque
+extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
 
 ## Milestone 4 — assessment and review procedures
 
-- [x] Deliver installed security assessment and expanded independent review procedures with contract checks and independent review evidence.
+- [x] Deliver installed security assessment and expanded independent review procedures with contract checks and
+      independent review evidence.
 - [x] Deliver release-readiness with contract checks and independent review evidence.
 - [x] Deliver debug-investigation with contract checks and independent review evidence.
 - [x] Deliver architecture-review with contract checks and independent review evidence.
 - [x] Deliver software-versioning with contract checks and independent review evidence.
 
-Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md).
-Additional procedures: [delivery skills report](docs/sessions/delivery-skills.md).
-- [x] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review evidence.
+Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md). Additional procedures:
+[delivery skills report](docs/sessions/delivery-skills.md).
 
-See [delivery workflow report](docs/sessions/delivery-workflow.md).
-Independent review PASS: [review report](docs/sessions/m4-independent-review.md).
-Scope: installed procedures and local contracts; native agent/application execution remains NOT RUN.
-PR: [#1](https://github.com/avalla/repo-workflow/pull/1); no merge or deployment performed.
+- [x] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review
+      evidence.
+
+See [delivery workflow report](docs/sessions/delivery-workflow.md). Independent review PASS:
+[review report](docs/sessions/m4-independent-review.md). Scope: installed procedures and local contracts; native
+agent/application execution remains NOT RUN. PR: [#1](https://github.com/avalla/repo-workflow/pull/1); no merge or
+deployment performed.
 
 ## Milestone 5 — review follow-up and application pilot
 
-Added after the 2026-11-12 review of `bd05d9a566717b5bfec8eb71c74c0d0d38a38da8`.
-The lower overall percentage reflects added scope; completed M1/M3/M4 evidence is unchanged.
-The first two items are implemented with local regression evidence; independent review is recorded in the M5 report.
+Added after the 2026-11-12 review of `bd05d9a566717b5bfec8eb71c74c0d0d38a38da8`. The lower overall percentage reflects
+added scope; completed M1/M3/M4 evidence is unchanged. The first two items are implemented with local regression
+evidence; independent review is recorded in the M5 report.
 
-- [x] Reconcile acceptance-coverage documentation with completed bounded native pilots. Update tests/fixtures/README.md to distinguish automated fixture coverage, observed native handoffs and still-unverified application delivery; verify consistency with STATUS and the native pilot report.
-- [x] Make missing affected-path scope explicit in inspect/doctor. Report omitted scope as unknown or incomplete rather than silently presenting scoped gates as inapplicable; document the chosen semantics and add regression coverage for omitted scope, matching paths and genuinely unrelated paths.
-- [ ] Complete one bounded real application bugfix pilot on Agile Factory Next in an isolated branch/worktree, subject to project authorization. Record a reproducer, acceptance criteria, candidate identity, applicable checks, independent review and fixes, agent-written documentation/memory, and a fresh-session handoff. The receiving session must recover the actual result and next action without coordinator-seeded markers or manual reconstruction of the handoff; record interventions and unavailable checks explicitly.
+- [x] Reconcile acceptance-coverage documentation with completed bounded native pilots. Update tests/fixtures/README.md
+      to distinguish automated fixture coverage, observed native handoffs and still-unverified application delivery;
+      verify consistency with STATUS and the native pilot report.
+- [x] Make missing affected-path scope explicit in inspect/doctor. Report omitted scope as unknown or incomplete rather
+      than silently presenting scoped gates as inapplicable; document the chosen semantics and add regression coverage
+      for omitted scope, matching paths and genuinely unrelated paths.
+- [ ] Complete one bounded real application bugfix pilot on Agile Factory Next in an isolated branch/worktree, subject
+      to project authorization. Record a reproducer, acceptance criteria, candidate identity, applicable checks,
+      independent review and fixes, agent-written documentation/memory, and a fresh-session handoff. The receiving
+      session must recover the actual result and next action without coordinator-seeded markers or manual reconstruction
+      of the handoff; record interventions and unavailable checks explicitly.
 
-Prioritize the documentation correction and scope diagnostic before the application pilot.
-Keep native harness qualification in M2; this milestone does not duplicate that acceptance item.
-The application pilot must respect the target project's instructions and permissions; this roadmap
-does not itself authorize modifying another repository, publishing, merging or deploying.
-Record pilot evidence in a dedicated session report and link it here before checking the item.
+Prioritize the documentation correction and scope diagnostic before the application pilot. Keep native harness
+qualification in M2; this milestone does not duplicate that acceptance item. The application pilot must respect the
+target project's instructions and permissions; this roadmap does not itself authorize modifying another repository,
+publishing, merging or deploying. Record pilot evidence in a dedicated session report and link it here before checking
+the item.
 
-Planning reconciliation: [planning report](docs/sessions/m5-planning.md).
-Implementation: [M5 follow-up](docs/sessions/m5-follow-up.md).
-Local application pilot executed with review/handoff PASS: [evidence](docs/sessions/m5-application-pilot.md).
-Its target PR/browser/accessibility gates remain incomplete; the checklist item stays unchecked.
+Planning reconciliation: [planning report](docs/sessions/m5-planning.md). Implementation:
+[M5 follow-up](docs/sessions/m5-follow-up.md). Local application pilot executed with review/handoff PASS:
+[evidence](docs/sessions/m5-application-pilot.md). Its target PR/browser/accessibility gates remain incomplete; the
+checklist item stays unchecked.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.
+
+## Milestone 6 — documentation and design requirements
+
+- [ ] Deliver module README requirements, end-of-session documentation updates, Prettier Markdown rules, web design
+      system with Impeccable/Hallmark, and official Supabase skill routing; validate installation and obtain independent
+      review.
+
+Candidate and verification: [requirements report](docs/sessions/documentation-design-requirements.md).
