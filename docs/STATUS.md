@@ -1,8 +1,8 @@
 # Current status
 
-Roadmap: **90% — 27/30 items; M1, M3 and M4 complete for their declared scope.** M2 native qualification remains open:
-Antigravity is absent locally. Codex startup and Claude automatic entry loading plus explicit canonical-skill routing
-have bounded evidence; Claude native skill registration is not claimed. See
+Roadmap: **93% — 28/30 items; M1, M3, M4 and M6 complete for their declared scope.** M2 native qualification remains
+open: Antigravity is absent locally. Codex startup and Claude automatic entry loading plus explicit canonical-skill
+routing have bounded evidence; Claude native skill registration is not claimed. See
 [Claude qualification](sessions/m2-claude-native.md).
 
 Bun/TypeScript CLI and Ink wizard, strict composition, reviewed install/update/migrate/uninstall, and journaled recovery
@@ -58,9 +58,10 @@ Core/generated guidance and scoped profiles are updated; external tools are not 
 see [review](sessions/documentation-design-independent-review.md).
 [PR #2](https://github.com/avalla/repo-workflow/pull/2) targets `feat/assessment-delivery-workflows` (PR #1).
 Implementation candidate: `0f50e3ff3da1ba3bf79b09c644dcdb1b4bebcbf0`; subsequent changes record review and closure
-evidence. The original M6 requirements scope is complete; the Supabase SaaS follow-up is under review. No merge or
-deployment performed.
+evidence. The original M6 requirements scope is complete; the Supabase SaaS follow-up also passed independent review. No
+merge or deployment performed.
 
 Supabase SaaS follow-up adds generated `supabase/schema.sql` for LLM context, migrations separated by type, and explicit
 pre-live versus live history/reset rules. See [evidence](sessions/supabase-saas-guidance.md). No database operations
-were run; independent review is pending.
+were run. Independent [review](sessions/supabase-saas-review.md) PASS; local TypeScript, 39 tests and Prettier PASS.
+[PR #4](https://github.com/avalla/repo-workflow/pull/4) targets `test/claude-native-qualification` (PR #3).
