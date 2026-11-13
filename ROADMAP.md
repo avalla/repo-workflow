@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **90% — 26/29 checklist items complete; 3/6 milestones complete.** Items have equal weight; this measures
+Progress: **93% — 27/29 checklist items complete; 4/6 milestones complete.** Items have equal weight; this measures
 completed scope, not effort, time or delivery certification. Count only checked items below. Round
 `100 × completed / total` to the nearest whole percent. Blocked or unverified items stay unchecked; update counts
 whenever scope or evidence changes.
@@ -12,7 +12,7 @@ whenever scope or evidence changes.
 | M3 — safe updates and pilot adoption        | 9/9   | 100%     | Bounded documentation adoption complete              |
 | M4 — assessment and review procedures       | 6/6   | 100%     | Installed procedures independently reviewed          |
 | M5 — review follow-up and application pilot | 2/3   | 67%      | Local pilot passed; target delivery gates incomplete |
-| M6 — documentation and design requirements  | 0/1   | 0%       | Implemented; independent review pending              |
+| M6 — documentation and design requirements  | 1/1   | 100%     | Independently reviewed; PR #2 open                   |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -115,7 +115,7 @@ Release publication is outside this checklist and needs separate authorization p
 
 ## Milestone 6 — documentation and design requirements
 
-- [ ] Deliver module README requirements, end-of-session documentation updates, Prettier Markdown rules, web design
+- [x] Deliver module README requirements, end-of-session documentation updates, Prettier Markdown rules, web design
       system with Impeccable/Hallmark, and official Supabase skill routing; validate installation and obtain independent
       review.
 

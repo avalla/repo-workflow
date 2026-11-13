@@ -1,7 +1,7 @@
 # Current status
 
-Roadmap: **90% — 26/29 items; M1, M3 and M4 complete for their declared scope.** M2 native qualification remains open:
-Antigravity is absent locally. Codex startup and explicit Claude routing have bounded evidence; automatic Claude
+Roadmap: **93% — 27/29 items; M1, M3, M4 and M6 complete for their declared scope.** M2 native qualification remains
+open: Antigravity is absent locally. Codex startup and explicit Claude routing have bounded evidence; automatic Claude
 imports/skill registration remain unproved.
 
 Bun/TypeScript CLI and Ink wizard, strict composition, reviewed install/update/migrate/uninstall, and journaled recovery
@@ -53,5 +53,8 @@ Next:
 M6 adds module README ownership, documentation refresh at every session end, Prettier 3 Markdown formatting (120
 columns, proseWrap always), web design systems with Impeccable/Hallmark, and official Supabase skill prerequisites.
 Core/generated guidance and scoped profiles are updated; external tools are not bundled or executed automatically. See
-[candidate and checks](sessions/documentation-design-requirements.md). Independent review and PR evidence for this
-candidate are pending; M6 remains unchecked.
+[candidate and checks](sessions/documentation-design-requirements.md). Independent review PASS after correcting DD-001;
+see [review](sessions/documentation-design-independent-review.md).
+[PR #2](https://github.com/avalla/repo-workflow/pull/2) targets `feat/assessment-delivery-workflows` (PR #1).
+Implementation candidate: `0f50e3ff3da1ba3bf79b09c644dcdb1b4bebcbf0`; subsequent changes record review and closure
+evidence. M6 is complete for requirements and installed-guidance scope. No merge or deployment performed.

@@ -16,12 +16,15 @@ browser, accessibility, database and documentation gates remain in force.
 Validation: `bun run check` PASS (TypeScript, 39 tests, 2,365 assertions), including links, profile resolution,
 installation/lifecycle and context budgets. Prettier 3 write/check applies to all changed Markdown. Initial
 context-budget failures (8,802, 8,186 and 8,043 bytes) were corrected by moving detail to handoff and condensing core
-wording; the limit remains 8,000 bytes. Independent review found DD-001 (M6 summary row outside its table); corrected
-and awaiting re-review. PR publication is pending. External tool execution, native skill discovery and consuming-project
-delivery: NOT RUN. Historical M4/M5 reviews do not cover this candidate. M6 stays unchecked until required evidence
-exists.
+wording; the limit remains 8,000 bytes. Independent review PASS on `0f50e3ff3da1ba3bf79b09c644dcdb1b4bebcbf0` after
+correcting DD-001 (M6 summary row outside its table). See
+[independent report](documentation-design-independent-review.md).
+[PR #2](https://github.com/avalla/repo-workflow/pull/2) targets `feat/assessment-delivery-workflows`; no merge or
+deployment performed. External tool execution, native skill discovery and consuming-project delivery: NOT RUN.
+Historical M4/M5 reviews do not cover this candidate. M6 is complete for the declared requirements and
+installed-guidance scope.
 
-Next: obtain independent review and PR evidence for the actual candidate.
+Next: review and merge through the PR workflow; M2 and M5 retain their outstanding gates.
 
 The README requirement applies to logical modules; this change establishes policy and installed guidance, not a
 retroactive README coverage audit or retrofit. Existing-module coverage is not certified. Disposable web and library-CLI
