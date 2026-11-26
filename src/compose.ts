@@ -29,6 +29,13 @@ function mergeGate(gates: Document, scope: string, input: Document, provenance: 
   current.clauses = unique([...current.clauses, clause]); current.origins = unique([...current.origins, provenance]);
 }
 
+// Omitted execution/delivery keep the pre-M7 behavior: one agent and a PR without merge authority.
+export function executionOf(config: Document): Document {
+  const mode = config.execution?.mode ?? 'single-agent', orchestrated = mode === 'orchestrated';
+  return {mode, maxParallel: orchestrated ? config.execution?.maxParallel ?? 2 : 1, maxReviewIterations: config.execution?.maxReviewIterations ?? 3,
+    nativeEntryPoints: config.execution?.nativeEntryPoints ?? false};
+}
+export const deliveryOf = (config: Document): Document => ({integration: 'pr', base: null, mergeMethod: null, ...config.delivery});
 export function resolve(config: Document, target: Inputs, source: Inputs): Document {
   validate(source, 'config', config);
   req(config.framework.version === VERSION, 'unsupported-release');
@@ -95,10 +102,13 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
   const profiles = [...resolved.values()].sort((a, b) => (a.scope + '/' + a.id).localeCompare(b.scope + '/' + b.id));
   const gates: Document = {}, rules: Document[] = [], files: Document[] = [];
   mergeGate(gates, 'project', manual('independent-review', 'Obtain independent candidate review.'), origin('core', VERSION, 'project', 'review.independent'), config);
-  for (const [id, category, procedure] of [
-    ['documentation-current', 'documentation', 'Update affected documentation, status and owning report; verify links/examples; record a reason for any unaffected documents.'],
-    ['pull-request', 'delivery', 'Create a PR against the declared base; record URL and current head, checks, independent review and unresolved findings. Missing remote access leaves this gate incomplete.'],
-  ]) mergeGate(gates, 'project', {...manual(id, procedure), category}, origin('core', VERSION, 'project', 'delivery.' + id), config);
+  const delivery = deliveryOf(config), into = delivery.base ? ' into ' + delivery.base : '';
+  const deliveryGates = [['documentation-current', 'documentation', 'Update affected documentation, status and owning report; verify links/examples; record a reason for any unaffected documents.']];
+  // direct-merge replaces the PR with an owner-approved merge gate that keeps the same evidence (ADR 0006).
+  if (delivery.integration !== 'direct-merge') deliveryGates.push(['pull-request', 'delivery', 'Create a PR against the declared base; record URL and current head, checks, independent review and unresolved findings. Missing remote access leaves this gate incomplete.']);
+  if (delivery.integration === 'pr-auto-merge') deliveryGates.push(['merge', 'delivery', `Enable platform auto-merge (${delivery.mergeMethod})${into} only after every other required gate PASS and approval-merge; record the merge commit. A queued auto-merge is not PASS.`]);
+  if (delivery.integration === 'direct-merge') deliveryGates.push(['merge', 'delivery', `Merge the integrated candidate${into} with ${delivery.mergeMethod} only after every other required gate PASS and approval-merge; record base, candidate head, merge commit, checks and findings. No PR is created.`]);
+  for (const [id, category, procedure] of deliveryGates) mergeGate(gates, 'project', {...manual(id, procedure), category}, origin('core', VERSION, 'project', 'delivery.' + id), config);
   for (const item of profiles) {
     const {profile, scope} = item;
     for (const [field, values] of Object.entries(profile.policy) as [string, any[]][]) {
@@ -108,7 +118,11 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
     for (const contribution of profile.files) files.push({...contribution, location: item.location, owner: item.id + ':' + scope});
   }
   for (const gate of config.gates) mergeGate(gates, 'project', gate, origin('project', VERSION, 'project', 'gates.' + gate.id), config);
-  if (config.review.external.policy === 'required') mergeGate(gates, 'project', manual('external-review', 'Review with ' + config.review.external.provider), origin('project', VERSION, 'project', 'review.external'), config);
+  const external = config.review.external;
+  if (external.policy !== 'disabled') mergeGate(gates, 'project', {...manual('external-review', external.policy === 'required' ?
+    `Review the frozen candidate with ${external.provider}; record findings and dispositions. Unavailable provider leaves this gate BLOCKED.` :
+    `Review the frozen candidate with ${external.provider} when available; record findings and dispositions, or NOT RUN with the reason. Never PASS without a completed review.`),
+  required: external.policy === 'required'}, origin('project', VERSION, 'project', 'review.external'), config);
   for (const approval of config.approvals) {
     req(approval.scope === 'project' || approval.scope.startsWith('component:') && Object.hasOwn(components, approval.scope.slice(10)), 'unknown-scope');
     mergeGate(gates, approval.scope, {...manual('approval-' + approval.id, 'Authorization from ' + approval.authority, approval.applicability), required: approval.policy === 'required'}, origin('project', VERSION, approval.scope, 'approvals.' + approval.id), config);
@@ -120,13 +134,15 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
     }
     if (gate.environment) req(Object.hasOwn(config.environments, gate.environment), 'unknown-environment');
   }
-  const diagnostics = Object.keys(components).sort().filter(name => !Object.values(gates).some(g => g.scope === 'component:' + name && !['review', 'approval'].includes(g.category))).map(name => 'missing-technical-gates:component:' + name);
+  const technical = (g: Document, name: string) => !['review', 'approval', 'documentation', 'delivery'].includes(g.category) &&
+    (g.scope === 'component:' + name || g.clauses.some((c: Document) => c.components.includes(name)));
+  const diagnostics = Object.keys(components).sort().filter(name => !Object.values(gates).some(g => technical(g, name))).map(name => 'missing-technical-gates:component:' + name);
   const merged = new Map<string, Document>();
   for (const rule of rules) {
     const key = canonical([rule.scope, rule.field, rule.value]), previous = merged.get(key);
     if (previous) previous.origins = unique([...previous.origins, ...rule.origins]); else merged.set(key, rule);
   }
-  return {execution: config.execution ?? {mode: 'single-agent'}, profiles, gates, rules: [...merged.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, v]) => v), files, diagnostics};
+  return {execution: executionOf(config), delivery, profiles, gates, rules: [...merged.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, v]) => v), files, diagnostics};
 }
 export function gateReport(effective: Document, config: Document, task: string, affected: string[]): Document {
   affected.forEach(p => relative(p));

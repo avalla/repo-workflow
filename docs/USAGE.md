@@ -1,8 +1,8 @@
 # Usage
 
 For project selection, monorepo configuration, daily work and harness qualification, see
-[adoption and customization](ADOPTION.md). Run the CLI from this source checkout; it is not a
-published registry package. `bun run cli --help` prints the command reference.
+[adoption and customization](ADOPTION.md). Run the CLI from this source checkout; it is not a published registry
+package. `bun run cli --help` prints the command reference.
 
 ## Create project configuration
 
@@ -13,16 +13,33 @@ bun install --frozen-lockfile
 bun run cli init --root ../my-project
 ```
 
-The Ink wizard asks for name, surface (`cli`, `library`, `web`, `other`), stack labels, harnesses
-and documentation language. Enter advances; Ctrl+U clears; Esc or Ctrl+C cancels without writes.
-Review the complete configuration and type `yes` to write it. Existing configuration is preserved;
-a missing destination folder is created. Application scaffolding, Git initialization and package
-installation are separate activities.
+The Ink wizard asks for name, surface (`cli`, `library`, `web`, `other`), stack labels, harnesses, execution mode,
+maximum parallel workers (orchestrated only), Claude Code native entry points (when `claude-code` is selected), external
+review (`codex-optional`, `codex-required` or `disabled`), delivery integration (`pr`, `pr-auto-merge`, `direct-merge`),
+target branch, merge method (merge modes only), optional test/lint/typecheck commands with the paths they cover, and
+documentation language. Arrows choose, Space toggles harnesses, Enter advances, Ctrl+U clears and Esc or Ctrl+C cancels
+without writes. Review the complete configuration and type `yes` to write it. Existing configuration is preserved; a
+missing destination folder is created. Application scaffolding, Git initialization and package installation are separate
+activities.
 
-CLI/library and web select representative profiles. `other` keeps generic behavior and reports
-missing technical gates. Configure actual commands, environments and gates in the generated JSON;
-labels do not install technologies or invent checks. Independent review and publication approval
-remain required. Documentation language is a setting; bundled instructions currently remain English.
+Delivery integration decides how a reviewed candidate ends ([ADR 0006](adr/0006-configurable-delivery-integration.md)):
+
+| Integration     | Result                                                     | Required delivery gates                   |
+| --------------- | ---------------------------------------------------------- | ----------------------------------------- |
+| `pr` (default)  | Open a PR; merging stays a separate owner decision         | `pull-request`                            |
+| `pr-auto-merge` | Open a PR and enable platform auto-merge after gates PASS  | `pull-request`, `merge`, `approval-merge` |
+| `direct-merge`  | Merge the integrated candidate into the base branch, no PR | `merge`, `approval-merge`                 |
+
+Merge modes require `mergeMethod` and a required `merge` approval in `approvals`; the wizard adds both. Optional
+external review produces a non-required `external-review` gate that is NOT RUN when the provider is unavailable.
+Orchestrated projects also get a task ledger at `state.tasks` (default `docs/tasks.json`). Entered commands become bound
+required gates; they are recorded and never executed by the CLI. Omitted `execution` and `delivery` keep the earlier
+behavior: single-agent and PR without merge authority.
+
+CLI/library and web select representative profiles. `other` keeps generic behavior and reports missing technical gates.
+Configure actual commands, environments and gates in the generated JSON; labels do not install technologies or invent
+checks. Independent review and publication approval remain required. Documentation language is a setting; bundled
+instructions currently remain English.
 
 For advanced profiles, monorepos or automation, edit a complete
 [example](../tests/fixtures/projects/mixed-monorepo.json):
@@ -32,9 +49,9 @@ bun run cli init --root ../my-project --from /tmp/project-config.json --dry-run
 bun run cli init --root ../my-project --from /tmp/project-config.json
 ```
 
-`--dry-run` validates and prints a preview without creating files and requires `--from`.
-Noninteractive terminals also require `--from`. Unknown fields and invalid bindings fail closed.
-See [schemas](../schemas/README.md). Multiple independent repository roots remain unsupported.
+`--dry-run` validates and prints a preview without creating files and requires `--from`. Noninteractive terminals also
+require `--from`. Unknown fields and invalid bindings fail closed. See [schemas](../schemas/README.md). Multiple
+independent repository roots remain unsupported.
 
 ## Review and install
 
@@ -45,40 +62,53 @@ bun run cli apply --root ../my-project --plan /tmp/workflow-plan.json
 bun run cli doctor --root ../my-project --task feature --affected src/main.ts
 ```
 
-Review ownership, complete before/after contents, diffs, diagnostics and conflicts. `apply`
-reconstructs the plan and rejects changed inputs, edited plans, collisions and repeated application.
-Source or target changes require a fresh plan. Store plans outside managed paths. Plans and journals
-contain full contents. The tool never executes configured commands.
+Review ownership, complete before/after contents, diffs, diagnostics and conflicts. `apply` reconstructs the plan and
+rejects changed inputs, edited plans, collisions and repeated application. Source or target changes require a fresh
+plan. Store plans outside managed paths. Plans and journals contain full contents. The tool never executes configured
+commands.
 
-Installation preserves project documents and unrelated skills. It adds one managed AGENTS.md block,
-selected `.repo-workflow/` content and `.agents/skills/repo-workflow-*` skills. CLAUDE.md is initialized
-only when absent; add `@AGENTS.md` manually to an existing file if routing is needed. Selecting
-`antigravity` uses shared instructions and canonical skills; IDE permissions and native discovery
-need separate verification. See [adapters](../adapters/README.md).
+Installation preserves project documents and unrelated skills. It adds one managed AGENTS.md block, selected
+`.repo-workflow/` content and `.agents/skills/repo-workflow-*` skills. CLAUDE.md is initialized only when absent; add
+`@AGENTS.md` manually to an existing file if routing is needed. Selecting `antigravity` uses shared instructions and
+canonical skills; IDE permissions and native discovery need separate verification. See
+[adapters](../adapters/README.md).
 
-Generated AGENTS.md and core policy require documentation updates alongside implementation,
-including affected guides, current state and reports; links and examples must be verified before
-handoff. Existing installations receive this guidance through a reviewed update plan.
+Generated AGENTS.md and core policy require documentation updates alongside implementation, including affected guides,
+current state and reports; links and examples must be verified before handoff. Existing installations receive this
+guidance through a reviewed update plan.
 
-New installations initialize the configured roadmap path from a checklist template with milestone
-and overall counts/percentages. The initial planning task starts at 0/1 (0%); replace it with agreed
-project tasks. Generated guidelines require refreshing progress after task or scope changes.
-Use equal-weight items, round `100 × completed / total`, and show N/A for no defined items.
-Unchecked blockers remain in the denominator. This is a documentation convention, not an automatic
-progress calculator or delivery certificate. Existing roadmaps are preserved on install and update;
-adopt the format manually there. See [this repository's checklist](../ROADMAP.md) for an example.
+New installations initialize the configured roadmap path from a checklist template with feature, milestone and overall
+counts/percentages. The initial planning task starts at 0/1 (0%); replace it with agreed project tasks. Group items
+under `### F<n> — name` headings inside a milestone when useful. Use equal-weight items, round
+`100 × completed / total`, and show N/A for no defined items. Unchecked blockers remain in the denominator. Table rows
+must use the heading label (`Milestone 3 — x` is summarized as `M3 — x`).
 
-`--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`,
-`research`, `release`. Omitted paths (including an empty API array) mean scope is unknown,
-not that no files changed. Gate `applicable` is `null` with `applicabilityDiagnostic:
-"missing-affected-paths"` when a task-eligible selector needs paths/components. It is `true` if
-any complete selector matches, and `false` if all selectors are excluded (including task mismatch).
-Task-only/global selectors can resolve without paths. `doctor` emits a BLOCKED finding for each
-required gate with unknown scope and exits 1; `inspect` remains informational. Supply the complete
-affected-path list to resolve scope. Applicability never proves execution or gate completion.
-Load selected skills on demand. `doctor` reports drift, missing bindings,
-budgets and interrupted transactions. Successful diagnostics do not mean required review,
-CI, engine or hardware checks ran. No completion PASS is issued.
+```sh
+bun run cli roadmap --root ../my-project            # configured roadmap, or ROADMAP.md without configuration
+bun run cli roadmap --root . --file ROADMAP.md
+```
+
+`roadmap` recomputes progress from the checkboxes and reports BLOCKED findings (exit 1) for a stale overall summary, a
+stale or unknown table row, a milestone without a row or items outside a milestone; `doctor` includes the same check.
+Progress is not a delivery certificate. Existing roadmaps are preserved on install and update; adopt the format there
+deliberately. See [this repository's checklist](../ROADMAP.md) for an example.
+
+`doctor` also validates the task ledger when `state.tasks` is set (schema, unknown dependencies, cycles, overlapping
+owned paths of active tasks, writers above `maxParallel`, review iterations above `maxReviewIterations`, writers whose
+dependencies are not integrated, missing worktrees or blocker reasons). It reports drift: relative links in status and
+roadmap that point to missing files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it
+reads the actual state of every cited GitHub PR through `gh` and warns when nearby text claims the PR is open or not
+merged while it is merged or closed, or claims a merge for an open PR. Without `--remote` that check is NOT RUN.
+
+`--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`, `research`, `release`.
+Omitted paths (including an empty API array) mean scope is unknown, not that no files changed. Gate `applicable` is
+`null` with `applicabilityDiagnostic: "missing-affected-paths"` when a task-eligible selector needs paths/components. It
+is `true` if any complete selector matches, and `false` if all selectors are excluded (including task mismatch).
+Task-only/global selectors can resolve without paths. `doctor` emits a BLOCKED finding for each required gate with
+unknown scope and exits 1; `inspect` remains informational. Supply the complete affected-path list to resolve scope.
+Applicability never proves execution or gate completion. Load selected skills on demand. `doctor` reports drift, missing
+bindings, budgets and interrupted transactions. Successful diagnostics do not mean required review, CI, engine or
+hardware checks ran. No completion PASS is issued.
 
 ## Update, migrate and uninstall
 
@@ -93,16 +123,16 @@ bun run cli uninstall --root ../my-project > /tmp/uninstall.json
 # Review uninstall.json, then use apply with that file.
 ```
 
-These commands only print plans. `plan --operation update|migrate|uninstall` is equivalent.
-`migrate` normalizes supported schema-v1 locks, including M2 locks, through the current renderer;
-it may include ordinary update changes. Unknown future schemas are rejected. Configuration schema
-remains v1, framework content release 0.1.0, generator 0.2.0. Regenerate Python M2 plans with Bun.
+These commands only print plans. `plan --operation update|migrate|uninstall` is equivalent. `migrate` normalizes
+supported schema-v1 locks, including M2 locks, through the current renderer; it may include ordinary update changes.
+Unknown future schemas are rejected. Configuration schema remains v1, framework content release 0.1.0, generator 0.2.0.
+Regenerate Python M2 plans with Bun.
 
-Updates compare installed base, local contents and new output. Unchanged files receive new output;
-local-only edits/deletions survive; divergent edits or modified removals conflict and prevent apply.
-AGENTS comparisons cover its managed block. Initialize-once memory is never regenerated on updates.
-Uninstall removes unchanged managed content and the lock; it retains modified files with diagnostics,
-configuration, project memory and journals. Retained files may cause collisions on reinstall.
+Updates compare installed base, local contents and new output. Unchanged files receive new output; local-only
+edits/deletions survive; divergent edits or modified removals conflict and prevent apply. AGENTS comparisons cover its
+managed block. Initialize-once memory is never regenerated on updates. Uninstall removes unchanged managed content and
+the lock; it retains modified files with diagnostics, configuration, project memory and journals. Retained files may
+cause collisions on reinstall.
 
 ## Recover an interrupted operation
 
@@ -114,39 +144,37 @@ bun run cli recover --root ../my-project --transaction <id> --direction resume
 bun run cli recover --root ../my-project --transaction <id> --direction rollback
 ```
 
-Recovery preflights recorded inputs and before/after hashes; unrelated edits stop recovery.
-Permission changes on newly created files also stop recovery. If a crash leaves a dead process
-marker after the journal reached `applied` or `rolled-back`, `recover` releases that marker without
-replaying changes. If the crash preceded journal creation, use the plan's transaction identifier
-(SHA-256 of its canonical JSON); recovery releases the dead marker only when no unfinished journal
-exists. Live process markers are never reclaimed. Malformed historical markers fail closed.
-An exclusive `recovery-owner` guard serializes recovery. If recovery itself is killed while
-holding this guard, subsequent writers fail closed. Preserve its contents and reconcile the guard
-manually only after verifying that no owner/recovery process is running. Automatic guard stealing
-is intentionally unsupported because it could admit concurrent writers.
-A live transaction process prevents another writer. Explicit recovery can reclaim a dead process
-marker. Once recovery starts, its direction stays fixed. Replacement is atomic per file;
-the whole operation is journaled, not multi-file atomic. Rollback restores bytes and modes but
-may leave empty created directories. Valid interrupted M2 journals are accepted. Journals use 0600.
+Recovery preflights recorded inputs and before/after hashes; unrelated edits stop recovery. Permission changes on newly
+created files also stop recovery. If a crash leaves a dead process marker after the journal reached `applied` or
+`rolled-back`, `recover` releases that marker without replaying changes. If the crash preceded journal creation, use the
+plan's transaction identifier (SHA-256 of its canonical JSON); recovery releases the dead marker only when no unfinished
+journal exists. Live process markers are never reclaimed. Malformed historical markers fail closed. An exclusive
+`recovery-owner` guard serializes recovery. If recovery itself is killed while holding this guard, subsequent writers
+fail closed. Preserve its contents and reconcile the guard manually only after verifying that no owner/recovery process
+is running. Automatic guard stealing is intentionally unsupported because it could admit concurrent writers. A live
+transaction process prevents another writer. Explicit recovery can reclaim a dead process marker. Once recovery starts,
+its direction stays fixed. Replacement is atomic per file; the whole operation is journaled, not multi-file atomic.
+Rollback restores bytes and modes but may leave empty created directories. Valid interrupted M2 journals are accepted.
+Journals use 0600.
 
-Outside the wizard output is JSON. Exit codes: 0 successful operation, 1 plan conflicts or blocked
-doctor findings, 2 invalid input or execution failure. Exit 0 is not a delivery certificate.
+Outside the wizard output is JSON. Exit codes: 0 successful operation, 1 plan conflicts or blocked doctor findings, 2
+invalid input or execution failure. Exit 0 is not a delivery certificate.
 
 ## Troubleshooting
 
-| Message or finding | Action |
-| --- | --- |
-| `interactive-terminal-required` | Use a real terminal or supply a complete config with `init --from` |
-| `configuration-already-exists` | Edit the existing config deliberately; init never overwrites it |
-| `unresolved-profile` / `profile-applicability` | Check pinned IDs, scope and component surface against the catalogue |
-| `missing-technical-gates` | Add verified project bindings and gates; generic fallback cannot infer them |
-| `stale-plan` | Inspect changes and generate a new plan; do not edit plan JSON |
-| `unresolved-conflicts` | Reconcile local and incoming contents explicitly, then generate a new plan |
-| `managed-content-drift` | Inspect the local edit; preservation by update does not make it generated content |
-| `incomplete-transaction` / `previous-transaction` | Inspect the journal and use recover; keep before-images |
-| `recovery-user-edit` / `recovery-input-changed` | Compare actual files to journal inputs before attempting recovery again |
-| `already-applied-plan` | The plan was consumed; inspect current state and create a new plan if needed |
+| Message or finding                                | Action                                                                            |
+| ------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `interactive-terminal-required`                   | Use a real terminal or supply a complete config with `init --from`                |
+| `configuration-already-exists`                    | Edit the existing config deliberately; init never overwrites it                   |
+| `unresolved-profile` / `profile-applicability`    | Check pinned IDs, scope and component surface against the catalogue               |
+| `missing-technical-gates`                         | Add verified project bindings and gates; generic fallback cannot infer them       |
+| `stale-plan`                                      | Inspect changes and generate a new plan; do not edit plan JSON                    |
+| `unresolved-conflicts`                            | Reconcile local and incoming contents explicitly, then generate a new plan        |
+| `managed-content-drift`                           | Inspect the local edit; preservation by update does not make it generated content |
+| `incomplete-transaction` / `previous-transaction` | Inspect the journal and use recover; keep before-images                           |
+| `recovery-user-edit` / `recovery-input-changed`   | Compare actual files to journal inputs before attempting recovery again           |
+| `already-applied-plan`                            | The plan was consumed; inspect current state and create a new plan if needed      |
 
-For a clean uninstall, review modified retained files individually. Uninstall intentionally leaves
-configuration, project memory and transaction evidence. Reinstallation can conflict with retained
-managed paths; archive or reconcile them deliberately before planning again.
+For a clean uninstall, review modified retained files individually. Uninstall intentionally leaves configuration,
+project memory and transaction evidence. Reinstallation can conflict with retained managed paths; archive or reconcile
+them deliberately before planning again.

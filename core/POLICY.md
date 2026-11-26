@@ -8,22 +8,22 @@ across tools.
 Update affected documentation in the same change as implementation: usage, configuration, API and workflow guides must
 describe the resulting behavior. Update current status and the owning report; update the roadmap, repository map and
 ADRs when scope, structure or decisions change. Verify links and examples before handoff. The documentation-current gate
-requires this evidence; record why any document needs no change. Each logical module needs README.md. At every session
-end refresh docs/status/report and verify edited Markdown with Prettier 3; handoff owns details. Include this evidence
-in documentation-current. Create a PR for each change; record its URL, base and current head. The pull-request gate
-stays incomplete without access or authority. PR creation grants no merge, publish or deploy authority.
+requires this evidence; record why any document needs no change. update-docs owns module READMEs, session refresh and
+Prettier rules. Integrate per configured delivery: a PR records URL, base and current head; merge modes also need
+approval-merge and a recorded merge commit. Missing access or authority leaves delivery gates incomplete. A PR grants no
+merge, publish or deploy authority.
 
-Maintain the project roadmap as a flat checklist of concrete outcomes per milestone, with a summary of completed/total
-items and whole-percent progress for each milestone and overall. Count each item once with equal weight: round 100 ×
-completed / total; use N/A for an empty roadmap. Refresh counts after task or scope changes. Check items only with
-acceptance and required-gate evidence; blocked or unverified work stays unchecked. Percentages describe scope, not
-effort or delivery approval.
+Maintain the roadmap as checklists of concrete outcomes per milestone, optionally grouped under `### F<n> — name`
+feature headings, with completed/total items and whole-percent progress per feature, milestone and project. Count each
+item once with equal weight: round 100 × completed / total; N/A when empty. Refresh after task or scope changes and
+verify with the roadmap check. Check items only with acceptance and required-gate evidence; blocked or unverified work
+stays unchecked. Percentages describe scope, not effort or delivery approval.
 
-Separate implementation, independent review, technical verification and owner approval. Bind providers in project
-policy; changing a model name alone does not create independent execution context. Reviewers receive the candidate,
-task, applicable policy and evidence, without implementer conclusions as their review brief. Resolve findings, then
-re-review changes affecting the reviewed behavior. Never claim PASS from a different candidate, a queued CI job, or
-unavailable hardware.
+Separate implementation, independent review, external review, technical verification and owner approval. External review
+follows and never replaces independent review. Bind providers in project policy; changing a model name alone does not
+create independent execution context. Reviewers receive the candidate, task, applicable policy and evidence, without
+implementer conclusions as their review brief. Resolve findings, then re-review changes affecting the reviewed behavior.
+Never claim PASS from a different candidate, a queued CI job, or unavailable hardware.
 
 Evidence identifies gate ID, base revision if available, exact affected/new file hashes, environment, observation, link
 and UTC verification time. Results are PASS, FAIL, NOT RUN, BLOCKED or UNKNOWN; preserve actual CI states

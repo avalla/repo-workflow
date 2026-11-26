@@ -1,18 +1,18 @@
 ---
 name: handoff
-description: Persist resumable state.
+description:
+  Persist resumable state, including in-flight orchestration, so a fresh session continues without chat history.
 ---
 
 # handoff
 
-Persist objective, candidate identity, checks with actual states, environment gaps, blockers and at most three next
-actions in the existing owning status/report. Link details. A fresh session must resume without chat history.
+Persist in the existing owning status and report: objective, candidate identity, checks with actual states, environment
+gaps, blockers and at most three next actions. Link details instead of copying them.
 
-Every logical module (application, package or independently owned subsystem) must have a local README.md covering
-purpose, boundaries, public interfaces, dependencies, checks and links to owning documents. At the end of every work
-session, including research, interrupted or blocked work, refresh affected documentation, current status and the owning
-report with actual results, pending checks and next actions. Format every added or edited .md file with Prettier 3
-before handoff, then verify with --check. Use Markdown proseWrap: always and printWidth: 120, with aligned tables; long
-URLs/tables may exceed that width. Preserve existing configuration by merging Markdown overrides; do not reformat
-untouched files. Include module README coverage, session updates and formatting evidence in documentation-current. Load
-applicable core policy and profile extensions on demand. No provider or harness is required.
+In orchestrated mode also make the task ledger current: every task's stage, owner, branch, worktree, candidate, review
+iterations, pending reviews and blocker. Record which worker contexts ended and which tasks have unintegrated work. The
+next session reconciles the ledger with actual branches, worktrees and PR states before resuming.
+
+Run update-docs before handoff. A fresh session must recover the actual result and next action from files alone, without
+coordinator-seeded markers. Load applicable core policy and profile extensions on demand. No provider or harness is
+required.

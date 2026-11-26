@@ -15,7 +15,7 @@ retain before-images and progress. Existing installs require the future M3 updat
 
 Antigravity is accepted in configuration and the library/CLI fixture. Shared AGENTS.md and
 canonical `.agents/skills` follow current official documentation fetched through Context7.
-See [discovery evidence and limitations](../../adapters/README.md). No duplicate harness content.
+See [discovery evidence and limitations](../../../adapters/README.md). No duplicate harness content.
 
 ## Validation
 

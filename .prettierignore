@@ -1,0 +1,6 @@
+# Prettier formats Markdown only in this repository (see .prettierrc.json and AGENTS.md).
+# Source, tests and JSON contracts keep their existing hand-maintained style.
+*.ts
+*.tsx
+*.js
+*.json

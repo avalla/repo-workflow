@@ -1,54 +1,56 @@
 # Acceptance fixtures
 
-Executable now: strict schema definitions, four valid project examples, six profiles, four presets,
-five invalid configurations, nested unknown-field rejection, command/environment references,
-lock base hash, evidence states/dates, catalogue references, local links and byte budgets.
-Gate binding/procedure exclusivity, external reviewer binding and forbidden override fields are also checked.
-Run `bun run check` with pinned Bun dependencies. Python validation remains as M1/M2 reference.
-The synthetic command binding deliberately fails if run; validation reads it as data only.
-The lock/evidence examples use placeholder identities and are not installation or passing gate records.
+Executable now: strict schema definitions, four valid project examples, six profiles, four presets, five invalid
+configurations, nested unknown-field rejection, command/environment references, lock base hash, evidence states/dates,
+catalogue references, local links and byte budgets. Gate binding/procedure exclusivity, external reviewer binding and
+forbidden override fields are also checked. Run `bun run check` with pinned Bun dependencies. The Python M1/M2 reference
+was retired (ADR 0007). The synthetic command binding deliberately fails if run; validation reads it as data only. The
+lock/evidence examples use placeholder identities and are not installation or passing gate records.
 
-`scenarios.json` contains 40 declarative acceptance cases with inputs and expected outcomes.
-Their inventory/structure is checked. `tests/test_tool.py` executes M2 composition and initial-install
-behavior on disposable targets. Bun tests execute M3 updates, removal, uninstall and interrupted transaction recovery.
-Compact synthetic dependency graphs specify relationships, not full profile-schema objects.
-Fixtures requiring files specify literal UTF-8 content or preconditions for a disposable test harness.
+`scenarios.json` contains 40 declarative acceptance cases with inputs and expected outcomes. Their inventory/structure
+is checked. Bun tests execute composition, initial install, M3 updates, removal, uninstall and interrupted transaction
+recovery. Compact synthetic dependency graphs specify relationships, not full profile-schema objects. Fixtures requiring
+files specify literal UTF-8 content or preconditions for a disposable test harness.
 
-| Acceptance area | Representative scenarios | Execution milestone |
-| --- | --- | --- |
-| Determinism and origins | deterministic-render | 2 |
-| Compatibility and scoping | mixed-scope, incompatible-surface, missing-profile, transitive-requirement, requirement-cycle, conflicting-versions, declared-conflict | 2 |
-| Generic fallback | unknown-stack | 2 |
-| Gate retention/authority | required-gate-retained, selector-clause-union, unaccepted-override, adapter-weakening | 2 |
-| Paths/ownership/install | duplicate-target, symlink-collision, path-escape, casefold-collision, entry-block-preservation, unrelated-skill | 2 |
-| Stale/idempotent apply | stale-plan, repeat-applied-plan | 2 |
-| Three-way outcomes | unchanged-managed, local-only-edit, converged-edit, divergent-edit, local-deletion | 3 |
-| Removal and memory | unchanged-removal, modified-removal, project-memory-preserved, uninstall-modified | 3 |
-| Recovery | partial-failure, recovery-user-edit | 3 |
-| Resume and context | resume-without-history, startup-context | 2 |
-| Honest gaps and safe docs | missing-prerequisites, docs-only, commands-never-run, pending-ci-not-pass, reviewer-unavailable | 2 |
-| Explicit support limits | unsupported-multi-repo | 2 |
+| Acceptance area           | Representative scenarios                                                                                                               | Execution milestone |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| Determinism and origins   | deterministic-render                                                                                                                   | 2                   |
+| Compatibility and scoping | mixed-scope, incompatible-surface, missing-profile, transitive-requirement, requirement-cycle, conflicting-versions, declared-conflict | 2                   |
+| Generic fallback          | unknown-stack                                                                                                                          | 2                   |
+| Gate retention/authority  | required-gate-retained, selector-clause-union, unaccepted-override, adapter-weakening                                                  | 2                   |
+| Paths/ownership/install   | duplicate-target, symlink-collision, path-escape, casefold-collision, entry-block-preservation, unrelated-skill                        | 2                   |
+| Stale/idempotent apply    | stale-plan, repeat-applied-plan                                                                                                        | 2                   |
+| Three-way outcomes        | unchanged-managed, local-only-edit, converged-edit, divergent-edit, local-deletion                                                     | 3                   |
+| Removal and memory        | unchanged-removal, modified-removal, project-memory-preserved, uninstall-modified                                                      | 3                   |
+| Recovery                  | partial-failure, recovery-user-edit                                                                                                    | 3                   |
+| Resume and context        | resume-without-history, startup-context                                                                                                | 2                   |
+| Honest gaps and safe docs | missing-prerequisites, docs-only, commands-never-run, pending-ci-not-pass, reviewer-unavailable                                        | 2                   |
+| Explicit support limits   | unsupported-multi-repo                                                                                                                 | 2                   |
 
 Executable Bun and historical M2 tests compare real outputs/bytes; the scenario inventory itself is not a one-to-one
-executable runner. Evidence ingestion (including pending CI) is not exercised by an executable ingestion runner.
-Native handoffs and independent pilot reviews have separate evidence below. A successful fixture
-inventory check is not evidence of deterministic rendering, safe installation, controller support,
-review independence, or update recovery.
+executable runner. Evidence ingestion (including pending CI) is not exercised by an executable ingestion runner. Native
+handoffs and independent pilot reviews have separate evidence below. A successful fixture inventory check is not
+evidence of deterministic rendering, safe installation, controller support, review independence, or update recovery.
 
-Current Bun coverage: `tests/contracts.test.ts` checks contracts/catalogue; `tests/tool.test.ts` checks
-composition and lifecycle; `tests/wizard.test.tsx` drives Ink with simulated TTY input. Seven
-base/local/incoming cases run directly from scenarios.json. Other areas use dedicated tests; this
-is not a claim that all 40 cases have one-to-one runners. Lifecycle tests inject interruption after
-every write boundary for install/update/uninstall and verify resume and rollback bytes.
-[Instruction-snapshot experiments](../../docs/sessions/m3-pilot-snapshots.md) are separate from automated
-fixtures. [Bounded native documentation pilots](../../docs/sessions/m3-native-pilots.md) on full
-tracked copies of Agile Factory Next and Pizza Hit exercised fresh/resumed Codex and Claude file
-handoffs, source-specific checks and independent final review. The coordinator persisted the drafts
-and seeded retrieval markers; these observations prove bounded file retrieval, not autonomous
-memory generation or application delivery. Explicit Claude reads do not prove automatic discovery.
-Antigravity discovery, an unseeded application bugfix handoff and full application delivery remain
-unverified. See [status](../../docs/STATUS.md) and [M5](../../ROADMAP.md).
+Current Bun coverage: `tests/contracts.test.ts` checks contracts/catalogue; `tests/tool.test.ts` checks composition and
+lifecycle; `tests/wizard.test.tsx` drives Ink with simulated TTY input. Seven base/local/incoming cases run directly
+from scenarios.json. Other areas use dedicated tests; this is not a claim that all 40 cases have one-to-one runners.
+Lifecycle tests inject interruption after every write boundary for install/update/uninstall and verify resume and
+rollback bytes. [Instruction-snapshot experiments](../../docs/sessions/archive/m3-pilot-snapshots.md) are separate from
+automated fixtures. [Bounded native documentation pilots](../../docs/sessions/archive/m3-native-pilots.md) on full
+tracked copies of Agile Factory Next and Pizza Hit exercised fresh/resumed Codex and Claude file handoffs,
+source-specific checks and independent final review. The coordinator persisted the drafts and seeded retrieval markers;
+these observations prove bounded file retrieval, not autonomous memory generation or application delivery. Explicit
+Claude reads do not prove automatic discovery. Antigravity discovery, an unseeded application bugfix handoff and full
+application delivery remain unverified. See [status](../../docs/STATUS.md) and [M5](../../ROADMAP.md).
 
-M5 regression coverage in `tests/tool.test.ts` distinguishes omitted affected-path scope (`null`),
-matching scope (`true`) and unrelated scope (`false`) for inspect/doctor. Unknown required scope
-blocks doctor diagnostics without executing commands or completing any gate.
+M7 coverage in `tests/delivery.test.ts` checks delivery integration modes and their gates, merge-approval and
+merge-method schema rules, optional/required external review, parallel limits, wizard-generated configuration and
+installation (ledger, native entry points, uninstall preservation), task-ledger diagnostics, roadmap recomputation
+(including this repository's roadmap) and drift diagnostics with a stubbed PR-state reader. `tests/wizard.test.tsx`
+drives select, multi-select and conditional wizard steps. Native harness execution of generated subagents is not an
+automated fixture.
+
+M5 regression coverage in `tests/tool.test.ts` distinguishes omitted affected-path scope (`null`), matching scope
+(`true`) and unrelated scope (`false`) for inspect/doctor. Unknown required scope blocks doctor diagnostics without
+executing commands or completing any gate.

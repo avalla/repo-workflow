@@ -1,24 +1,19 @@
 # Task routes
 
-Start with scope, owning documents, candidate identity, gate plan and actual authority.
-End with persisted evidence, limitations and next action. All routes retain project review
-and approvals, documentation-current (update affected docs, verify links/examples, justify
-unaffected documents) and pull-request (record URL, base and current head) gates.
+Start with scope, owning documents, candidate identity, gate plan and actual authority. End with persisted evidence,
+limitations and next action. All routes keep review, approvals, documentation-current and configured delivery gates.
 
-| Task / workflow | Sequence and on-demand skills |
-| --- | --- |
-| feature / reviewed-slice | acceptance → deliver-slice → verify → independent review → fix/re-review → handoff |
-| bugfix / reproduce-fix-verify | debug-investigation → cause → fix → affected regressions → review |
-| docs / documentation-change | sources → edit → links/schema/consistency → review; no database/engine/deploy by default |
-| research / investigation | question → sources → alternatives/evidence → review → findings; no feature completion |
-| release / release-readiness | software-versioning → freeze → CI/native/package checks → review → approval report; no deploy |
+- feature / reviewed-slice: acceptance → deliver-slice → verify → independent review → external review if configured →
+  fix/re-review → integrate-delivery → handoff.
+- bugfix / reproduce-fix-verify: debug-investigation → cause → fix → affected regressions → review → integrate-delivery.
+- docs / documentation-change: sources → edit → links/schema/consistency → review; no database/engine/deploy by default.
+- research / investigation: question → sources → alternatives/evidence → review → findings; no feature completion.
+- release / release-readiness: software-versioning → freeze → CI/native/package checks → review → approval; no deploy.
 
-Design decisions use architecture-review; security uses security-assessment; independent
-candidate review uses review-change.
+On demand: architecture-review (design), technical-assessment (technical health), security-assessment, review-change
+(independent review), external-review (configured provider), update-docs.
 
-Read effective execution.mode: default single-agent; orchestrated uses orchestrate-delivery
-for principal/worker ownership, safe parallel work and integrated verification. Authoring
-workers and the principal do not satisfy independent review. CLI launches no agents.
-
-Record base/final candidate; preserve history unless authorized. Distinguish local/CI evidence.
+Execution defaults to single-agent; orchestrated uses orchestrate-delivery (task ledger, one worktree per worker, at
+most maxParallel writers) and integrate-delivery. Workers and the principal never satisfy independent review. The CLI
+launches no agents. Record base/final candidate; preserve history unless authorized. Distinguish local/CI evidence.
 Push, merge, publish, remote access and deploy require actual authority.
