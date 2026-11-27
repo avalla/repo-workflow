@@ -5,7 +5,7 @@ fixtures, concise entry documents, ADRs and roadmap. Workspace was empty at init
 All repository files were added; no existing workspace files required modification or removal.
 
 Source inspection: exact brief commits were available locally; read-only Git object reads verified
-the sources listed in [provenance](../SOURCES.md). New composition/update/schema decisions remain
+the sources listed in [provenance](../../SOURCES.md). New composition/update/schema decisions remain
 explicitly specification-derived. Source projects were neither checked out nor modified.
 
 Validation command: `python3 tests/validate_contracts.py` with the pinned development dependency.

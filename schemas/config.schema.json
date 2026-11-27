@@ -257,6 +257,9 @@
         },
         "map": {
           "$ref": "common.schema.json#/$defs/path"
+        },
+        "tasks": {
+          "$ref": "common.schema.json#/$defs/path"
         }
       },
       "required": [
@@ -513,10 +516,51 @@
             "single-agent",
             "orchestrated"
           ]
+        },
+        "maxParallel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "maxReviewIterations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "nativeEntryPoints": {
+          "type": "boolean"
         }
       },
       "required": [
         "mode"
+      ]
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "integration": {
+          "enum": [
+            "pr",
+            "pr-auto-merge",
+            "direct-merge"
+          ]
+        },
+        "base": {
+          "type": "string",
+          "pattern": "^(?![-/])(?!@$)(?!HEAD$)(?!.*\\.\\.)(?!.*//)(?!.*@\\{)(?!(?:.*/)?\\.)(?!.*\\.lock(?:/|$))(?!.*[/.]$)[^\\u0000-\\u0020\\u007f~^:?*\\[\\\\]+$"
+        },
+        "mergeMethod": {
+          "enum": [
+            "merge",
+            "squash",
+            "rebase"
+          ]
+        }
+      },
+      "required": [
+        "integration",
+        "base"
       ]
     }
   },
@@ -552,7 +596,10 @@
               "external": {
                 "properties": {
                   "policy": {
-                    "const": "required"
+                    "enum": [
+                      "required",
+                      "optional"
+                    ]
                   }
                 }
               }
@@ -572,6 +619,142 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "delivery": {
+            "properties": {
+              "integration": {
+                "enum": [
+                  "pr-auto-merge",
+                  "direct-merge"
+                ]
+              }
+            },
+            "required": [
+              "integration"
+            ]
+          }
+        },
+        "required": [
+          "delivery"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approvals": {
+            "contains": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "const": "merge"
+                },
+                "scope": {
+                  "const": "project"
+                },
+                "policy": {
+                  "const": "required"
+                },
+                "applicability": {
+                  "type": "object",
+                  "properties": {
+                    "components": {
+                      "type": "array",
+                      "maxItems": 0
+                    },
+                    "paths": {
+                      "type": "array",
+                      "maxItems": 0
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "maxItems": 0
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "paths",
+                    "tasks"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "scope",
+                "policy",
+                "applicability"
+              ]
+            }
+          },
+          "delivery": {
+            "required": [
+              "mergeMethod"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "mode": {
+                "const": "single-agent"
+              }
+            },
+            "required": [
+              "mode"
+            ]
+          }
+        },
+        "required": [
+          "execution"
+        ]
+      },
+      "then": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "maxParallel": {
+                "const": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "nativeEntryPoints": {
+                "const": true
+              }
+            },
+            "required": [
+              "nativeEntryPoints"
+            ]
+          }
+        },
+        "required": [
+          "execution"
+        ]
+      },
+      "then": {
+        "properties": {
+          "harnesses": {
+            "contains": {
+              "enum": [
+                "claude-code",
+                "codex"
+              ]
             }
           }
         }

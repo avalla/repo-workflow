@@ -22,6 +22,19 @@ The installer generates one shared entry block and one canonical copy per skill.
 requiring project reconciliation; the tool never replaces it. Claude native skill links are not generated. Explicit path
 reading is the fallback.
 
+## Native orchestration entry points
+
+With `execution.nativeEntryPoints: true` and the `claude-code` harness, installation adds three generator-owned files
+from [`claude-code/`](claude-code/): `.claude/agents/repo-workflow-worker.md` (one ledger task in its own worktree; no
+merge, push or ledger edits), `.claude/agents/repo-workflow-reviewer.md` (independent review of a frozen candidate;
+refuses candidates it authored) and `.claude/commands/repo-workflow-deliver.md` (entry to orchestrated or single-agent
+delivery). They only route to canonical skills and add no authority. They follow the same three-way update and uninstall
+rules as other managed files. With the `codex` harness it also adds project-scoped custom agents from
+[`codex/`](codex/): `.codex/agents/repo-workflow-worker.toml` and `.codex/agents/repo-workflow-reviewer.toml` (`name`,
+`description`, `developer_instructions`, same rules). Codex has no project-level command file; the canonical skills
+under `.agents/skills/` remain the entry, and external review uses `codex review`. Native execution of these agents is
+qualified separately from file generation.
+
 Google Antigravity documentation describes AGENTS.md/GEMINI.md as always-on project instructions and `.agents/skills/`
 as the canonical skill directory. No redundant GEMINI.md, legacy `.agent/` copy or rules wrapper is needed. Sources:
 [rules](https://antigravity.google/docs/rules.md), [skills](https://antigravity.google/docs/skills). Retrieved
@@ -29,10 +42,11 @@ as the canonical skill directory. No redundant GEMINI.md, legacy `.agent/` copy 
 
 Executable fixtures verify generated files, routing and preservation. Native Codex retrieved a project-instruction token
 and read canonical skills. Claude explicitly followed CLAUDE.md → AGENTS.md → index → skill in M3. The
-[M2 follow-up](../docs/sessions/m2-claude-native.md) observes automatic loading of the installed entry pair without read
-tools, with an empty-directory control; native skill registration is not claimed. Antigravity native discovery is **NOT
-RUN** because it is absent locally. See [native evidence](../docs/sessions/m3-native-pilots.md). Documentation-backed
-support is distinct from native compatibility verification.
+[M2 follow-up](../docs/sessions/archive/m2-claude-native.md) observes automatic loading of the installed entry pair
+without read tools, with an empty-directory control; native skill registration is not claimed. Antigravity native
+discovery is **NOT RUN** because it is absent locally. See
+[native evidence](../docs/sessions/archive/m3-native-pilots.md). Documentation-backed support is distinct from native
+compatibility verification.
 
 Adapters provide discovery only; they cannot change architecture, requirements or approvals. Installed content has no
 home-instruction, subscription or runtime framework-checkout dependency.

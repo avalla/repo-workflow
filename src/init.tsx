@@ -4,35 +4,80 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {canonical, checked, Inputs, requireThat as req, SOURCE, type Document} from './io';
 import {resolve} from './compose';
+import {NATIVE} from './render';
 
-export type Answers = {name: string; surface: string; stack: string; harnesses: string; language: string; executionMode?: string};
-const fields = [
-  {key: 'name', label: 'Project name (lowercase, digits, hyphens)', initial: 'my-project'},
-  {key: 'surface', label: 'Surface: cli, library, web, other', initial: 'cli'},
-  {key: 'stack', label: 'Stack labels, comma separated (e.g. typescript,bun)', initial: 'typescript,bun'},
-  {key: 'harnesses', label: 'Harnesses: generic,codex,claude-code,antigravity', initial: 'generic,codex'},
-  {key: 'executionMode', label: 'Execution: single-agent, orchestrated', initial: 'single-agent'},
-  {key: 'language', label: 'Documentation language', initial: 'en'},
-] as const;
-const list = (s: string) => s.split(',').map(s => s.trim()).filter(Boolean);
+const NATIVE_HARNESSES = Object.keys(NATIVE);
+
+export type Answers = {
+  name: string; surface: string; stack: string; harnesses: string; language: string; executionMode?: string;
+  maxParallel?: string; nativeEntryPoints?: string; externalReview?: string; integration?: string; base?: string;
+  mergeMethod?: string; test?: string; lint?: string; typecheck?: string; checkPaths?: string;
+};
+type Field = {key: keyof Answers; label: string; initial: string; kind: 'text' | 'select' | 'multi'; options?: string[];
+  when?: (a: Partial<Answers>) => boolean; optional?: boolean};
+const merging = (a: Partial<Answers>) => ['pr-auto-merge', 'direct-merge'].includes(a.integration ?? 'pr');
+const checks = (a: Partial<Answers>) => ['test', 'lint', 'typecheck'].some(k => (a as any)[k]?.trim());
+export const fields: Field[] = [
+  {key: 'name', label: 'Project name (lowercase, digits, hyphens)', initial: 'my-project', kind: 'text'},
+  {key: 'surface', label: 'Surface', initial: 'cli', kind: 'select', options: ['cli', 'library', 'web', 'other']},
+  {key: 'stack', label: 'Stack labels, comma separated (labels only; nothing is installed)', initial: 'typescript,bun', kind: 'text', optional: true},
+  {key: 'harnesses', label: 'Harnesses (space toggles)', initial: 'generic,codex', kind: 'multi', options: ['generic', 'codex', 'claude-code', 'antigravity']},
+  {key: 'executionMode', label: 'Execution', initial: 'single-agent', kind: 'select', options: ['single-agent', 'orchestrated']},
+  {key: 'maxParallel', label: 'Maximum parallel workers', initial: '2', kind: 'select', options: ['2', '3', '4', '6', '8'], when: a => a.executionMode === 'orchestrated'},
+  {key: 'nativeEntryPoints', label: 'Generate native worker/reviewer agents (Claude Code also gets a delivery command)', initial: 'no', kind: 'select', options: ['no', 'yes'], when: a => (a.harnesses ?? '').split(',').some(h => NATIVE_HARNESSES.includes(h))},
+  {key: 'externalReview', label: 'External review after independent review', initial: 'codex-optional', kind: 'select', options: ['codex-optional', 'codex-required', 'disabled']},
+  {key: 'integration', label: 'Delivery integration', initial: 'pr', kind: 'select', options: ['pr', 'pr-auto-merge', 'direct-merge']},
+  {key: 'base', label: 'Target branch', initial: 'main', kind: 'text'},
+  {key: 'mergeMethod', label: 'Merge method', initial: 'squash', kind: 'select', options: ['squash', 'merge', 'rebase'], when: merging},
+  {key: 'test', label: 'Test command (space-separated argv, no shell; empty to skip)', initial: '', kind: 'text', optional: true},
+  {key: 'lint', label: 'Lint command (empty to skip)', initial: '', kind: 'text', optional: true},
+  {key: 'typecheck', label: 'Typecheck command (empty to skip)', initial: '', kind: 'text', optional: true},
+  {key: 'checkPaths', label: 'Paths covered by those checks, comma separated', initial: 'src', kind: 'text', when: checks},
+  {key: 'language', label: 'Documentation language (recorded only; bundled guidance stays English)', initial: 'en', kind: 'text'},
+];
+const list = (s = '') => s.split(',').map(s => s.trim()).filter(Boolean);
+const MERGE_DESCRIPTIONS: Record<string, string> = {
+  pr: 'open a PR; merging stays a separate owner decision',
+  'pr-auto-merge': 'open a PR and enable auto-merge after required gates PASS',
+  'direct-merge': 'merge the integrated candidate without a PR after required gates PASS',
+};
 export function createConfig(a: Answers): Document {
   req(/^[a-z][a-z0-9-]*$/.test(a.name), 'invalid-project-name');
   req(['cli', 'library', 'web', 'other'].includes(a.surface), 'invalid-surface');
   req(a.language.trim(), 'missing-language');
   const profile = ['cli', 'library'].includes(a.surface) ? 'surface-library-cli' : a.surface === 'web' ? 'surface-web' : null;
+  const mode = a.executionMode ?? 'single-agent', orchestrated = mode === 'orchestrated';
+  const harnesses = list(a.harnesses), native = a.nativeEntryPoints === 'yes' && harnesses.some(h => NATIVE_HARNESSES.includes(h));
+  const review = a.externalReview ?? 'disabled';
+  req(['disabled', 'codex-optional', 'codex-required'].includes(review), 'invalid-external-review');
+  const integration = a.integration ?? 'pr', mergeMode = integration !== 'pr';
+  const commands: Document = {}, gates: Document[] = [];
+  for (const id of ['test', 'lint', 'typecheck'] as const) {
+    const argv = (a[id] ?? '').trim().split(/\s+/).filter(Boolean);
+    if (!argv.length) continue;
+    commands[id] = {argv, cwd: '.', affectedPaths: list(a.checkPaths ?? 'src'), environment: 'local', effects: ['write-local'], authorization: 'task-scope'};
+    gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: list(a.checkPaths ?? 'src'), tasks: ['feature', 'bugfix']},
+      binding: id, environment: 'local', resources: [], procedure: null});
+    // A release verifies the whole candidate, whatever files it touches (R2-8).
+    gates.push({id: id + '-release', category: 'technical', required: true, applicability: {components: [], paths: [], tasks: ['release']},
+      binding: id, environment: 'local', resources: [], procedure: null});
+  }
+  const approvals: Document[] = [{id: 'publish', scope: 'project', applicability: {components: [], paths: [], tasks: ['release']}, policy: 'required', authority: 'project owner'}];
+  // Choosing a merge mode in the wizard is the owner's standing merge decision; the gate still needs recorded approval.
+  if (mergeMode) approvals.push({id: 'merge', scope: 'project', applicability: {components: [], paths: [], tasks: []}, policy: 'required', authority: 'project owner'});
   return {
     schemaVersion: 1, framework: {version: '0.1.0'},
     project: {name: a.name, domain: 'business-application', delivery: ['source'], layout: 'single-package', documentationLanguage: a.language.trim(), codeLanguage: 'en'},
-    harnesses: list(a.harnesses), components: {main: {path: '.', surface: a.surface, stack: list(a.stack), profiles: profile ? [{id: profile, version: '0.1.0', scope: 'component:main'}] : [], settings: {}}},
-    execution: {mode: a.executionMode ?? 'single-agent'},
+    harnesses, components: {main: {path: '.', surface: a.surface, stack: list(a.stack), profiles: profile ? [{id: profile, version: '0.1.0', scope: 'component:main'}] : [], settings: {}}},
+    execution: {mode, ...orchestrated ? {maxParallel: Number(a.maxParallel ?? 2)} : {}, ...native ? {nativeEntryPoints: true} : {}},
+    delivery: {integration, base: (a.base ?? 'main').trim(), ...mergeMode ? {mergeMethod: a.mergeMethod ?? 'squash'} : {}},
     profiles: [], capabilities: [], integrations: {tracker: null, ci: null},
     workflow: {feature: 'reviewed-slice', bugfix: 'reproduce-fix-verify', docs: 'documentation-change', research: 'investigation', release: 'release-readiness'},
-    review: {independent: 'required', external: {provider: null, policy: 'disabled'}},
-    state: {current: 'docs/STATUS.md', roadmap: 'ROADMAP.md', decisions: 'docs/adr', evidence: 'docs/sessions', map: 'REPO_GRAPH.md'},
+    review: {independent: 'required', external: review === 'disabled' ? {provider: null, policy: 'disabled'} : {provider: 'codex', policy: review.slice(6)}},
+    state: {current: 'docs/STATUS.md', roadmap: 'ROADMAP.md', decisions: 'docs/adr', evidence: 'docs/sessions', map: 'REPO_GRAPH.md', ...orchestrated ? {tasks: 'docs/tasks.json'} : {}},
     context: {statusTargetBytes: 8000, statusWarningBytes: 10000, skillLoading: 'on-demand'},
-    commands: {}, environments: {}, gates: [], overrides: [],
-    approvals: [{id: 'publish', scope: 'project', applicability: {components: [], paths: [], tasks: ['release']}, policy: 'required', authority: 'project owner'}],
-    presets: [], localProfiles: [],
+    commands, environments: gates.length ? {local: {requirements: ['Confirm each configured command and its prerequisites before relying on it'], remote: false}} : {},
+    gates, overrides: [], approvals, presets: [], localProfiles: [],
   };
 }
 export function initialize(root: string, config: Document, dryRun = false) {
@@ -51,36 +96,62 @@ export function initialize(root: string, config: Document, dryRun = false) {
   }
   return {state: dryRun ? 'preview' : 'configured', root, config, diagnostics, next: 'Review configuration; run plan, then apply --plan <file>. No application scaffold or commands executed.'};
 }
+const defaults = Object.fromEntries(fields.map(f => [f.key, f.initial])) as Answers;
 export function Wizard({root, onComplete}: {root: string; onComplete: (config: Document) => void}) {
   const {exit} = useApp();
-  const [step, setStep] = useState(0), [value, setValue] = useState<string>(fields[0].initial);
-  const [answers, setAnswers] = useState<Partial<Answers>>({}), [error, setError] = useState('');
-  const confirmation = step === fields.length;
+  const [answers, setAnswers] = useState<Partial<Answers>>({}), [step, setStep] = useState(0);
+  const [value, setValue] = useState<string>(fields[0].initial), [cursor, setCursor] = useState(0), [error, setError] = useState('');
+  const visible = fields.filter(f => !f.when || f.when({...defaults, ...answers}));
+  const confirmation = step >= visible.length, field = visible[step];
+  function enter(index: number, current: Partial<Answers>) {
+    const next = fields.filter(f => !f.when || f.when({...defaults, ...current}))[index];
+    setStep(index); setError('');
+    if (!next) {setValue('no'); return;}
+    setValue(next.initial); setCursor(next.kind === 'select' ? Math.max(0, next.options!.indexOf(next.initial)) : 0);
+  }
   useInput((input, key) => {
     if (key.escape || key.ctrl && input === 'c') {exit(new Error('cancelled: no files written')); return;}
+    if (!confirmation && field.kind !== 'text') {
+      const options = field.options!;
+      if (key.upArrow || key.downArrow) {
+        const moved = (cursor + (key.downArrow ? 1 : options.length - 1)) % options.length;
+        setCursor(moved); if (field.kind === 'select') setValue(options[moved]); return;
+      }
+      if (field.kind === 'multi' && input === ' ') {
+        const chosen = new Set(list(value)), option = options[cursor];
+        chosen.has(option) ? chosen.delete(option) : chosen.add(option);
+        setValue(options.filter(o => chosen.has(o)).join(',')); return;
+      }
+      if (!key.return) return;
+    }
     if (key.return) {
       if (confirmation) {
         if (value.toLowerCase() !== 'yes') {exit(new Error('cancelled: no files written')); return;}
-        try {const config = createConfig(answers as Answers); onComplete(config); exit();} catch (e) {setError(String(e));}
+        try {const config = createConfig({...defaults, ...answers}); onComplete(config); exit();} catch (e) {setError(String(e));}
         return;
       }
-      const next = {...answers, [fields[step].key]: value};
-      if (!value.trim() && fields[step].key !== 'stack') {setError('Enter a value.'); return;}
-      const defaults = Object.fromEntries(fields.map(f => [f.key, f.initial]));
-      try {resolve(createConfig({...defaults, ...next} as Answers), new Inputs(fs.existsSync(root) ? root : process.cwd()), new Inputs(SOURCE));} catch (e) {setError(String(e)); return;}
-      setAnswers(next); setStep(step + 1); setValue(step + 1 < fields.length ? fields[step + 1].initial : 'no'); setError('');
+      if (!value.trim() && !field.optional) {setError('Enter a value.'); return;}
+      const next = {...answers, [field.key]: value};
+      try {resolve(createConfig({...defaults, ...next}), new Inputs(fs.existsSync(root) ? root : process.cwd()), new Inputs(SOURCE));} catch (e) {setError(String(e)); return;}
+      setAnswers(next); enter(step + 1, next);
     } else if (key.backspace || key.delete) setValue(v => Array.from(v).slice(0, -1).join(''));
     else if (key.ctrl && input === 'u') setValue('');
     else if (!key.ctrl && !key.meta && !key.upArrow && !key.downArrow && !key.leftArrow && !key.rightArrow) setValue(v => v + input.replace(/[\x00-\x1f\x7f]/g, ''));
   });
+  const chosen = new Set(list(value));
   return <Box flexDirection="column">
     <Text bold color="cyan">Repo Workflow · Create project configuration</Text>
     <Text>Target: {root}</Text>
-    <Text dimColor>Enter: continue · Ctrl+U: clear · Esc/Ctrl+C: cancel</Text>
-    {confirmation ? <><Text>{canonical(createConfig(answers as Answers))}</Text><Text color="yellow">Write .repo-workflow.json? Type yes to confirm.</Text></> : <Text>{step + 1}/{fields.length} · {fields[step].label}</Text>}
-    <Text color="green">{'› ' + value + '▌'}</Text>
+    <Text dimColor>Enter: continue · ↑/↓: choose · Space: toggle · Ctrl+U: clear · Esc/Ctrl+C: cancel</Text>
+    {confirmation ? <><Text>{canonical(createConfig({...defaults, ...answers}))}</Text><Text color="yellow">Write .repo-workflow.json? Type yes to confirm.</Text></> :
+      <Text>{step + 1}/{visible.length} · {field.label}</Text>}
+    {!confirmation && field.kind !== 'text' ? field.options!.map((option, i) =>
+      <Text key={option} color={i === cursor ? 'green' : undefined}>
+        {(i === cursor ? '› ' : '  ') + (field.kind === 'multi' ? (chosen.has(option) ? '[x] ' : '[ ] ') : '') + option}
+        {field.key === 'integration' ? <Text dimColor>{' — ' + MERGE_DESCRIPTIONS[option]}</Text> : null}
+      </Text>) : <Text color="green">{'› ' + value + '▌'}</Text>}
     {error ? <Text color="red">{error}</Text> : null}
-    <Text dimColor>Project code and commands are configured separately. Required reviews remain open.</Text>
+    <Text dimColor>Project code is configured separately. Commands are recorded, never executed. Required reviews remain open.</Text>
   </Box>;
 }
 export async function interactiveInit(root: string) {

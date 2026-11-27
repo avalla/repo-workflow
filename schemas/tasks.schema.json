@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://repo-workflow.invalid/schemas/tasks.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "feature",
+              "bugfix",
+              "docs",
+              "research",
+              "release"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "acceptance": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "uniqueItems": true
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "worktree": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "stage": {
+            "enum": [
+              "planned",
+              "approved",
+              "implementing",
+              "verifying",
+              "reviewing",
+              "external-review",
+              "fixing",
+              "integrating",
+              "pr-open",
+              "merged",
+              "done",
+              "blocked",
+              "abandoned"
+            ]
+          },
+          "candidate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewIterations": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "uniqueItems": true
+          },
+          "blocker": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "acceptance",
+          "owner",
+          "paths",
+          "dependsOn",
+          "branch",
+          "worktree",
+          "stage",
+          "candidate",
+          "reviewIterations",
+          "evidence",
+          "blocker"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "tasks"
+  ]
+}

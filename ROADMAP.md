@@ -1,6 +1,6 @@
 # Roadmap
 
-Progress: **93% — 28/30 checklist items complete; 4/6 milestones complete.** Items have equal weight; this measures
+Progress: **61% — 28/46 checklist items complete; 4/7 milestones complete.** Items have equal weight; this measures
 completed scope, not effort, time or delivery certification. Count only checked items below. Round
 `100 × completed / total` to the nearest whole percent. Blocked or unverified items stay unchecked; update counts
 whenever scope or evidence changes.
@@ -12,7 +12,8 @@ whenever scope or evidence changes.
 | M3 — safe updates and pilot adoption        | 9/9   | 100%     | Bounded documentation adoption complete              |
 | M4 — assessment and review procedures       | 6/6   | 100%     | Installed procedures independently reviewed          |
 | M5 — review follow-up and application pilot | 2/3   | 67%      | Local pilot passed; target delivery gates incomplete |
-| M6 — documentation and design requirements  | 2/2   | 100%     | Independently reviewed; PRs #2 and #4 open           |
+| M6 — documentation and design requirements  | 2/2   | 100%     | Independently reviewed; PRs #2 and #4 merged         |
+| M7 — configurable agentic delivery          | 0/16  | 0%       | Planned                                              |
 
 ## Milestone 1 — contracts and extracted content
 
@@ -22,7 +23,7 @@ whenever scope or evidence changes.
 - [x] Define core workflows, evidence and release/update contracts.
 - [x] Add representative configurations, acceptance fixtures and local contract validation.
 
-Evidence: [M1 report](docs/sessions/m1-contracts.md). Declarative scenarios are not all executable; see
+Evidence: [M1 report](docs/sessions/archive/m1-contracts.md). Declarative scenarios are not all executable; see
 [coverage](tests/fixtures/README.md) for current behavior and explicit gaps.
 
 ## Milestone 2 — deterministic local tool
@@ -34,11 +35,11 @@ Evidence: [M1 report](docs/sessions/m1-contracts.md). Declarative scenarios are 
       commands.
 - [ ] Verify discovery in native Codex, Claude Code and Antigravity sessions.
 
-Evidence: [M2 report](docs/sessions/m2-local-tool.md). Filesystem contracts are verified; Codex startup and explicit
-Claude routing were exercised. [Claude qualification](docs/sessions/m2-claude-native.md) now observes automatic entry
-loading and explicit canonical-skill reading; native skill registration is not claimed. Antigravity remains NOT RUN.
-Closure still requires native Antigravity evidence. Claude uses the documented canonical-path fallback; explicit skill
-reads must not be reported as native skill registration.
+Evidence: [M2 report](docs/sessions/archive/m2-local-tool.md). Filesystem contracts are verified; Codex startup and
+explicit Claude routing were exercised. [Claude qualification](docs/sessions/archive/m2-claude-native.md) now observes
+automatic entry loading and explicit canonical-skill reading; native skill registration is not claimed. Antigravity
+remains NOT RUN. Closure still requires native Antigravity evidence. Claude uses the documented canonical-path fallback;
+explicit skill reads must not be reported as native skill registration.
 
 ## Milestone 3 — safe updates and pilot adoption
 
@@ -54,11 +55,11 @@ reads must not be reported as native skill registration.
 - [x] Obtain independent review and applicable local checks for documentation pilots; record engine/hardware checks as
       inapplicable.
 
-Evidence: [M3 tooling](docs/sessions/m3-bun-ink.md),
-[snapshot observations and reconciliation](docs/sessions/m3-pilot-snapshots.md),
-[tracked-source qualification](docs/sessions/m3-tracked-copies.md), [usage](docs/USAGE.md). The
-[native pilot report](docs/sessions/m3-native-pilots.md) closes bounded documentation adoption. This is not application
-delivery certification. Total harness startup context is not observable in these traces; measurements cover
+Evidence: [M3 tooling](docs/sessions/archive/m3-bun-ink.md),
+[snapshot observations and reconciliation](docs/sessions/archive/m3-pilot-snapshots.md),
+[tracked-source qualification](docs/sessions/archive/m3-tracked-copies.md), [usage](docs/USAGE.md). The
+[native pilot report](docs/sessions/archive/m3-native-pilots.md) closes bounded documentation adoption. This is not
+application delivery certification. Total harness startup context is not observable in these traces; measurements cover
 trace-visible output and on-disk entry sizes. Antigravity remains unverified. AutoÉpoque adoption was removed from
 active scope by the owner on 2026-11-12; Agile Factory Next is the current pattern source. Historical AutoÉpoque
 extraction remains documented for provenance. Unavailable checks keep delivery gates incomplete.
@@ -72,14 +73,14 @@ extraction remains documented for provenance. Unavailable checks keep delivery g
 - [x] Deliver architecture-review with contract checks and independent review evidence.
 - [x] Deliver software-versioning with contract checks and independent review evidence.
 
-Implementation and validation: [assessment skills report](docs/sessions/assessment-skills.md). Additional procedures:
-[delivery skills report](docs/sessions/delivery-skills.md).
+Implementation and validation: [assessment skills report](docs/sessions/archive/assessment-skills.md). Additional
+procedures: [delivery skills report](docs/sessions/archive/delivery-skills.md).
 
 - [x] Deliver documentation and PR gates plus selectable agent orchestration with contract checks and independent review
       evidence.
 
-See [delivery workflow report](docs/sessions/delivery-workflow.md). Independent review PASS:
-[review report](docs/sessions/m4-independent-review.md). Scope: installed procedures and local contracts; native
+See [delivery workflow report](docs/sessions/archive/delivery-workflow.md). Independent review PASS:
+[review report](docs/sessions/archive/m4-independent-review.md). Scope: installed procedures and local contracts; native
 agent/application execution remains NOT RUN. PR: [#1](https://github.com/avalla/repo-workflow/pull/1); no merge or
 deployment performed.
 
@@ -107,10 +108,10 @@ target project's instructions and permissions; this roadmap does not itself auth
 publishing, merging or deploying. Record pilot evidence in a dedicated session report and link it here before checking
 the item.
 
-Planning reconciliation: [planning report](docs/sessions/m5-planning.md). Implementation:
-[M5 follow-up](docs/sessions/m5-follow-up.md). Local application pilot executed with review/handoff PASS:
-[evidence](docs/sessions/m5-application-pilot.md). Its target PR/browser/accessibility gates remain incomplete; the
-checklist item stays unchecked.
+Planning reconciliation: [planning report](docs/sessions/archive/m5-planning.md). Implementation:
+[M5 follow-up](docs/sessions/archive/m5-follow-up.md). Local application pilot executed with review/handoff PASS:
+[evidence](docs/sessions/archive/m5-application-pilot.md). Its target PR/browser/accessibility gates remain incomplete;
+the checklist item stays unchecked.
 
 Release publication is outside this checklist and needs separate authorization plus verified compatibility evidence.
 
@@ -120,9 +121,103 @@ Release publication is outside this checklist and needs separate authorization p
       system with Impeccable/Hallmark, and official Supabase skill routing; validate installation and obtain independent
       review.
 
-Candidate and verification: [requirements report](docs/sessions/documentation-design-requirements.md).
+Candidate and verification: [requirements report](docs/sessions/archive/documentation-design-requirements.md).
 
 - [x] Deliver Supabase SaaS schema snapshots and typed migration guidance with explicit pre-live/live rules; validate
       installed guidance and obtain independent review.
 
-Evidence: [Supabase SaaS follow-up](docs/sessions/supabase-saas-guidance.md).
+Evidence: [Supabase SaaS follow-up](docs/sessions/archive/supabase-saas-guidance.md).
+
+## Milestone 7 — configurable agentic delivery
+
+Added after the 2026-11-26 project review against the target delivery flow: a principal agent fans out parallel workers
+for features and bugfixes, each candidate passes independent review and, when configured and available, an external
+Codex review; the project chooses at installation whether delivery ends at a PR or at a direct merge. The lower overall
+percentage reflects added scope; completed M1–M6 evidence is unchanged. The CLI keeps launching no agents (ADR
+0004/0005); harnesses execute, while this repository provides configuration, procedures, ledgers and deterministic
+checks. Items are grouped by feature; the feature table below is maintained by hand until F6 makes it a generated
+convention.
+
+| Feature                          | Items | Progress |
+| -------------------------------- | ----- | -------- |
+| F1 — configuration and wizard    | 0/3   | 0%       |
+| F2 — orchestration pipeline      | 0/4   | 0%       |
+| F3 — external review             | 0/1   | 0%       |
+| F4 — handoff and documentation   | 0/2   | 0%       |
+| F5 — technical assessment        | 0/1   | 0%       |
+| F6 — progress tracking           | 0/2   | 0%       |
+| F7 — harness-native entry points | 0/1   | 0%       |
+| F8 — closure and pilot           | 0/2   | 0%       |
+
+### F1 — configuration and wizard
+
+- [ ] Add `delivery.integration` (`pr` | `pr-auto-merge` | `direct-merge`) with merge method and merge prerequisites
+      (required gates PASS, CI PASS, findings resolved). Non-PR modes require an explicit owner `merge` approval in
+      `approvals`; compose maps the mode to pull-request/merge gates without weakening core gates. Record the decision
+      in an ADR; add schema, composition and regression tests.
+- [ ] Add `execution.maxParallel` and define `review.external.policy: optional` semantics: an unavailable provider
+      records NOT RUN with the reason and never PASS; `required` blocks completion. Accept `codex` as a provider binding
+      without making core provider-specific; add composition and inspect tests.
+- [ ] Rework the Ink wizard with selection inputs; ask execution mode, maximum parallel workers, external review
+      provider/policy, integration mode and test/lint/typecheck command bindings. Clarify or remove the documentation
+      language question; update wizard tests and usage documentation.
+
+### F2 — orchestration pipeline
+
+- [ ] Define explicit stages in orchestrate-delivery: plan → owner plan approval before fan-out → implement → verify →
+      independent review → external review when configured → integrate → PR or merge per `delivery.integration`. Bound
+      review/fix iterations and escalate to the owner when the limit is reached.
+- [ ] Replace the shared-checkout rule with one isolated worktree and branch per worker task; define branch naming, path
+      ownership, cleanup of merged or abandoned worktrees and preservation of unmerged work.
+- [ ] Add a file-based task ledger (schema and template): task ID, kind, acceptance criteria, owner, owned paths,
+      dependencies, worktree/branch, stage, candidate identity and evidence links. `doctor` validates it and reports
+      overlapping owned paths among active tasks.
+- [ ] Define serial integration: rebase or merge one task at a time onto the target branch, rerun applicable gates on
+      the integrated candidate and read actual CI check states (QUEUED/RUNNING/PASS/FAIL) before PR completion or merge.
+
+### F3 — external review
+
+- [ ] Deliver an installed external-review procedure for Codex: availability detection, frozen candidate brief without
+      implementer conclusions, invocation, findings with stable IDs, dispositions and re-review after fixes. External
+      review complements, and never replaces, independent review; contract checks cover routing and states.
+
+### F4 — handoff and documentation
+
+- [ ] Split handoff: keep resumable state there and extend it to orchestration resume (in-flight tasks, worktrees,
+      stages, pending reviews); move module README, session documentation refresh and Prettier rules to a dedicated
+      update-docs procedure referenced by documentation-current.
+- [ ] Add drift diagnostics to `doctor`: PR/merge states cited in STATUS/ROADMAP versus actual GitHub state when access
+      exists (NOT RUN otherwise), roadmap links to missing evidence, and stale task authorizations in entry files.
+
+### F5 — technical assessment
+
+- [ ] Deliver an installed technical-assessment procedure covering architecture boundaries, technical debt, test
+      coverage, dependency health, performance risks and documentation quality, with severity-ranked findings and
+      remediation priorities; keep assess-project as plan-versus-state comparison and route both in core workflows.
+
+### F6 — progress tracking
+
+- [ ] Extend roadmap policy and template to Milestone → Feature → item with completed/total and rounded percentages per
+      feature, milestone and project; keep flat milestones valid for existing roadmaps without features.
+- [ ] Add a deterministic roadmap check (CLI command and `doctor` diagnostic) that recomputes counts and percentages
+      from checkboxes and fails on mismatched summaries; add regression tests, including this repository's roadmap.
+
+### F7 — harness-native entry points
+
+- [ ] Optionally generate harness-native orchestration entry points: Claude Code worker/reviewer subagents and a
+      delivery command, plus the Codex equivalent, as generator-owned files under three-way update. Do not claim native
+      qualification until observed in a native session. Codex equivalent (review M7-R5, R2-7): project-scoped custom
+      agents under `.codex/agents/`; Codex has no project command file.
+
+### F8 — closure and pilot
+
+- [ ] Reconcile this repository: STATUS PR states (PRs #1–#4 merged), remove the stale Milestone 3 authorization from
+      AGENTS.md, decide on the frozen Python reference with an ADR, archive milestone session evidence, and delete
+      merged branches only with owner authorization.
+- [ ] Run an orchestrated pilot on a disposable project with at least two parallel workers, independent review, external
+      Codex review when available, and both `pr` and `direct-merge` modes; obtain independent review of the M7 candidate
+      and record evidence in a dedicated session report.
+
+Recommended order: F8 reconciliation and F1 first, since they define the configuration the rest reads; then F2 and F3;
+then F4–F7; the F8 pilot last. This roadmap does not authorize merging, publishing, deploying or modifying other
+repositories.

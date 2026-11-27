@@ -44,7 +44,7 @@ change the source project's policy or claim to resolve its runtime authorization
 | Historical memory is embedded in AGENTS | Move history only through an explicitly reviewed project change; preserve it during this installer experiment |
 
 The existing AF Next staging-policy tension and Pizza Hit publishing-policy tension remain documented
-in [provenance](../SOURCES.md). No portable preset grants either authority.
+in [provenance](../../SOURCES.md). No portable preset grants either authority.
 
 ## Remaining qualification
 

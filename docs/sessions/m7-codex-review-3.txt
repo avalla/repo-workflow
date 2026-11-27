@@ -1,0 +1,28 @@
+codex review --base origin/main on 99082cf3dcba54732634d604da89694bc2ba0aad, 2026-11-27T00:49:48Z
+Full review comments:
+
+- [P1] Bind auto-merge to the approved PR head — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:23-24
+  If someone with write access updates the PR branch after its checks and owner approval were recorded, auto-merge can act on the newer head without the independent review or approval required for that revision. Require a head-match check when enabling auto-merge and ensure subsequent head changes invalidate approval before the platform can merge. [AGENTS.md:11–13](AGENTS.md#L11-L13) requires evidence for the actual candidate.
+
+- [P2] Separate integration prerequisites from delivery gates — /Users/andrea/dev/tmp/repo-workflow/skills/orchestrate-delivery/SKILL.md:28-28
+  For a fresh orchestrated candidate, waiting for all required task gates before calling `integrate-delivery` makes the workflow circular: PR mode cannot pass `pull-request` until integration opens the PR, and direct-merge mode cannot pass `merge` until integration performs the merge. Use the integration start criteria at this handoff and reserve the delivery-generated gates for completion. [AGENTS.md:11–13](AGENTS.md#L11-L13) requires gates to remain incomplete until their prerequisites are met.
+
+- [P2] Block concurrent integrations in the task ledger — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:94-100
+  Two tasks in `integrating` pass this check when their owned paths, worktrees, and branches differ, even though both integrations target the same configured base. That lets `doctor` report a valid ledger when neither integration can safely assume its base is current. Block multiple `integrating` entries regardless of checkout identity, as [ADR 0006:30–33](docs/adr/0006-configurable-delivery-integration.md#L30-L33) requires serial integration.
+
+- [P2] Keep entry-file drift checks from aborting doctor — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:139-141
+  A Codex-only project can install successfully with a project-owned `CLAUDE.md` symlink to `AGENTS.md`, since the renderer does not manage that file. The new unconditional drift scan calls `target.track` on the symlink, throws `symlink-collision`, and discards all other `doctor` results. Skip the unsupported entry or report it as a warning without following the symlink.
+
+- [P2] Validate delivery targets as Git branch names — /Users/andrea/dev/tmp/repo-workflow/schemas/config.schema.json:549-551
+  The schema accepts `/main` and `HEAD`, both rejected by `git check-ref-format --branch`, so initialization can succeed with a target that cannot be used for delivery. It also rejects valid names such as `release+next`. Align validation with Git's branch-name rules and add both positive and negative coverage, as required by [ADR 0006:54](docs/adr/0006-configurable-delivery-integration.md#L54).
+
+- [P2] Make wizard release checks independent of affected paths — /Users/andrea/dev/tmp/repo-workflow/src/init.tsx:61-63
+  The `main` component selector makes a generated release gate's applicability `null` when `doctor --task release` receives no `--affected` paths. That blocks a release of an already-integrated revision even though the check covers the entire project and no path list could change its applicability. Generate a task-only selector for these release checks so they apply to every release, as specified in [ADR 0006:52–53](docs/adr/0006-configurable-delivery-integration.md#L52-L53).
+
+- [P3] Report remote diagnostic commands in doctor output — /Users/andrea/dev/tmp/repo-workflow/src/cli.tsx:28-28
+  When `doctor --remote` finds a cited PR, it invokes `gh pr view` but still returns `commandsExecuted: []` and describes discovery as filesystem-only. This makes an authenticated remote lookup indistinguishable from a local-only run in the diagnostic report. Record the lookup attempts separately from configured checks, which remain unexecuted.
+The delivery workflow can stall before integration or merge a PR head that was not approved, and the new diagnostics miss or misreport several supported cases. Type checking, roadmap validation, and all 18 contract, delivery, and wizard tests passed; the full suite was not run.
+
+- [P3] Report remote diagnostic commands in doctor output — /Users/andrea/dev/tmp/repo-workflow/src/cli.tsx:28-28
+  When `doctor --remote` finds a cited PR, it invokes `gh pr view` but still returns `commandsExecuted: []` and describes discovery as filesystem-only. This makes an authenticated remote lookup indistinguishable from a local-only run in the diagnostic report. Record the lookup attempts separately from configured checks, which remain unexecuted.
+exit=0

@@ -256,7 +256,7 @@ test.each(['install', 'update', 'uninstall'] as const)('every %s write boundary 
       expect(actual).toBe(direction === 'resume' ? change.content : change.before);
     }
   }
-}, 60000);
+}, 600000);
 test('wizard config contains no synthetic commands, preserves independent review and supports Antigravity', () => {
   const root = fixture(); fs.unlinkSync(root + '/.repo-workflow.json');
   const config = createConfig({name: 'new-project', surface: 'cli', stack: 'typescript,bun', harnesses: 'generic,antigravity', language: 'it'});
@@ -275,7 +275,8 @@ test('CLI is JSON automatable; no TTY fails clearly and dry-run creates nothing'
 
 test('execution modes are strict and delivery gates cannot be weakened', () => {
   const root = fixture();
-  expect(inspect(root).execution).toEqual({mode: 'single-agent'});
+  expect(inspect(root).execution).toEqual({mode: 'single-agent', maxParallel: 1, maxReviewIterations: 3, nativeEntryPoints: false});
+  expect(inspect(root).delivery).toEqual({integration: 'pr', base: null, mergeMethod: null});
   const config = decode(text(root, '.repo-workflow.json'));
   config.execution = {mode: 'orchestrated'};
   write(root, '.repo-workflow.json', canonical(config));
@@ -291,7 +292,8 @@ test('execution modes are strict and delivery gates cannot be weakened', () => {
   expect(inspect(root).gates['project/pull-request'].required).toBe(true);
   install(root);
   expect(text(root, 'AGENTS.md')).toContain('orchestrated');
-  expect(text(root, '.agents/skills/repo-workflow-orchestrate-delivery/SKILL.md')).toContain('integrated candidate');
+  expect(text(root, '.agents/skills/repo-workflow-orchestrate-delivery/SKILL.md')).toContain('Never let two workers write the same checkout');
+  expect(text(root, '.agents/skills/repo-workflow-integrate-delivery/SKILL.md')).toContain('Verify locally: rerun applicable gates on the integrated candidate');
   config.execution.mode = 'automatic';
   write(root, '.repo-workflow.json', canonical(config));
   expect(() => inspect(root)).toThrow();

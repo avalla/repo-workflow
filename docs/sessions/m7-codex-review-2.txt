@@ -1,0 +1,29 @@
+codex review --base origin/main on fb2543e4aff1848beada710bc6cd690e55c603f9, 2026-11-27T00:32:13Z
+codex
+Type checking passed, but the new ledger test failed under Bun’s default timeout. The delivery procedures can also block before producing their own gate evidence or leave review evidence tied to a pre-integration candidate.
+
+Full review comments:
+
+- [P1] Keep the ledger regression test within the default timeout — /Users/andrea/dev/tmp/repo-workflow/tests/delivery.test.ts:104-104
+  The new ledger test repeatedly installs disposable projects and exceeded Bun’s default 5-second timeout during the documented validation run. It took 8.0 seconds in the focused suite and passed in 7.0 seconds when rerun with a longer timeout. Split the ledger cases, test the validator directly where installation is irrelevant, or give this test an explicit timeout so the default validation command works ([AGENTS.md](AGENTS.md#L15-L16)).
+
+- [P2] Separate integration prerequisites from delivery gate completion — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:10-12
+  The entry condition requires all required task gates to pass before integration, but the same procedure opens the required PR or performs the required merge only later. An orchestrated task following this literally cannot reach the step that satisfies its delivery gate; PR-triggered CI has the same problem. Name the local checks and reviews required to start integration, then require delivery and remote CI evidence at the steps that can actually produce it ([ADR 0006](docs/adr/0006-configurable-delivery-integration.md#L16-L20)).
+
+- [P2] Re-review integration changes even when the rebase is clean — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:14-17
+  The re-review trigger only covers conflicts, but a clean rebase can change reviewed behavior—for example, if the base changes a helper that the task uses without editing the same lines. The next step calls for local verification, so the procedure does not explicitly route that changed candidate back through independent and configured external review. Make review invalidation depend on changes to the reviewed candidate and behavior, not on whether Git reported a conflict ([core/POLICY.md](core/POLICY.md#L22-L31)).
+
+- [P2] Compare checkout identities rather than worktree strings — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:75-77
+  Two writing tasks with different branches and disjoint owned paths pass validation when they name the same checkout as `worker` and `./worker`. I reproduced an empty findings list for that ledger; on resume, both writers would share the same index and checkout. Resolve worktree paths against a defined base and canonicalize existing paths before comparing them ([core/WORKFLOWS.md](core/WORKFLOWS.md#L16-L17)).
+
+- [P2] Exclude fenced examples from roadmap summary validation — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:33-40
+  The checklist scan skips fenced code, but the summary and table scans read the original text. A roadmap with real checklist items but with its only matching summary and progress rows inside a fenced Markdown example passes with no findings. Use the same fence-filtered text for adoption detection, checkbox counting, and summary and row validation so examples cannot satisfy the roadmap check ([AGENTS.md](AGENTS.md#L16-L18)).
+
+- [P3] Match each PR state claim to its own citation — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:106-106
+  When one paragraph says “PR 1 is open; PR 2 was merged,” both URLs inherit both claims. `doctor --remote` therefore reports drift for both PRs even when GitHub returns OPEN for the first and MERGED for the second. Associate each claim with its citation, or skip ambiguous multi-PR passages instead of reporting false warnings.
+
+- [P3] Reject invalid Git target branch names during configuration — /Users/andrea/dev/tmp/repo-workflow/schemas/config.schema.json:549-551
+  The target-branch pattern accepts values such as `main/` and `branch.lock`, which Git rejects as branch names. The wizard can save one of these values and `inspect` can report it as the delivery target, deferring the failure until PR creation or merge. Validate the target against Git branch-name rules before accepting the configuration.
+Type checking passed, but the new ledger test failed under Bun’s default timeout. The delivery procedures can also block before producing their own gate evidence or leave review evidence tied to a pre-integration candidate.
+
+exit=0
