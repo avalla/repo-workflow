@@ -48,7 +48,8 @@
             "items": {
               "$ref": "common.schema.json#/$defs/path"
             },
-            "uniqueItems": true
+            "uniqueItems": true,
+            "minItems": 1
           },
           "dependsOn": {
             "type": "array",
@@ -90,7 +91,7 @@
             "anyOf": [
               {
                 "type": "string",
-                "pattern": "^[a-f0-9]{40}$"
+                "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
               },
               {
                 "type": "null"

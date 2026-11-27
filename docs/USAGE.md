@@ -30,11 +30,13 @@ Delivery integration decides how a reviewed candidate ends ([ADR 0006](adr/0006-
 | `pr-auto-merge` | Open a PR and enable platform auto-merge after gates PASS  | `pull-request`, `merge`, `approval-merge` |
 | `direct-merge`  | Merge the integrated candidate into the base branch, no PR | `merge`, `approval-merge`                 |
 
-Merge modes require `mergeMethod` and a required `merge` approval in `approvals`; the wizard adds both. Optional
-external review produces a non-required `external-review` gate that is NOT RUN when the provider is unavailable.
-Orchestrated projects also get a task ledger at `state.tasks` (default `docs/tasks.json`). Entered commands become bound
-required gates; they are recorded and never executed by the CLI. Omitted `execution` and `delivery` keep the earlier
-behavior: single-agent and PR without merge authority.
+Merge modes require `mergeMethod` and a required `merge` approval in `approvals` whose selectors are empty, so it covers
+every merge; the wizard adds both. Optional external review produces a non-required `external-review` gate that is NOT
+RUN when the provider is unavailable. `nativeEntryPoints` requires the `claude-code` harness. Orchestrated projects also
+get a task ledger at `state.tasks` (default `docs/tasks.json`), also created by an update when the path is new and the
+file is absent. Entered commands become bound required gates scoped to the entered paths; they are recorded and never
+executed by the CLI. Omitted `execution` and `delivery` keep the earlier behavior: single-agent and PR without merge
+authority.
 
 CLI/library and web select representative profiles. `other` keeps generic behavior and reports missing technical gates.
 Configure actual commands, environments and gates in the generated JSON; labels do not install technologies or invent
@@ -89,16 +91,19 @@ bun run cli roadmap --root . --file ROADMAP.md
 ```
 
 `roadmap` recomputes progress from the checkboxes and reports BLOCKED findings (exit 1) for a stale overall summary, a
-stale or unknown table row, a milestone without a row or items outside a milestone; `doctor` includes the same check.
-Progress is not a delivery certificate. Existing roadmaps are preserved on install and update; adopt the format there
-deliberately. See [this repository's checklist](../ROADMAP.md) for an example.
+stale or unknown table row, a milestone or feature without a row, or items outside a milestone. `doctor` runs the same
+check once the roadmap has the `Progress: **…**` summary line; without it, `doctor` only warns
+(`roadmap-format-not-adopted`), so project-owned roadmap formats keep working. Progress is not a delivery certificate.
+Existing roadmaps are preserved on install and update; adopt the format there deliberately. See
+[this repository's checklist](../ROADMAP.md) for an example.
 
 `doctor` also validates the task ledger when `state.tasks` is set (schema, unknown dependencies, cycles, overlapping
-owned paths of active tasks, writers above `maxParallel`, review iterations above `maxReviewIterations`, writers whose
-dependencies are not integrated, missing worktrees or blocker reasons). It reports drift: relative links in status and
-roadmap that point to missing files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it
-reads the actual state of every cited GitHub PR through `gh` and warns when nearby text claims the PR is open or not
-merged while it is merged or closed, or claims a merge for an open PR. Without `--remote` that check is NOT RUN.
+owned paths of active tasks, concurrent writers sharing a worktree or branch, writers above `maxParallel`, review
+iterations above `maxReviewIterations`, writers whose dependencies are not integrated, missing worktrees or blocker
+reasons). It reports drift: relative links in status and roadmap (outside code blocks) that point to missing or unsafe
+files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it reads the actual state of every
+cited GitHub PR through `gh` and warns when nearby text claims the PR is open while it is not, not merged while it is
+merged, or merged while it is not. Without `--remote` that check is NOT RUN.
 
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`, `research`, `release`.
 Omitted paths (including an empty API array) mean scope is unknown, not that no files changed. Gate `applicable` is

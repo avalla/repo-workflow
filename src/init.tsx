@@ -53,7 +53,7 @@ export function createConfig(a: Answers): Document {
     const argv = (a[id] ?? '').trim().split(/\s+/).filter(Boolean);
     if (!argv.length) continue;
     commands[id] = {argv, cwd: '.', affectedPaths: list(a.checkPaths ?? 'src'), environment: 'local', effects: ['write-local'], authorization: 'task-scope'};
-    gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: [], tasks: ['feature', 'bugfix', 'release']},
+    gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: list(a.checkPaths ?? 'src'), tasks: ['feature', 'bugfix', 'release']},
       binding: id, environment: 'local', resources: [], procedure: null});
   }
   const approvals: Document[] = [{id: 'publish', scope: 'project', applicability: {components: [], paths: [], tasks: ['release']}, policy: 'required', authority: 'project owner'}];

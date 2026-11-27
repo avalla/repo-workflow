@@ -14,16 +14,17 @@ explicitly recorded as NOT RUN where optional.
 1. Serialize: integrate one task at a time. Update from the current base, rebase or merge the task branch, resolve
    conflicts without discarding either side, and record the new candidate. A conflict that changes reviewed behavior
    invalidates that review; return the task to `reviewing`.
-2. Verify the integrated candidate: rerun applicable gates. Read actual CI check states; QUEUED, RUNNING, CANCELLED and
-   SKIPPED are not PASS. Never report PASS from an earlier candidate.
-3. Finish per integration mode:
-   - `pr`: push the branch when authorized and open a PR against `base`. Record URL, base, head, checks, reviews and
-     unresolved findings. Stop; merging is a separate owner decision. Stage `pr-open`.
-   - `pr-auto-merge`: as `pr`, then enable platform auto-merge with `mergeMethod` only after approval-merge is recorded
-     and every other required gate is PASS. A queued auto-merge is not merged; record the merge commit when it lands.
-   - `direct-merge`: no PR. With approval-merge recorded and every other required gate PASS, merge the integrated
-     candidate into `base` with `mergeMethod`, then rerun or confirm post-merge checks. Record base before, candidate
-     head, merge commit and evidence.
+2. Verify locally: rerun applicable gates on the integrated candidate. Never report PASS from an earlier candidate.
+3. Finish per integration mode. Remote CI is verified on the exact pushed head; QUEUED, RUNNING, CANCELLED and SKIPPED
+   are not PASS.
+   - `pr`: push the branch when authorized and open a PR against `base`, then wait for its checks on that head. Record
+     URL, base, head, checks, reviews and unresolved findings. Stop; merging is a separate owner decision. Stage
+     `pr-open`.
+   - `pr-auto-merge`: as `pr`; once those checks PASS, approval-merge is recorded and every other required gate is PASS,
+     enable platform auto-merge with `mergeMethod`. A queued auto-merge is not merged; record the merge commit.
+   - `direct-merge`: no PR. With approval-merge recorded and every other required gate PASS (including CI on a pushed
+     candidate branch when CI runs on branches), merge into `base` with `mergeMethod`, then confirm post-merge checks on
+     `base`. Record base before, candidate head, merge commit and evidence.
 4. Move the task to `merged`, then `done` after docs, status, roadmap and ledger are updated. Remove the worktree only
    after merge; keep the branch unless deletion is authorized.
 

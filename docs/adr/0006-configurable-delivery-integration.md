@@ -32,12 +32,24 @@ completed review. Any non-disabled policy needs a provider binding such as `code
 dependencies, cycles, overlapping owned paths of active tasks and parallel limits. Workers use one worktree and branch
 per task; integration is serial.
 
+The `merge` approval must apply everywhere (empty component, path and task selectors), so every merge candidate needs
+recorded approval; a narrower selector is rejected.
+
 The CLI still launches no agents, opens no PRs and merges nothing. Harness-native entry points (Claude Code worker and
-reviewer subagents, a delivery command) are optional generator-owned wrappers over canonical skills.
+reviewer subagents, a delivery command) are optional generator-owned wrappers over canonical skills and require the
+`claude-code` harness. The Codex equivalent is the canonical skills under `.agents/skills/`, which Codex discovers
+natively, plus `codex review` for external review; no extra Codex wrapper is generated because Codex has no
+project-level subagent file to target.
 
 ## Consequences
 
 Direct merge is owner policy, not inferred authority: it cannot be enabled without an explicit approval entry, and
-missing access still leaves delivery gates BLOCKED. Existing configurations resolve as before, except effective policy
-now exposes resolved `execution` defaults and `delivery`. Native qualification of generated subagents remains separate
-evidence.
+missing access still leaves delivery gates BLOCKED. Behavior changes for existing configurations:
+
+- Effective policy and `inspect` expose resolved `execution` defaults and `delivery`.
+- `review.external` with policy `optional` now needs a provider (previously accepted with `null`) and adds a
+  non-required `external-review` gate.
+- `doctor` adds roadmap, ledger and drift diagnostics. A roadmap without the summary line only warns
+  (`roadmap-format-not-adopted`); an adopted format with stale counts is BLOCKED.
+
+Native qualification of generated subagents remains separate evidence.

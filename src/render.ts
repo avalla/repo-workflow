@@ -35,11 +35,12 @@ export function entryBlock(config: Document) {
 }
 export function render(config: Document, effective: Document, target: Inputs, source: Inputs, initial: boolean): Record<string, Output> {
   const outputs: Record<string, Output> = {};
-  function add(p: string, content: string, owner = 'managed', initialize = false) {
+  // whenAbsent initializes a project-owned file on update too (a ledger added by switching to orchestration, C3).
+  function add(p: string, content: string, owner = 'managed', initialize = false, whenAbsent = false) {
     relative(p);
     req(!Object.keys(outputs).some(other => p.toLowerCase() === other.toLowerCase() || p.toLowerCase().startsWith(other.toLowerCase() + '/') || other.toLowerCase().startsWith(p.toLowerCase() + '/')), 'ownership-collision: ' + p);
     const file = target.track(p);
-    if (initialize && (!initial || fs.existsSync(file))) {if (fs.existsSync(file)) req(fs.statSync(file).isFile(), 'initialize-target-not-file'); return;}
+    if (initialize && (!initial && !whenAbsent || fs.existsSync(file))) {if (fs.existsSync(file)) req(fs.statSync(file).isFile(), 'initialize-target-not-file'); return;}
     outputs[p] = {content, owner};
   }
   for (const name of ['POLICY.md', 'WORKFLOWS.md']) add('.repo-workflow/core/' + name, source.text('core/' + name));
@@ -70,7 +71,7 @@ export function render(config: Document, effective: Document, target: Inputs, so
   }
   add('AGENTS.md', entryBlock(config), 'managed-block');
   if (config.harnesses.includes('claude-code')) add('CLAUDE.md', '# Repo Workflow\n\n@AGENTS.md\n\nRead canonical skills listed in `.repo-workflow/index.md` on demand.\n', 'initialize-once', true);
-  for (const [key, template] of [['current', 'STATUS.md'], ['map', 'REPO_GRAPH.md'], ['roadmap', 'ROADMAP.md'], ['tasks', 'TASKS.json']]) if (config.state[key]) add(config.state[key], source.text('templates/' + template), 'initialize-once', true);
+  for (const [key, template] of [['current', 'STATUS.md'], ['map', 'REPO_GRAPH.md'], ['roadmap', 'ROADMAP.md'], ['tasks', 'TASKS.json']]) if (config.state[key]) add(config.state[key], source.text('templates/' + template), 'initialize-once', true, key === 'tasks');
   // Native entry points are thin wrappers over canonical skills; they add no authority (F7).
   if (effective.execution.nativeEntryPoints) for (const [harness, files] of Object.entries(NATIVE)) if (config.harnesses.includes(harness))
     for (const p of files) add(p, source.text('adapters/' + harness + '/' + p.split('/').slice(1).join('/')));

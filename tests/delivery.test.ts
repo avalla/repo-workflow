@@ -33,6 +33,10 @@ test('merge modes require an explicit owner merge approval and a merge method', 
     expect(() => inspect(project(c => {c.delivery = {integration, base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, policy: 'optional'});}))).toThrow('schema-validation');
   }
   expect(() => inspect(project(c => {c.delivery = {integration: 'pr', base: '--force'};}))).toThrow('schema-validation');
+  // The merge approval must cover every merge candidate (M7-R1 / Codex C1).
+  for (const applicability of [{components: [], paths: [], tasks: ['release']}, {components: [], paths: ['src'], tasks: []}, {components: ['main'], paths: [], tasks: []}])
+    expect(() => inspect(project(c => {c.delivery = {integration: 'direct-merge', base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, applicability});}))).toThrow('schema-validation');
+  expect(() => inspect(project(c => {c.harnesses = ['codex']; c.execution = {mode: 'single-agent', nativeEntryPoints: true};}))).toThrow('schema-validation');
 });
 test('auto-merge adds a merge gate; direct merge replaces the PR gate with an approved merge gate', () => {
   const auto = inspect(project(c => {c.delivery = {integration: 'pr-auto-merge', base: 'main', mergeMethod: 'squash'}; c.approvals.push(merge);})).gates;
@@ -78,6 +82,9 @@ test('wizard answers produce merge approval, command gates, ledger and native en
   const entry = text(root, 'AGENTS.md');
   expect(entry).toContain('at most 3 parallel workers'); expect(entry).toContain('no PR'); expect(entry).toContain('`codex` (optional)');
   expect(doctor(root, 'feature', ['src/a.ts']).findings).toEqual([]);
+  // Wizard gates follow the paths the checks cover (Codex C4).
+  expect(inspect(root, 'feature', ['README.md']).gates['project/test'].applicable).toBe(false);
+  expect(inspect(root, 'feature', ['tests/a.test.ts']).gates['project/test'].applicable).toBe(true);
   fs.appendFileSync(root + '/.claude/agents/repo-workflow-worker.md', 'local note\n');
   apply(plan(root, 'uninstall'), root);
   expect(fs.existsSync(root + '/.claude/commands/repo-workflow-deliver.md')).toBe(false);
@@ -105,17 +112,33 @@ test('doctor validates the task ledger: overlaps, dependencies, cycles, limits a
   expect(codes(ledgerProject([task('a', {worktree: null})]))).toContain('task-missing-worktree:a=WARNING');
   expect(codes(ledgerProject([task('a', {reviewIterations: 4, stage: 'fixing'})]))).toContain('task-review-limit-exceeded:a=BLOCKED');
   expect(codes(ledgerProject([task('a', {stage: 'blocked'})]))).toContain('task-blocker-missing:a=WARNING');
+  expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
+  expect(codes(ledgerProject([task('a'), task('b', {branch: 'feature/a'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
+  expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'reviewing'})]))).toEqual([]);
   expect(() => doctor(ledgerProject([{...task('a'), extra: true}]))).toThrow('schema-validation: tasks');
+  expect(() => doctor(ledgerProject([task('a', {paths: []})]))).toThrow('schema-validation: tasks');
+  expect(codes(ledgerProject([task('a', {candidate: 'a'.repeat(64)})]))).toEqual([]);
   const missing = ledgerProject([]); fs.unlinkSync(missing + '/docs/tasks.json');
   expect(codes(missing)).toContain('task-ledger-missing:docs/tasks.json=BLOCKED');
   const unconfigured = project(c => {c.execution = {mode: 'orchestrated'};}); apply(plan(unconfigured), unconfigured);
   expect(codes(unconfigured)).toContain('task-ledger-not-configured=BLOCKED');
 });
+test('switching an installed project to orchestration initializes the ledger on update (Codex C3)', () => {
+  const root = project(); apply(plan(root), root);
+  const config = decode(text(root, '.repo-workflow.json'));
+  config.execution = {mode: 'orchestrated'}; config.state.tasks = 'docs/tasks.json';
+  write(root, '.repo-workflow.json', canonical(config));
+  expect(apply(plan(root, 'update'), root).state).toBe('applied');
+  expect(decode(text(root, 'docs/tasks.json'))).toEqual({schemaVersion: 1, tasks: []});
+  expect(codes(root).filter(c => c.startsWith('task-'))).toEqual([]);
+  write(root, 'docs/tasks.json', canonical({schemaVersion: 1, tasks: [task('a')]}));
+  expect(plan(root, 'update').changes.map((c: any) => c.path)).not.toContain('docs/tasks.json');
+});
 test('roadmap check recomputes feature, milestone and project progress', () => {
   expect(roadmap(SOURCE).findings).toEqual([]);
   expect(roadmapReport(fs.readFileSync(SOURCE + '/templates/ROADMAP.md', 'utf8')).findings).toEqual([]);
   const good = '# R\n\nProgress: **50% — 1/2 checklist items complete; 0/1 milestones complete.**\n\n| M | I | P |\n| - | - | - |\n' +
-    '| M1 — a | 1/2 | 50% |\n| F1 — x | 1/1 | 100% |\n\n## Milestone 1 — a\n\n### F1 — x\n\n- [x] one\n\n### F2 — y\n\n- [ ] two\n\n```md\n- [x] fenced\n```\n';
+    '| M1 — a | 1/2 | 50% |\n| F1 — x | 1/1 | 100% |\n| F2 — y | 0/1 | 0% |\n\n## Milestone 1 — a\n\n### F1 — x\n\n- [x] one\n\n### F2 — y\n\n- [ ] two\n\n```md\n- [x] fenced\n```\n';
   const report = roadmapReport(good);
   expect(report.findings).toEqual([]);
   expect(report.milestones[0].features.map(f => f.label + ' ' + f.percent)).toEqual(['F1 — x 100%', 'F2 — y 0%']);
@@ -123,6 +146,10 @@ test('roadmap check recomputes feature, milestone and project progress', () => {
   expect(roadmapReport(good.replace('| F1 — x | 1/1 | 100% |', '| F1 — x | 0/1 | 0% |')).findings[0].code).toContain('roadmap-row-mismatch:F1 — x');
   expect(roadmapReport(good.replace('| M1 — a | 1/2 | 50% |\n', '')).findings[0].code).toBe('roadmap-missing-row:M1 — a');
   expect(roadmapReport(good + '| F9 — ghost | 0/1 | 0% |\n').findings[0].code).toBe('roadmap-unknown-row:F9 — ghost');
+  expect(roadmapReport(good.replace('| F2 — y | 0/1 | 0% |\n', '')).findings.map(f => f.code)).toEqual(['roadmap-missing-row:F2 — y']);
+  // doctor tolerates project-owned roadmap formats; the explicit roadmap command stays strict (M7-R2).
+  expect(roadmapReport('# Iterations\n\n- [x] shipped\n', false).findings).toEqual([{code: 'roadmap-format-not-adopted', result: 'WARNING'}]);
+  expect(roadmapReport('# Iterations\n\n- [x] shipped\n').findings.map(f => f.result)).toContain('BLOCKED');
   expect(roadmapReport('- [ ] stray\n').findings.map(f => f.code)).toEqual(['roadmap-item-outside-milestone', 'roadmap-missing-summary']);
   const root = project(); apply(plan(root), root);
   write(root, 'ROADMAP.md', good.replace('1/2 checklist', '2/2 checklist'));
@@ -142,4 +169,14 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:MERGED');
   expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   expect(driftFindings(target, files, [], true, () => null).map(f => f.code)).toContain('pr-state-unavailable:https://github.com/o/r/pull/7');
+  // A closed, unmerged PR is accurately "not merged"; a "merged" claim for it is drift (Codex C8).
+  expect(driftFindings(target, files, [], true, () => 'CLOSED').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
+  write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) was merged.\n');
+  expect(driftFindings(target, files, [], true, () => 'CLOSED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:CLOSED');
+  // Unsafe link targets are reported, not fatal; fenced examples and directories are not links to check (M7-R3, S1).
+  fs.writeFileSync(root + '/real.md', 'x'); fs.symlinkSync(root + '/real.md', root + '/docs/link.md');
+  write(root, 'docs/STATUS.md', 'See [l](link.md), [dir](sessions/) and\n\n```md\n[example](missing.md)\n```\n');
+  fs.mkdirSync(root + '/docs/sessions', {recursive: true});
+  expect(driftFindings(target, files, [], false).map(f => f.code)).toEqual(['unsafe-linked-file:docs/STATUS.md:link.md']);
+  expect(() => doctor(root, 'feature', ['src/a.ts'])).not.toThrow();
 });

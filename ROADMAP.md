@@ -206,7 +206,8 @@ convention.
 
 - [ ] Optionally generate harness-native orchestration entry points: Claude Code worker/reviewer subagents and a
       delivery command, plus the Codex equivalent, as generator-owned files under three-way update. Do not claim native
-      qualification until observed in a native session.
+      qualification until observed in a native session. Scope clarified in ADR 0006 after review M7-R5: the Codex
+      equivalent is native discovery of the canonical skills plus `codex review`; no separate Codex file is generated.
 
 ### F8 — closure and pilot
 

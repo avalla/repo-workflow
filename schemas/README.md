@@ -27,8 +27,9 @@ Project execution is selected by optional
 `execution: {"mode": "single-agent" | "orchestrated", "maxParallel", "maxReviewIterations", "nativeEntryPoints"}`;
 omission defaults to single-agent, and `maxParallel` above 1 is rejected for single-agent. Optional
 `delivery: {"integration": "pr" | "pr-auto-merge" | "direct-merge", "base", "mergeMethod"}` selects how candidates
-finish; merge modes require `mergeMethod` and a required project approval with ID `merge`. `review.external.provider` is
-required whenever its policy is not `disabled`. Optional `state.tasks` names the task ledger validated by
-`tasks.schema.json`. Effective policy and inspect expose resolved execution and delivery. The CLI installs guidance and
-reports gates; it does not launch agents, create PRs or merge. See
+finish; merge modes require `mergeMethod` and a required project approval with ID `merge` and empty selectors.
+`nativeEntryPoints` requires the `claude-code` harness; ledger tasks need at least one owned path.
+`review.external.provider` is required whenever its policy is not `disabled`. Optional `state.tasks` names the task
+ledger validated by `tasks.schema.json`. Effective policy and inspect expose resolved execution and delivery. The CLI
+installs guidance and reports gates; it does not launch agents, create PRs or merge. See
 [ADR 0006](../docs/adr/0006-configurable-delivery-integration.md).

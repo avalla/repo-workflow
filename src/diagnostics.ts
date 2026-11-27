@@ -9,7 +9,9 @@ const percent = (done: number, total: number) => total ? Math.round(100 * done /
 const label = (heading: string) => heading.trim().replace(/^Milestone (\d+)\b/, 'M$1');
 
 // Recomputes roadmap progress from checkboxes; summaries are claims to verify, never inputs (F6).
-export function roadmapReport(text: string) {
+// doctor passes adopted=false for roadmaps without the summary line, so project-owned formats only warn (M7-R2).
+export function roadmapReport(text: string, strict = true) {
+  if (!strict && !/^Progress: \*\*/m.test(text)) return {project: null, milestones: [], findings: [{code: 'roadmap-format-not-adopted', result: 'WARNING'} as Finding]};
   const milestones: Node[] = [], findings: Finding[] = [];
   let milestone: Node | null = null, feature: Node | null = null, fence = false;
   for (const line of text.split('\n')) {
@@ -42,7 +44,7 @@ export function roadmapReport(text: string) {
     if (Number(row[2]) !== node.done || Number(row[3]) !== node.total || row[4] !== percent(node.done, node.total))
       findings.push({code: `roadmap-row-mismatch:${row[1]}: expected ${node.done}/${node.total} ${percent(node.done, node.total)}`, result: 'BLOCKED'});
   }
-  for (const m of counted) if (!seen.has(m.label)) findings.push({code: 'roadmap-missing-row:' + m.label, result: 'BLOCKED'});
+  for (const node of nodes.values()) if (!seen.has(node.label)) findings.push({code: 'roadmap-missing-row:' + node.label, result: 'BLOCKED'});
   const tree = counted.map(m => ({label: m.label, done: m.done, total: m.total, percent: percent(m.done, m.total),
     features: m.features.filter(f => f.total).map(f => ({label: f.label, done: f.done, total: f.total, percent: percent(f.done, f.total)}))}));
   return {project, milestones: tree, findings};
@@ -70,6 +72,9 @@ export function ledgerFindings(target: Inputs, source: Inputs, file: string, exe
   for (let i = 0; i < active.length; i++) for (let j = i + 1; j < active.length; j++) {
     const [a, b] = [active[i], active[j]];
     if (a.paths.some((p: string) => b.paths.some((q: string) => overlaps(p, q)))) findings.push({code: `task-path-overlap:${a.id}:${b.id}`, result: 'BLOCKED'});
+    // Disjoint paths are not enough: two writers in one checkout share the index and commits.
+    if (WRITING.includes(a.stage) && WRITING.includes(b.stage) && (a.worktree && a.worktree === b.worktree || a.branch && a.branch === b.branch))
+      findings.push({code: `task-worktree-shared:${a.id}:${b.id}`, result: 'BLOCKED'});
   }
   for (const t of active) {
     if (WRITING.includes(t.stage) && execution.mode === 'orchestrated' && !t.worktree) findings.push({code: 'task-missing-worktree:' + t.id, result: 'WARNING'});
@@ -87,12 +92,16 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
   const findings: Finding[] = [], citations = new Map<string, string[]>();
   for (const file of files) {
     if (!fs.existsSync(target.track(file))) continue;
-    const text = target.text(file);
-    for (const link of text.matchAll(/\]\(([^)\s]+)\)/g)) {
+    const text = target.text(file), prose = text.replace(/^\s*```[\s\S]*?^\s*```/gm, '');
+    for (const link of prose.matchAll(/\]\(([^)\s]+)\)/g)) {
       const value = link[1].split('#')[0];
       if (!value || /^[a-z]+:/i.test(value) || value.startsWith('/')) continue;
-      const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(file), value));
-      if (resolved.startsWith('..') || !safe(resolved) || !fs.existsSync(target.track(resolved))) findings.push({code: `missing-linked-file:${file}:${value}`, result: 'WARNING'});
+      const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(file), value)).replace(/\/$/, '');
+      // A link is a lead, not an input: unsafe targets become findings instead of aborting doctor (M7-R3).
+      let state = 'missing';
+      if (!resolved.startsWith('..') && safe(resolved)) try {state = fs.existsSync(target.track(resolved)) ? 'ok' : 'missing';} catch {state = 'unsafe';}
+      else state = 'outside';
+      if (state !== 'ok') findings.push({code: `${state === 'missing' ? 'missing' : 'unsafe'}-linked-file:${file}:${value}`, result: 'WARNING'});
     }
     for (const paragraph of text.split(/\n\s*\n/)) for (const url of paragraph.match(PR) ?? []) citations.set(url, [...citations.get(url) ?? [], paragraph]);
   }
@@ -107,9 +116,12 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     const state = ghState(url);
     if (!state) {findings.push({code: 'pr-state-unavailable:' + url, result: 'UNKNOWN'}); continue;}
     const text = paragraphs.join('\n');
-    const claimsOpen = /\b(?:is open|remains open|open PR|no merge|not merged)\b/i.test(text);
+    // Open, unmerged and merged are separate claims: a closed PR is accurately "not merged" (C8).
+    const claimsOpen = /\b(?:is open|remains open|open PR)\b/i.test(text);
+    const claimsUnmerged = /\b(?:no merge|not merged)\b/i.test(text);
     const claimsMerged = /\bmerged\b/i.test(text.replace(/not merged/gi, ''));
-    if (state !== 'OPEN' && claimsOpen || state === 'OPEN' && claimsMerged) findings.push({code: `pr-state-drift:${url}:${state}`, result: 'WARNING'});
+    if (claimsOpen && state !== 'OPEN' || claimsUnmerged && state === 'MERGED' || claimsMerged && state !== 'MERGED')
+      findings.push({code: `pr-state-drift:${url}:${state}`, result: 'WARNING'});
   }
   return findings;
 }

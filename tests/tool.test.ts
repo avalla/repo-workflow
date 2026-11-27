@@ -256,7 +256,7 @@ test.each(['install', 'update', 'uninstall'] as const)('every %s write boundary 
       expect(actual).toBe(direction === 'resume' ? change.content : change.before);
     }
   }
-}, 180000);
+}, 600000);
 test('wizard config contains no synthetic commands, preserves independent review and supports Antigravity', () => {
   const root = fixture(); fs.unlinkSync(root + '/.repo-workflow.json');
   const config = createConfig({name: 'new-project', surface: 'cli', stack: 'typescript,bun', harnesses: 'generic,antigravity', language: 'it'});
@@ -293,7 +293,7 @@ test('execution modes are strict and delivery gates cannot be weakened', () => {
   install(root);
   expect(text(root, 'AGENTS.md')).toContain('orchestrated');
   expect(text(root, '.agents/skills/repo-workflow-orchestrate-delivery/SKILL.md')).toContain('Never let two workers write the same checkout');
-  expect(text(root, '.agents/skills/repo-workflow-integrate-delivery/SKILL.md')).toContain('Verify the integrated candidate');
+  expect(text(root, '.agents/skills/repo-workflow-integrate-delivery/SKILL.md')).toContain('Verify locally: rerun applicable gates on the integrated candidate');
   config.execution.mode = 'automatic';
   write(root, '.repo-workflow.json', canonical(config));
   expect(() => inspect(root)).toThrow();

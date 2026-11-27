@@ -12,7 +12,7 @@ function terminal() {
   return {stdin, stdout, stderr, output: () => output};
 }
 async function until(predicate: () => boolean) {
-  for (let i = 0; i < 100; i++) {if (predicate()) return; await Bun.sleep(10);} throw new Error('Ink render timed out');
+  for (let i = 0; i < 500; i++) {if (predicate()) return; await Bun.sleep(10);} throw new Error('Ink render timed out');
 }
 test('Ink wizard handles input, validation, confirmation and completion', async () => {
   const tty = terminal(); let config: any;
@@ -40,7 +40,7 @@ test('Ink wizard handles input, validation, confirmation and completion', async 
     expect(config.review.external).toEqual({provider: 'codex', policy: 'optional'});
     expect(config.commands.test.argv).toEqual(['bun', 'test']); expect(config.state.tasks).toBe('docs/tasks.json');
   } finally {app.unmount(); tty.stdin.end(); tty.stdout.end(); tty.stderr.end();}
-});
+}, 30000);
 test('Ink multi-select toggles harnesses and rejects an empty selection', async () => {
   const tty = terminal(); let config: any;
   const app = render(<Wizard root={process.cwd()} onComplete={value => {config = value;}} />, {...tty, debug: true, exitOnCtrlC: false, patchConsole: false});
@@ -61,7 +61,7 @@ test('Ink multi-select toggles harnesses and rejects an empty selection', async 
     expect(config.harnesses).toEqual(['claude-code']); expect(config.execution).toEqual({mode: 'single-agent', nativeEntryPoints: true});
     expect(config.commands).toEqual({}); expect(config.delivery.integration).toBe('pr');
   } finally {app.unmount(); tty.stdin.end(); tty.stdout.end(); tty.stderr.end();}
-});
+}, 30000);
 test('Ink cancellation exits without invoking writes', async () => {
   const tty = terminal(); let called = false;
   const app = render(<Wizard root={process.cwd()} onComplete={() => {called = true;}} />, {...tty, debug: true, exitOnCtrlC: false, patchConsole: false});

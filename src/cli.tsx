@@ -22,7 +22,7 @@ export function roadmap(root: string, file?: string) {
 export function doctor(root: string, task = 'feature', affected: string[] = [], remote = false) {
   const {config, effective, target, source} = configuration(root);
   const findings: {code: string; result: string}[] = effective.diagnostics.map((code: string) => ({code, result: 'BLOCKED'}));
-  if (fs.existsSync(target.track(config.state.roadmap))) findings.push(...roadmapReport(target.text(config.state.roadmap)).findings);
+  if (fs.existsSync(target.track(config.state.roadmap))) findings.push(...roadmapReport(target.text(config.state.roadmap), false).findings);
   if (config.state.tasks) findings.push(...ledgerFindings(target, source, config.state.tasks, effective.execution));
   else if (effective.execution.mode === 'orchestrated') findings.push({code: 'task-ledger-not-configured', result: 'BLOCKED'});
   findings.push(...driftFindings(target, [config.state.current, config.state.roadmap], ['AGENTS.md', 'CLAUDE.md'], remote));

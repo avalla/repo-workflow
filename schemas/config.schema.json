@@ -659,12 +659,35 @@
                 },
                 "policy": {
                   "const": "required"
+                },
+                "applicability": {
+                  "type": "object",
+                  "properties": {
+                    "components": {
+                      "type": "array",
+                      "maxItems": 0
+                    },
+                    "paths": {
+                      "type": "array",
+                      "maxItems": 0
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "maxItems": 0
+                    }
+                  },
+                  "required": [
+                    "components",
+                    "paths",
+                    "tasks"
+                  ]
                 }
               },
               "required": [
                 "id",
                 "scope",
-                "policy"
+                "policy",
+                "applicability"
               ]
             }
           },
@@ -701,6 +724,34 @@
               "maxParallel": {
                 "const": 1
               }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution": {
+            "properties": {
+              "nativeEntryPoints": {
+                "const": true
+              }
+            },
+            "required": [
+              "nativeEntryPoints"
+            ]
+          }
+        },
+        "required": [
+          "execution"
+        ]
+      },
+      "then": {
+        "properties": {
+          "harnesses": {
+            "contains": {
+              "const": "claude-code"
             }
           }
         }
