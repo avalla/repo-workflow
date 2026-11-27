@@ -32,11 +32,15 @@ test('merge modes require an explicit owner merge approval and a merge method', 
     expect(() => inspect(project(c => {c.delivery = {integration, base: 'main'}; c.approvals.push(merge);}))).toThrow('schema-validation');
     expect(() => inspect(project(c => {c.delivery = {integration, base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, policy: 'optional'});}))).toThrow('schema-validation');
   }
-  expect(() => inspect(project(c => {c.delivery = {integration: 'pr', base: '--force'};}))).toThrow('schema-validation');
+  // Target branches follow Git ref-name rules (Codex D7).
+  for (const bad of ['--force', 'main/', 'release.lock', 'a//b', '.hidden', 'a/.b', 'a..b', 'main.'])
+    expect(() => inspect(project(c => {c.delivery = {integration: 'pr', base: bad};}))).toThrow('schema-validation');
+  expect(inspect(project(c => {c.delivery = {integration: 'pr', base: 'release/1.2'};})).delivery.base).toBe('release/1.2');
   // The merge approval must cover every merge candidate (M7-R1 / Codex C1).
   for (const applicability of [{components: [], paths: [], tasks: ['release']}, {components: [], paths: ['src'], tasks: []}, {components: ['main'], paths: [], tasks: []}])
     expect(() => inspect(project(c => {c.delivery = {integration: 'direct-merge', base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, applicability});}))).toThrow('schema-validation');
-  expect(() => inspect(project(c => {c.harnesses = ['codex']; c.execution = {mode: 'single-agent', nativeEntryPoints: true};}))).toThrow('schema-validation');
+  expect(() => inspect(project(c => {c.harnesses = ['generic', 'antigravity']; c.execution = {mode: 'single-agent', nativeEntryPoints: true};}))).toThrow('schema-validation');
+  expect(inspect(project(c => {c.harnesses = ['codex']; c.execution = {mode: 'single-agent', nativeEntryPoints: true};})).execution.nativeEntryPoints).toBe(true);
 });
 test('auto-merge adds a merge gate; direct merge replaces the PR gate with an approved merge gate', () => {
   const auto = inspect(project(c => {c.delivery = {integration: 'pr-auto-merge', base: 'main', mergeMethod: 'squash'}; c.approvals.push(merge);})).gates;
@@ -72,12 +76,19 @@ test('wizard answers produce merge approval, command gates, ledger and native en
   expect(config.approvals.map((a: any) => a.id)).toEqual(['publish', 'merge']);
   expect(config.review.external).toEqual({provider: 'codex', policy: 'optional'});
   expect(config.commands.test.argv).toEqual(['bun', 'test']); expect(config.commands.test.affectedPaths).toEqual(['src', 'tests']);
-  expect(config.commands.lint).toBeUndefined(); expect(config.gates.map((g: any) => g.binding)).toEqual(['test', 'typecheck']);
+  expect(config.commands.lint).toBeUndefined();
+  expect(config.gates.map((g: any) => g.id)).toEqual(['test', 'test-release', 'typecheck', 'typecheck-release']);
   expect(config.state.tasks).toBe('docs/tasks.json');
   const root = temp(); initialize(root, config); expect(inspect(root).diagnostics).toEqual([]);
   const installed = apply(plan(root), root); expect(installed.state).toBe('applied');
   expect(decode(text(root, 'docs/tasks.json'))).toEqual({schemaVersion: 1, tasks: []});
   for (const p of ['.claude/agents/repo-workflow-worker.md', '.claude/agents/repo-workflow-reviewer.md', '.claude/commands/repo-workflow-deliver.md']) expect(fs.existsSync(root + '/' + p)).toBe(true);
+  // Codex project-scoped custom agents need name, description and developer_instructions (R2-7).
+  for (const role of ['worker', 'reviewer']) {
+    const agent = Bun.TOML.parse(text(root, `.codex/agents/repo-workflow-${role}.toml`)) as any;
+    expect(agent.name).toBe('repo-workflow-' + role); expect(agent.description).toBeTruthy();
+    expect(agent.developer_instructions).toContain('.agents/skills/repo-workflow-');
+  }
   for (const skill of ['integrate-delivery', 'external-review', 'technical-assessment', 'update-docs']) expect(text(root, `.agents/skills/repo-workflow-${skill}/SKILL.md`)).toContain(`name: repo-workflow-${skill}\n`);
   const entry = text(root, 'AGENTS.md');
   expect(entry).toContain('at most 3 parallel workers'); expect(entry).toContain('no PR'); expect(entry).toContain('`codex` (optional)');
@@ -85,6 +96,9 @@ test('wizard answers produce merge approval, command gates, ledger and native en
   // Wizard gates follow the paths the checks cover (Codex C4).
   expect(inspect(root, 'feature', ['README.md']).gates['project/test'].applicable).toBe(false);
   expect(inspect(root, 'feature', ['tests/a.test.ts']).gates['project/test'].applicable).toBe(true);
+  // A release verifies the whole candidate even when it touches only documentation (R2-8).
+  expect(inspect(root, 'release', ['README.md']).gates['project/test-release'].applicable).toBe(true);
+  expect(inspect(root, 'feature', ['src/a.ts']).gates['project/test-release'].applicable).toBe(false);
   fs.appendFileSync(root + '/.claude/agents/repo-workflow-worker.md', 'local note\n');
   apply(plan(root, 'uninstall'), root);
   expect(fs.existsSync(root + '/.claude/commands/repo-workflow-deliver.md')).toBe(false);
@@ -94,9 +108,16 @@ test('wizard answers produce merge approval, command gates, ledger and native en
   expect(plain.delivery).toEqual({integration: 'pr', base: 'main'}); expect(plain.approvals.map((a: any) => a.id)).toEqual(['publish']);
   expect(plain.commands).toEqual({}); expect(plain.state.tasks).toBeUndefined(); expect(plain.execution).toEqual({mode: 'single-agent'});
 });
+// One installation per execution setting; each case only rewrites the ledger (Codex D1: keep within the test budget).
+const installed = new Map<string, string>();
 function ledgerProject(tasks: any[], execution: any = {mode: 'orchestrated', maxParallel: 2}) {
-  const root = project(c => {c.execution = execution; c.state.tasks = 'docs/tasks.json';});
-  apply(plan(root), root); write(root, 'docs/tasks.json', canonical({schemaVersion: 1, tasks})); return root;
+  const key = JSON.stringify(execution);
+  let root = installed.get(key);
+  if (!root || !fs.existsSync(root)) {
+    root = project(c => {c.execution = execution; c.state.tasks = 'docs/tasks.json';});
+    apply(plan(root), root); installed.set(key, root);
+  }
+  write(root, 'docs/tasks.json', canonical({schemaVersion: 1, tasks})); return root;
 }
 const task = (id: string, extra: any = {}) => ({id, kind: 'feature', title: id, acceptance: ['works'], owner: 'worker-' + id, paths: ['src/' + id],
   dependsOn: [], branch: 'feature/' + id, worktree: '../wt-' + id, stage: 'implementing', candidate: null, reviewIterations: 0, evidence: [], blocker: null, ...extra});
@@ -115,6 +136,11 @@ test('doctor validates the task ledger: overlaps, dependencies, cycles, limits a
   expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a'), task('b', {branch: 'feature/a'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'reviewing'})]))).toEqual([]);
+  // Checkouts compare by resolved identity; no worktree is the main checkout; integration shares the index (R2-2, D4).
+  for (const worktree of ['../wt-a/', './../wt-a', '../x/../wt-a'])
+    expect(codes(ledgerProject([task('a'), task('b', {worktree})]))).toContain('task-worktree-shared:a:b=BLOCKED');
+  expect(codes(ledgerProject([task('a', {worktree: null}), task('b', {worktree: null})]))).toContain('task-worktree-shared:a:b=BLOCKED');
+  expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'integrating'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(() => doctor(ledgerProject([{...task('a'), extra: true}]))).toThrow('schema-validation: tasks');
   expect(() => doctor(ledgerProject([task('a', {paths: []})]))).toThrow('schema-validation: tasks');
   expect(codes(ledgerProject([task('a', {candidate: 'a'.repeat(64)})]))).toEqual([]);
@@ -122,7 +148,7 @@ test('doctor validates the task ledger: overlaps, dependencies, cycles, limits a
   expect(codes(missing)).toContain('task-ledger-missing:docs/tasks.json=BLOCKED');
   const unconfigured = project(c => {c.execution = {mode: 'orchestrated'};}); apply(plan(unconfigured), unconfigured);
   expect(codes(unconfigured)).toContain('task-ledger-not-configured=BLOCKED');
-});
+}, 60000);
 test('switching an installed project to orchestration initializes the ledger on update (Codex C3)', () => {
   const root = project(); apply(plan(root), root);
   const config = decode(text(root, '.repo-workflow.json'));
@@ -151,6 +177,14 @@ test('roadmap check recomputes feature, milestone and project progress', () => {
   expect(roadmapReport('# Iterations\n\n- [x] shipped\n', false).findings).toEqual([{code: 'roadmap-format-not-adopted', result: 'WARNING'}]);
   expect(roadmapReport('# Iterations\n\n- [x] shipped\n').findings.map(f => f.result)).toContain('BLOCKED');
   expect(roadmapReport('- [ ] stray\n').findings.map(f => f.code)).toEqual(['roadmap-item-outside-milestone', 'roadmap-missing-summary']);
+  // Fenced examples (``` or ~~~, any length) neither adopt the format nor satisfy summary and rows (Codex D5, R2-5).
+  const items = '## Milestone 1 — a\n\n- [x] one\n';
+  const example = '~~~~md\n```\nProgress: **100% — 1/1 checklist items complete; 1/1 milestones complete.**\n```\n| M1 — a | 1/1 | 100% |\n~~~~\n';
+  expect(roadmapReport(example + items, false).findings).toEqual([{code: 'roadmap-format-not-adopted', result: 'WARNING'}]);
+  expect(roadmapReport(example + items).findings.map(f => f.code)).toEqual(['roadmap-missing-summary', 'roadmap-missing-row:M1 — a']);
+  // A repeated label would hide one node from the row check (R2-6).
+  const twice = '## Milestone 1 — a\n\n### Tasks\n\n- [ ] one\n\n## Milestone 2 — b\n\n### Tasks\n\n- [ ] two\n';
+  expect(roadmapReport(twice).findings.map(f => f.code)).toContain('roadmap-duplicate-label:Tasks');
   const root = project(); apply(plan(root), root);
   write(root, 'ROADMAP.md', good.replace('1/2 checklist', '2/2 checklist'));
   expect(codes(root).some(c => c.startsWith('roadmap-summary-mismatch'))).toBe(true);
@@ -173,9 +207,19 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   expect(driftFindings(target, files, [], true, () => 'CLOSED').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) was merged.\n');
   expect(driftFindings(target, files, [], true, () => 'CLOSED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:CLOSED');
+  // "Not yet merged" is an unmerged claim (R2-3).
+  write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) is not yet merged.\n');
+  expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
+  expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:MERGED');
+  // With several PRs in a paragraph, each claim belongs to its own sentence (Codex D6, S2).
+  write(root, 'docs/STATUS.md', 'PR https://github.com/o/r/pull/1 is open; PR https://github.com/o/r/pull/2 was merged.\n');
+  const states: Record<string, string> = {'https://github.com/o/r/pull/1': 'OPEN', 'https://github.com/o/r/pull/2': 'MERGED'};
+  expect(driftFindings(target, files, [], true, url => states[url]).map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
+  expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toEqual(['pr-state-drift:https://github.com/o/r/pull/1:MERGED']);
   // Unsafe link targets are reported, not fatal; fenced examples and directories are not links to check (M7-R3, S1).
   fs.writeFileSync(root + '/real.md', 'x'); fs.symlinkSync(root + '/real.md', root + '/docs/link.md');
-  write(root, 'docs/STATUS.md', 'See [l](link.md), [dir](sessions/) and\n\n```md\n[example](missing.md)\n```\n');
+  write(root, 'docs/STATUS.md', 'See [l](link.md), [dir](sessions/), `[code](code.md)` and\n\n```md\n[example](missing.md)\n```\n\n' +
+    '~~~~\n```\n[nested](nested.md)\n```\n[inner](inner.md)\n~~~~\n');
   fs.mkdirSync(root + '/docs/sessions', {recursive: true});
   expect(driftFindings(target, files, [], false).map(f => f.code)).toEqual(['unsafe-linked-file:docs/STATUS.md:link.md']);
   expect(() => doctor(root, 'feature', ['src/a.ts'])).not.toThrow();

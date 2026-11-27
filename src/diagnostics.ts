@@ -8,15 +8,27 @@ const percent = (done: number, total: number) => total ? Math.round(100 * done /
 // Headings "Milestone 7 — x" are summarized in tables as "M7 — x"; feature headings are used verbatim.
 const label = (heading: string) => heading.trim().replace(/^Milestone (\d+)\b/, 'M$1');
 
+// Drops fenced code blocks: ``` or ~~~, closed by the same character at least as long (CommonMark), so examples
+// never count as roadmap content or links (D5, R2-4).
+export function unfenced(text: string) {
+  const out: string[] = []; let fence: string | null = null;
+  for (const line of text.split('\n')) {
+    const marker = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+    if (fence) {if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null; continue;}
+    if (marker) {fence = marker[1]; continue;}
+    out.push(line);
+  }
+  return out.join('\n');
+}
+
 // Recomputes roadmap progress from checkboxes; summaries are claims to verify, never inputs (F6).
-// doctor passes adopted=false for roadmaps without the summary line, so project-owned formats only warn (M7-R2).
-export function roadmapReport(text: string, strict = true) {
+// doctor passes strict=false for roadmaps without the summary line, so project-owned formats only warn (M7-R2).
+export function roadmapReport(source: string, strict = true) {
+  const text = unfenced(source);
   if (!strict && !/^Progress: \*\*/m.test(text)) return {project: null, milestones: [], findings: [{code: 'roadmap-format-not-adopted', result: 'WARNING'} as Finding]};
   const milestones: Node[] = [], findings: Finding[] = [];
-  let milestone: Node | null = null, feature: Node | null = null, fence = false;
+  let milestone: Node | null = null, feature: Node | null = null;
   for (const line of text.split('\n')) {
-    if (/^\s*```/.test(line)) {fence = !fence; continue;}
-    if (fence) continue;
     const h2 = /^## (.+)$/.exec(line), h3 = /^### (.+)$/.exec(line), item = /^- \[([ xX])\] /.exec(line);
     if (h2) {milestone = {label: label(h2[1]), done: 0, total: 0, features: []}; milestones.push(milestone); feature = null;}
     else if (h3 && milestone) {feature = {label: label(h3[1]), done: 0, total: 0, features: []}; milestone.features.push(feature);}
@@ -35,7 +47,11 @@ export function roadmapReport(text: string, strict = true) {
   else if (canonicalSummary(summary) !== [project.percent, done, total, complete, counted.length].join('|'))
     findings.push({code: `roadmap-summary-mismatch: expected ${project.percent} — ${done}/${total}; ${complete}/${counted.length} milestones`, result: 'BLOCKED'});
   const nodes = new Map<string, Node>();
-  for (const m of counted) {nodes.set(m.label, m); for (const f of m.features) if (f.total) nodes.set(f.label, f);}
+  // Rows are matched by label, so a repeated label would hide one node from the check (R2-6).
+  for (const node of counted.flatMap(m => [m, ...m.features.filter(f => f.total)])) {
+    if (nodes.has(node.label)) findings.push({code: 'roadmap-duplicate-label:' + node.label, result: 'BLOCKED'});
+    else nodes.set(node.label, node);
+  }
   const seen = new Set<string>();
   for (const row of text.matchAll(/^\|\s*([^|]+?)\s*\|\s*(\d+)\/(\d+)\s*\|\s*(\d+%|N\/A)\s*\|/gm)) {
     const node = nodes.get(row[1]);
@@ -53,7 +69,14 @@ const canonicalSummary = (m: RegExpExecArray) => [m[1], Number(m[2]), Number(m[3
 
 const ACTIVE = ['approved', 'implementing', 'verifying', 'reviewing', 'external-review', 'fixing', 'integrating', 'pr-open', 'blocked'];
 const WRITING = ['implementing', 'verifying', 'fixing'];
+// Integration rebases and merges in its checkout, so it competes with writers for the same index.
+const CHECKOUT = [...WRITING, 'integrating'];
 const overlaps = (a: string, b: string) => a === b || a.startsWith(b + '/') || b.startsWith(a + '/');
+// Worktrees resolve against the project root; no worktree means the main checkout (R2-2, D4).
+function checkout(root: string, worktree: string | null) {
+  const resolved = path.resolve(root, worktree ?? '.');
+  try {return fs.realpathSync(resolved);} catch {return resolved;}
+}
 
 // Validates the orchestration ledger: schema, references, cycles, path ownership and parallel limits (F2).
 export function ledgerFindings(target: Inputs, source: Inputs, file: string, execution: Document): Finding[] {
@@ -73,7 +96,7 @@ export function ledgerFindings(target: Inputs, source: Inputs, file: string, exe
     const [a, b] = [active[i], active[j]];
     if (a.paths.some((p: string) => b.paths.some((q: string) => overlaps(p, q)))) findings.push({code: `task-path-overlap:${a.id}:${b.id}`, result: 'BLOCKED'});
     // Disjoint paths are not enough: two writers in one checkout share the index and commits.
-    if (WRITING.includes(a.stage) && WRITING.includes(b.stage) && (a.worktree && a.worktree === b.worktree || a.branch && a.branch === b.branch))
+    if (CHECKOUT.includes(a.stage) && CHECKOUT.includes(b.stage) && (checkout(target.root, a.worktree) === checkout(target.root, b.worktree) || a.branch && a.branch === b.branch))
       findings.push({code: `task-worktree-shared:${a.id}:${b.id}`, result: 'BLOCKED'});
   }
   for (const t of active) {
@@ -92,7 +115,7 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
   const findings: Finding[] = [], citations = new Map<string, string[]>();
   for (const file of files) {
     if (!fs.existsSync(target.track(file))) continue;
-    const text = target.text(file), prose = text.replace(/^\s*```[\s\S]*?^\s*```/gm, '');
+    const text = unfenced(target.text(file)), prose = text.replace(/(`+)[^`]*?\1/g, '');
     for (const link of prose.matchAll(/\]\(([^)\s]+)\)/g)) {
       const value = link[1].split('#')[0];
       if (!value || /^[a-z]+:/i.test(value) || value.startsWith('/')) continue;
@@ -103,7 +126,15 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
       else state = 'outside';
       if (state !== 'ok') findings.push({code: `${state === 'missing' ? 'missing' : 'unsafe'}-linked-file:${file}:${value}`, result: 'WARNING'});
     }
-    for (const paragraph of text.split(/\n\s*\n/)) for (const url of paragraph.match(PR) ?? []) citations.set(url, [...citations.get(url) ?? [], paragraph]);
+    // A paragraph citing one PR is its context; with several PRs only sentences citing exactly one count (D6, S2).
+    for (const paragraph of text.split(/\n\s*\n/)) {
+      const urls = new Set(paragraph.match(PR) ?? []);
+      const parts = urls.size > 1 ? paragraph.split(/(?<=[.;!?])\s+|\n(?=\s*[-*|])/) : [paragraph];
+      for (const part of parts) {
+        const cited = new Set(part.match(PR) ?? []);
+        if (cited.size === 1) for (const url of cited) citations.set(url, [...citations.get(url) ?? [], part]);
+      }
+    }
   }
   for (const file of entries) {
     if (!fs.existsSync(target.track(file))) continue;
@@ -118,8 +149,9 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     const text = paragraphs.join('\n');
     // Open, unmerged and merged are separate claims: a closed PR is accurately "not merged" (C8).
     const claimsOpen = /\b(?:is open|remains open|open PR)\b/i.test(text);
-    const claimsUnmerged = /\b(?:no merge|not merged)\b/i.test(text);
-    const claimsMerged = /\bmerged\b/i.test(text.replace(/not merged/gi, ''));
+    const unmerged = /\b(?:no merge|not (?:yet )?merged|unmerged)\b/gi;
+    const claimsUnmerged = unmerged.test(text);
+    const claimsMerged = /\bmerged\b/i.test(text.replace(unmerged, ''));
     if (claimsOpen && state !== 'OPEN' || claimsUnmerged && state === 'MERGED' || claimsMerged && state !== 'MERGED')
       findings.push({code: `pr-state-drift:${url}:${state}`, result: 'WARNING'});
   }

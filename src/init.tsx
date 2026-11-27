@@ -4,6 +4,9 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {canonical, checked, Inputs, requireThat as req, SOURCE, type Document} from './io';
 import {resolve} from './compose';
+import {NATIVE} from './render';
+
+const NATIVE_HARNESSES = Object.keys(NATIVE);
 
 export type Answers = {
   name: string; surface: string; stack: string; harnesses: string; language: string; executionMode?: string;
@@ -21,7 +24,7 @@ export const fields: Field[] = [
   {key: 'harnesses', label: 'Harnesses (space toggles)', initial: 'generic,codex', kind: 'multi', options: ['generic', 'codex', 'claude-code', 'antigravity']},
   {key: 'executionMode', label: 'Execution', initial: 'single-agent', kind: 'select', options: ['single-agent', 'orchestrated']},
   {key: 'maxParallel', label: 'Maximum parallel workers', initial: '2', kind: 'select', options: ['2', '3', '4', '6', '8'], when: a => a.executionMode === 'orchestrated'},
-  {key: 'nativeEntryPoints', label: 'Generate Claude Code worker/reviewer agents and delivery command', initial: 'no', kind: 'select', options: ['no', 'yes'], when: a => (a.harnesses ?? '').split(',').includes('claude-code')},
+  {key: 'nativeEntryPoints', label: 'Generate native worker/reviewer agents (Claude Code also gets a delivery command)', initial: 'no', kind: 'select', options: ['no', 'yes'], when: a => (a.harnesses ?? '').split(',').some(h => NATIVE_HARNESSES.includes(h))},
   {key: 'externalReview', label: 'External review after independent review', initial: 'codex-optional', kind: 'select', options: ['codex-optional', 'codex-required', 'disabled']},
   {key: 'integration', label: 'Delivery integration', initial: 'pr', kind: 'select', options: ['pr', 'pr-auto-merge', 'direct-merge']},
   {key: 'base', label: 'Target branch', initial: 'main', kind: 'text'},
@@ -44,7 +47,7 @@ export function createConfig(a: Answers): Document {
   req(a.language.trim(), 'missing-language');
   const profile = ['cli', 'library'].includes(a.surface) ? 'surface-library-cli' : a.surface === 'web' ? 'surface-web' : null;
   const mode = a.executionMode ?? 'single-agent', orchestrated = mode === 'orchestrated';
-  const harnesses = list(a.harnesses), native = a.nativeEntryPoints === 'yes' && harnesses.includes('claude-code');
+  const harnesses = list(a.harnesses), native = a.nativeEntryPoints === 'yes' && harnesses.some(h => NATIVE_HARNESSES.includes(h));
   const review = a.externalReview ?? 'disabled';
   req(['disabled', 'codex-optional', 'codex-required'].includes(review), 'invalid-external-review');
   const integration = a.integration ?? 'pr', mergeMode = integration !== 'pr';
@@ -53,7 +56,10 @@ export function createConfig(a: Answers): Document {
     const argv = (a[id] ?? '').trim().split(/\s+/).filter(Boolean);
     if (!argv.length) continue;
     commands[id] = {argv, cwd: '.', affectedPaths: list(a.checkPaths ?? 'src'), environment: 'local', effects: ['write-local'], authorization: 'task-scope'};
-    gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: list(a.checkPaths ?? 'src'), tasks: ['feature', 'bugfix', 'release']},
+    gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: list(a.checkPaths ?? 'src'), tasks: ['feature', 'bugfix']},
+      binding: id, environment: 'local', resources: [], procedure: null});
+    // A release verifies the whole candidate, whatever files it touches (R2-8).
+    gates.push({id: id + '-release', category: 'technical', required: true, applicability: {components: ['main'], paths: [], tasks: ['release']},
       binding: id, environment: 'local', resources: [], procedure: null});
   }
   const approvals: Document[] = [{id: 'publish', scope: 'project', applicability: {components: [], paths: [], tasks: ['release']}, policy: 'required', authority: 'project owner'}];

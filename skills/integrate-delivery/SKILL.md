@@ -7,13 +7,13 @@ description:
 
 # integrate-delivery
 
-Read effective delivery (`integration`, `base`, `mergeMethod`), applicable gates, approvals and the task ledger.
-Integrate only candidates whose required task gates, independent review and configured external review are PASS or
-explicitly recorded as NOT RUN where optional.
+Read effective delivery (`integration`, `base`, `mergeMethod`), applicable gates, approvals and the task ledger. Start
+only with candidates whose local required gates, independent review and configured external review are PASS (or NOT RUN
+where optional). Delivery gates (`pull-request`, `merge`, `approval-merge`) and remote CI are produced below.
 
 1. Serialize: integrate one task at a time. Update from the current base, rebase or merge the task branch, resolve
-   conflicts without discarding either side, and record the new candidate. A conflict that changes reviewed behavior
-   invalidates that review; return the task to `reviewing`.
+   conflicts without discarding either side, and record the new candidate. If its diff changed or the base changed code
+   it relies on, even without conflicts, the review no longer covers it; return the task to `reviewing`.
 2. Verify locally: rerun applicable gates on the integrated candidate. Never report PASS from an earlier candidate.
 3. Finish per integration mode. Remote CI is verified on the exact pushed head; QUEUED, RUNNING, CANCELLED and SKIPPED
    are not PASS.

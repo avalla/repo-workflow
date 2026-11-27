@@ -20,9 +20,11 @@ export function allowedTarget(name: string, owner: string) {
   relative(name); const p = name.split('/');
   return p.length > 1 && p[0] === '.repo-workflow' && !['lock.json', 'transactions', 'effective.json', 'index.md'].includes(p[1]) ||
     p.length === 4 && p[0] === '.agents' && p[1] === 'skills' && p[2].startsWith('repo-workflow-') && p[3] === 'SKILL.md' && owner === 'managed' ||
-    p.length === 3 && p[0] === '.claude' && ['agents', 'commands'].includes(p[1]) && /^repo-workflow-[a-z0-9-]+\.md$/.test(p[2]) && owner === 'managed';
+    p.length === 3 && p[0] === '.claude' && ['agents', 'commands'].includes(p[1]) && /^repo-workflow-[a-z0-9-]+\.md$/.test(p[2]) && owner === 'managed' ||
+    p.length === 3 && p[0] === '.codex' && p[1] === 'agents' && /^repo-workflow-[a-z0-9-]+\.toml$/.test(p[2]) && owner === 'managed';
 }
-export const NATIVE = {'claude-code': ['.claude/agents/repo-workflow-worker.md', '.claude/agents/repo-workflow-reviewer.md', '.claude/commands/repo-workflow-deliver.md']};
+export const NATIVE = {'claude-code': ['.claude/agents/repo-workflow-worker.md', '.claude/agents/repo-workflow-reviewer.md', '.claude/commands/repo-workflow-deliver.md'],
+  codex: ['.codex/agents/repo-workflow-worker.toml', '.codex/agents/repo-workflow-reviewer.toml']};
 export function entryBlock(config: Document) {
   const s = config.state, e = executionOf(config), d = deliveryOf(config), x = config.review.external;
   const execution = e.mode === 'orchestrated' ? `Execution mode: \`orchestrated\` (at most ${e.maxParallel} parallel workers, ${e.maxReviewIterations} review/fix iterations); load the orchestrate-delivery skill. Task ledger: \`${s.tasks ?? 'not configured'}\`.` :

@@ -29,8 +29,11 @@ from [`claude-code/`](claude-code/): `.claude/agents/repo-workflow-worker.md` (o
 merge, push or ledger edits), `.claude/agents/repo-workflow-reviewer.md` (independent review of a frozen candidate;
 refuses candidates it authored) and `.claude/commands/repo-workflow-deliver.md` (entry to orchestrated or single-agent
 delivery). They only route to canonical skills and add no authority. They follow the same three-way update and uninstall
-rules as other managed files. Codex needs no wrapper: it discovers the canonical skills under `.agents/skills/`, and
-external review uses `codex review`. Native execution of these subagents is qualified separately from file generation.
+rules as other managed files. With the `codex` harness it also adds project-scoped custom agents from
+[`codex/`](codex/): `.codex/agents/repo-workflow-worker.toml` and `.codex/agents/repo-workflow-reviewer.toml` (`name`,
+`description`, `developer_instructions`, same rules). Codex has no project-level command file; the canonical skills
+under `.agents/skills/` remain the entry, and external review uses `codex review`. Native execution of these agents is
+qualified separately from file generation.
 
 Google Antigravity documentation describes AGENTS.md/GEMINI.md as always-on project instructions and `.agents/skills/`
 as the canonical skill directory. No redundant GEMINI.md, legacy `.agent/` copy or rules wrapper is needed. Sources:

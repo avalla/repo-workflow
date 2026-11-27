@@ -74,9 +74,10 @@ from a context that did not author it, then the configured external review (for 
 fix/re-review loops bounded by `maxReviewIterations`. Candidates are integrated one at a time and finished according to
 `delivery.integration`. See [orchestrate-delivery](../skills/orchestrate-delivery/SKILL.md),
 [integrate-delivery](../skills/integrate-delivery/SKILL.md) and [external-review](../skills/external-review/SKILL.md).
-The harness runs the agents; the CLI only installs guidance and checks the ledger. With `nativeEntryPoints` and the
-`claude-code` harness, installation adds `repo-workflow-worker` and `repo-workflow-reviewer` subagents and a
-`/repo-workflow-deliver` command under `.claude/`. Codex discovers the same canonical skills under `.agents/skills/`.
+The harness runs the agents; the CLI only installs guidance and checks the ledger. With `nativeEntryPoints`,
+installation adds `repo-workflow-worker` and `repo-workflow-reviewer` agents for each selected native harness: subagents
+and a `/repo-workflow-deliver` command under `.claude/` for `claude-code`, custom agents under `.codex/agents/` for
+`codex`.
 
 ## Qualify a harness
 

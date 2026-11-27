@@ -14,13 +14,13 @@ bun run cli init --root ../my-project
 ```
 
 The Ink wizard asks for name, surface (`cli`, `library`, `web`, `other`), stack labels, harnesses, execution mode,
-maximum parallel workers (orchestrated only), Claude Code native entry points (when `claude-code` is selected), external
-review (`codex-optional`, `codex-required` or `disabled`), delivery integration (`pr`, `pr-auto-merge`, `direct-merge`),
-target branch, merge method (merge modes only), optional test/lint/typecheck commands with the paths they cover, and
-documentation language. Arrows choose, Space toggles harnesses, Enter advances, Ctrl+U clears and Esc or Ctrl+C cancels
-without writes. Review the complete configuration and type `yes` to write it. Existing configuration is preserved; a
-missing destination folder is created. Application scaffolding, Git initialization and package installation are separate
-activities.
+maximum parallel workers (orchestrated only), native worker/reviewer agents (when `claude-code` or `codex` is selected),
+external review (`codex-optional`, `codex-required` or `disabled`), delivery integration (`pr`, `pr-auto-merge`,
+`direct-merge`), target branch, merge method (merge modes only), optional test/lint/typecheck commands with the paths
+they cover, and documentation language. Arrows choose, Space toggles harnesses, Enter advances, Ctrl+U clears and Esc or
+Ctrl+C cancels without writes. Review the complete configuration and type `yes` to write it. Existing configuration is
+preserved; a missing destination folder is created. Application scaffolding, Git initialization and package installation
+are separate activities.
 
 Delivery integration decides how a reviewed candidate ends ([ADR 0006](adr/0006-configurable-delivery-integration.md)):
 
@@ -32,11 +32,12 @@ Delivery integration decides how a reviewed candidate ends ([ADR 0006](adr/0006-
 
 Merge modes require `mergeMethod` and a required `merge` approval in `approvals` whose selectors are empty, so it covers
 every merge; the wizard adds both. Optional external review produces a non-required `external-review` gate that is NOT
-RUN when the provider is unavailable. `nativeEntryPoints` requires the `claude-code` harness. Orchestrated projects also
-get a task ledger at `state.tasks` (default `docs/tasks.json`), also created by an update when the path is new and the
-file is absent. Entered commands become bound required gates scoped to the entered paths; they are recorded and never
-executed by the CLI. Omitted `execution` and `delivery` keep the earlier behavior: single-agent and PR without merge
-authority.
+RUN when the provider is unavailable. `nativeEntryPoints` requires the `claude-code` or `codex` harness. Orchestrated
+projects also get a task ledger at `state.tasks` (default `docs/tasks.json`), also created by an update when the path is
+new and the file is absent. Entered commands become bound required gates scoped to the entered paths for features and
+bugfixes, plus a `<check>-release` gate that applies to every release; they are recorded and never executed by the CLI.
+The target branch must be a valid Git branch name. Omitted `execution` and `delivery` keep the earlier behavior:
+single-agent and PR without merge authority.
 
 CLI/library and web select representative profiles. `other` keeps generic behavior and reports missing technical gates.
 Configure actual commands, environments and gates in the generated JSON; labels do not install technologies or invent
@@ -91,19 +92,21 @@ bun run cli roadmap --root . --file ROADMAP.md
 ```
 
 `roadmap` recomputes progress from the checkboxes and reports BLOCKED findings (exit 1) for a stale overall summary, a
-stale or unknown table row, a milestone or feature without a row, or items outside a milestone. `doctor` runs the same
-check once the roadmap has the `Progress: **…**` summary line; without it, `doctor` only warns
-(`roadmap-format-not-adopted`), so project-owned roadmap formats keep working. Progress is not a delivery certificate.
-Existing roadmaps are preserved on install and update; adopt the format there deliberately. See
-[this repository's checklist](../ROADMAP.md) for an example.
+stale or unknown table row, a milestone or feature without a row, a label used twice, or items outside a milestone.
+Fenced code blocks are ignored. `doctor` runs the same check once the roadmap has the `Progress: **…**` summary line;
+without it, `doctor` only warns (`roadmap-format-not-adopted`), so project-owned roadmap formats keep working. Progress
+is not a delivery certificate. Existing roadmaps are preserved on install and update; adopt the format there
+deliberately. See [this repository's checklist](../ROADMAP.md) for an example.
 
 `doctor` also validates the task ledger when `state.tasks` is set (schema, unknown dependencies, cycles, overlapping
-owned paths of active tasks, concurrent writers sharing a worktree or branch, writers above `maxParallel`, review
-iterations above `maxReviewIterations`, writers whose dependencies are not integrated, missing worktrees or blocker
-reasons). It reports drift: relative links in status and roadmap (outside code blocks) that point to missing or unsafe
-files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it reads the actual state of every
-cited GitHub PR through `gh` and warns when nearby text claims the PR is open while it is not, not merged while it is
-merged, or merged while it is not. Without `--remote` that check is NOT RUN.
+owned paths of active tasks, writing or integrating tasks sharing a branch or checkout, writers above `maxParallel`,
+review iterations above `maxReviewIterations`, writers whose dependencies are not integrated, missing worktrees or
+blocker reasons). Worktrees are compared as resolved paths from the project root; a task without one uses the main
+checkout. It reports drift: relative links in status and roadmap (outside fenced and inline code) that point to missing
+or unsafe files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it reads the actual state
+of every cited GitHub PR through `gh` and warns when nearby text claims the PR is open while it is not, not merged while
+it is merged, or merged while it is not. A paragraph citing several PRs is read sentence by sentence. Without `--remote`
+that check is NOT RUN.
 
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`, `research`, `release`.
 Omitted paths (including an empty API array) mean scope is unknown, not that no files changed. Gate `applicable` is

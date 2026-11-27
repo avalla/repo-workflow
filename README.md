@@ -117,8 +117,8 @@ harnesses does not require duplicating project memory.
 | `antigravity` | Root AGENTS.md                     | Shared `.agents/skills/repo-workflow-*/SKILL.md` |
 
 For an existing CLAUDE.md, reconcile its instructions and add `@AGENTS.md` deliberately if appropriate. Claude-specific
-skill copies are not generated; `nativeEntryPoints` adds only thin subagent and command wrappers over canonical skills.
-Antigravity uses shared paths; no extra GEMINI.md or legacy `.agent/` directory is generated. The
+skill copies are not generated; `nativeEntryPoints` adds only thin subagent (and, for Claude Code, command) wrappers
+over canonical skills. Antigravity uses shared paths; no extra GEMINI.md or legacy `.agent/` directory is generated. The
 [adapter contracts](adapters/README.md) record discovery assumptions and native verification limits, including
 Antigravity's absence locally.
 
@@ -205,8 +205,8 @@ The wizard asks how agents deliver, and the answers become configuration:
   review (`codex`, `optional` or `required`). Fix/re-review loops stop at `maxReviewIterations` and escalate.
 - `delivery.integration`: `pr` (default; open a PR), `pr-auto-merge` (PR plus platform auto-merge after gates PASS) or
   `direct-merge` (merge into the base branch without a PR). Merge modes require an explicit owner `merge` approval.
-- `execution.nativeEntryPoints`: with `claude-code`, adds worker/reviewer subagents and a `/repo-workflow-deliver`
-  command.
+- `execution.nativeEntryPoints`: adds worker/reviewer subagents for `claude-code` (plus a `/repo-workflow-deliver`
+  command) and project-scoped custom agents for `codex`.
 
 The CLI installs guidance, checks the ledger and reports gates; it does not launch agents, open PRs or merge. Required
 core gates include documentation-current and the configured delivery gates; unavailable access leaves them incomplete.

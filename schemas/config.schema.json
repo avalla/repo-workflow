@@ -548,7 +548,7 @@
         },
         "base": {
           "type": "string",
-          "pattern": "^(?!-)(?!.*\\.\\.)[A-Za-z0-9._/-]+$"
+          "pattern": "^(?![-.])(?!.*\\.\\.)(?!.*//)(?!.*/\\.)(?!.*\\.lock(?:/|$))(?!.*[/.]$)[A-Za-z0-9._/-]+$"
         },
         "mergeMethod": {
           "enum": [
@@ -751,7 +751,10 @@
         "properties": {
           "harnesses": {
             "contains": {
-              "const": "claude-code"
+              "enum": [
+                "claude-code",
+                "codex"
+              ]
             }
           }
         }

@@ -19,7 +19,7 @@ Roadmap Milestone 7 (16 items, features F1–F8), added after the 2026-11-26 pro
 | F4 handoff/docs         | `handoff` reduced to resumable state plus orchestration resume; new `update-docs`; drift diagnostics                                                                                                       |
 | F5 technical assessment | `technical-assessment` procedure, routed in core workflows                                                                                                                                                 |
 | F6 progress             | Milestone → feature → item roadmap policy/template; `roadmap` command and `doctor` check                                                                                                                   |
-| F7 native entry points  | Optional `.claude/agents/repo-workflow-{worker,reviewer}.md` and `.claude/commands/repo-workflow-deliver.md`                                                                                               |
+| F7 native entry points  | Optional `.claude/agents/repo-workflow-{worker,reviewer}.md`, `.claude/commands/repo-workflow-deliver.md` and `.codex/agents/repo-workflow-{worker,reviewer}.toml`                                         |
 | F8 reconciliation       | STATUS rewritten (PRs #1–#4 merged), stale authorization removed from AGENTS.md, Python reference retired, M1–M6 evidence archived under `sessions/archive/`                                               |
 
 ## Evidence
@@ -45,9 +45,29 @@ findings, C1–C8. Dispositions in the fix candidate:
 | M7-R4       | Ledger `paths` requires at least one entry                                                                  |
 | M7-R5       | ADR 0006 records the Codex equivalent (canonical skills plus `codex review`); native files stay Claude-only |
 | M7-R6       | ADR 0006 lists the behavior changes for existing installations                                              |
-| S5          | `nativeEntryPoints: true` requires the `claude-code` harness                                                |
+| S5          | `nativeEntryPoints: true` requires a native harness (`claude-code` or `codex`)                              |
 | S2, S3, S4  | Accepted as known limits; not changed in M7                                                                 |
 | 64-hex SHAs | Ledger `candidate` accepts SHA-1 and SHA-256 object names                                                   |
+
+### Review round 2 (candidate `fb2543e4`)
+
+Independent review ([report](m7-independent-review-2.md)): **FAIL**, R2-1…R2-8. External review
+([raw output](m7-codex-review-2.txt)): 1 × P1, 4 × P2, 2 × P3, D1–D7. Dispositions:
+
+| Finding   | Disposition                                                                                                  |
+| --------- | ------------------------------------------------------------------------------------------------------------ |
+| R2-1 / D1 | `test` and `check` scripts pass `--timeout 120000`; the ledger test reuses one installation, 60 s budget     |
+| D2        | `integrate-delivery` starts on local gates and reviews; delivery gates and remote CI are produced afterwards |
+| D3        | Any change to the candidate's diff, or to base code it relies on, returns the task to `reviewing`            |
+| R2-2 / D4 | Checkouts compared as resolved paths; no worktree means the main checkout; `integrating` included            |
+| D5 / R2-5 | Roadmap parsing drops fenced blocks before adoption, summary and row checks                                  |
+| R2-4      | Link scan drops CommonMark fences (``` and ~~~, any length) and inline code spans                            |
+| R2-6      | `roadmap-duplicate-label` BLOCKED                                                                            |
+| R2-3      | "not yet merged" and "unmerged" are unmerged claims                                                          |
+| D6 / S2   | With several PRs in a paragraph, claims are attributed per sentence                                          |
+| D7        | `delivery.base` pattern follows Git ref-name rules (`main/`, `x.lock`, `a//b`, `.x`, `a/.b` rejected)        |
+| R2-8      | Wizard adds a `<check>-release` gate that applies to every release                                           |
+| R2-7      | Codex custom agents exist (`.codex/agents/*.toml`); generated for both roles instead of narrowing F7         |
 
 ### Local checks
 
@@ -56,6 +76,7 @@ findings, C1–C8. Dispositions in the fix candidate:
 fixed) and 14 timeouts on a loaded machine. The write-boundary tests took 322 s (install) and 182 s (uninstall); on
 `main` the uninstall boundary test already took 76 s and exceeded its own 60 s budget, so the slowness predates M7.
 Their per-test budget is now 600 s. Full-suite result with `--timeout 600000`: typecheck PASS, 50/50 tests PASS in 449
+s. After round 2 the documented `bun run check` (now with `--timeout 120000`) passed: typecheck PASS, 50/50 tests in 136
 s.
 
 ### Pilot

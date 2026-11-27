@@ -35,11 +35,11 @@ per task; integration is serial.
 The `merge` approval must apply everywhere (empty component, path and task selectors), so every merge candidate needs
 recorded approval; a narrower selector is rejected.
 
-The CLI still launches no agents, opens no PRs and merges nothing. Harness-native entry points (Claude Code worker and
-reviewer subagents, a delivery command) are optional generator-owned wrappers over canonical skills and require the
-`claude-code` harness. The Codex equivalent is the canonical skills under `.agents/skills/`, which Codex discovers
-natively, plus `codex review` for external review; no extra Codex wrapper is generated because Codex has no
-project-level subagent file to target.
+The CLI still launches no agents, opens no PRs and merges nothing. Harness-native entry points are optional
+generator-owned wrappers over canonical skills and require a harness that supports them: Claude Code worker and reviewer
+subagents plus a delivery command under `.claude/`, and Codex project-scoped custom agents (`.codex/agents/*.toml`,
+verified against codex-cli 0.167 documentation and its stable `multi_agent` feature) for the same two roles. Codex has
+no project-level command file, so its entry remains the canonical skills plus `codex review` for external review.
 
 ## Consequences
 
@@ -49,6 +49,9 @@ missing access still leaves delivery gates BLOCKED. Behavior changes for existin
 - Effective policy and `inspect` expose resolved `execution` defaults and `delivery`.
 - `review.external` with policy `optional` now needs a provider (previously accepted with `null`) and adds a
   non-required `external-review` gate.
+- Wizard-generated check gates are scoped to the entered paths for features and bugfixes, with a separate
+  `<check>-release` gate covering every release.
+- `delivery.base` must be a valid Git branch name.
 - `doctor` adds roadmap, ledger and drift diagnostics. A roadmap without the summary line only warns
   (`roadmap-format-not-adopted`); an adopted format with stale counts is BLOCKED.
 

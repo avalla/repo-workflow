@@ -22,16 +22,16 @@ test('Ink wizard handles input, validation, confirmation and completion', async 
     tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('INVALID'); await Bun.sleep(20); tty.stdin.write('\r');
     await until(() => tty.output().includes('invalid-project-name'));
     tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('demo'); await Bun.sleep(20); tty.stdin.write('\r');
-    await until(() => tty.output().includes('2/12'));
-    for (const step of ['3/12', '4/12', '5/12']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    await until(() => tty.output().includes('2/13'));
+    for (const step of ['3/13', '4/13', '5/13']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     tty.stdin.write('\x1b[B'); await until(() => tty.output().includes('› orchestrated'));
-    tty.stdin.write('\r'); await until(() => tty.output().includes('6/13'));
-    for (const step of ['7/13', '8/13']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    tty.stdin.write('\r'); await until(() => tty.output().includes('6/14'));
+    for (const step of ['7/14', '8/14', '9/14']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     tty.stdin.write('\x1b[B'); await Bun.sleep(20); tty.stdin.write('\x1b[B'); await until(() => tty.output().includes('› direct-merge'));
-    tty.stdin.write('\r'); await until(() => tty.output().includes('9/14'));
-    for (const step of ['10/14', '11/14']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
-    tty.stdin.write('bun test'); await Bun.sleep(20); tty.stdin.write('\r'); await until(() => tty.output().includes('12/15'));
-    for (const step of ['13/15', '14/15', '15/15', 'Type yes']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    tty.stdin.write('\r'); await until(() => tty.output().includes('10/15'));
+    for (const step of ['11/15', '12/15']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    tty.stdin.write('bun test'); await Bun.sleep(20); tty.stdin.write('\r'); await until(() => tty.output().includes('13/16'));
+    for (const step of ['14/16', '15/16', '16/16', 'Type yes']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     expect(config).toBeUndefined(); tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('yes'); await Bun.sleep(20); tty.stdin.write('\r');
     await app.waitUntilExit(); expect(config.project.name).toBe('demo');
     expect(config.execution).toEqual({mode: 'orchestrated', maxParallel: 2});
@@ -46,14 +46,14 @@ test('Ink multi-select toggles harnesses and rejects an empty selection', async 
   const app = render(<Wizard root={process.cwd()} onComplete={value => {config = value;}} />, {...tty, debug: true, exitOnCtrlC: false, patchConsole: false});
   try {
     await until(() => tty.output().includes('Project name'));
-    for (const step of ['2/12', '3/12', '4/12']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
+    for (const step of ['2/13', '3/13', '4/13']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     tty.stdin.write(' '); await until(() => tty.output().includes('[ ] generic'));
     tty.stdin.write('\x1b[B'); await Bun.sleep(20); tty.stdin.write(' '); await until(() => tty.output().includes('[ ] codex'));
     tty.stdin.write('\r'); await until(() => tty.output().includes('Enter a value.'));
     tty.stdin.write('\x1b[B'); await Bun.sleep(20); tty.stdin.write(' '); await until(() => tty.output().includes('[x] claude-code'));
     tty.stdin.write('\r'); await until(() => tty.output().includes('5/13'));
     tty.stdin.write('\r'); await until(() => tty.output().includes('6/13'));
-    expect(tty.output()).toContain('Generate Claude Code worker/reviewer agents');
+    expect(tty.output()).toContain('Generate native worker/reviewer agents');
     tty.stdin.write('\x1b[B'); await Bun.sleep(20);
     for (const step of ['7/13', '8/13', '9/13', '10/13', '11/13', '12/13', '13/13', 'Type yes']) {tty.stdin.write('\r'); await until(() => tty.output().includes(step));}
     tty.stdin.write('\x15'); await Bun.sleep(20); tty.stdin.write('yes'); await Bun.sleep(20); tty.stdin.write('\r');
