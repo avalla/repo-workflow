@@ -107,8 +107,10 @@ inline code) that point to missing or unsafe files, and task-authorization state
 `--remote` it reads the actual state of every cited GitHub PR through `gh` and warns when nearby text claims the PR is
 open while it is not, not merged while it is merged, or merged while it is not. A paragraph citing several PRs is read
 sentence by sentence; sentences citing none or several are skipped, so this is a heuristic, not proof. The `gh` lookups
-are listed in `diagnosticLookups`; `commandsExecuted` stays empty. Unsafe memory or entry files (for example a symlinked
-CLAUDE.md) are reported as `unsafe-memory-file` warnings. Without `--remote` that check is NOT RUN.
+are listed in `diagnosticLookups`; `commandsExecuted` stays empty. Unsafe entry files (for example a symlinked
+CLAUDE.md) are reported as `unsafe-memory-file` warnings; configured state paths must be regular files and otherwise
+fail closed. Nested checklist items count, and task paths are compared case-insensitively. Without `--remote` that check
+is NOT RUN.
 
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`, `research`, `release`.
 Omitted paths (including an empty API array) mean scope is unknown, not that no files changed. Gate `applicable` is

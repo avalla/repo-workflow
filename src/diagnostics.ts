@@ -30,7 +30,7 @@ export function roadmapReport(source: string, strict = true) {
   const milestones: Node[] = [], findings: Finding[] = [];
   let milestone: Node | null = null, feature: Node | null = null;
   for (const line of text.split('\n')) {
-    const h2 = /^## (.+)$/.exec(line), h3 = /^### (.+)$/.exec(line), item = /^- \[([ xX])\] /.exec(line);
+    const h2 = /^## (.+)$/.exec(line), h3 = /^### (.+)$/.exec(line), item = /^\s*[-*+] \[([ xX])\] /.exec(line);
     if (h2) {milestone = {label: label(h2[1]), done: 0, total: 0, features: []}; milestones.push(milestone); feature = null;}
     else if (h3 && milestone) {feature = {label: label(h3[1]), done: 0, total: 0, features: []}; milestone.features.push(feature);}
     else if (item) {
@@ -72,7 +72,8 @@ const ACTIVE = ['approved', 'implementing', 'verifying', 'reviewing', 'external-
 const WRITING = ['implementing', 'verifying', 'fixing'];
 // Integration rebases and merges in its checkout, so it competes with writers for the same index.
 const CHECKOUT = [...WRITING, 'integrating'];
-const overlaps = (a: string, b: string) => a === b || a.startsWith(b + '/') || b.startsWith(a + '/');
+// Compared case-insensitively: on case-insensitive checkouts src/Foo.ts and src/foo.ts are one file (Codex Y4).
+const overlaps = (x: string, y: string) => {const [a, b] = [x.toLowerCase(), y.toLowerCase()]; return a === b || a.startsWith(b + '/') || b.startsWith(a + '/');};
 // Worktrees resolve against the project root; no worktree means the main checkout (R2-2, D4).
 function checkout(root: string, worktree: string | null) {
   const resolved = path.resolve(root, worktree ?? '.');
@@ -101,7 +102,8 @@ export function ledgerFindings(target: Inputs, source: Inputs, file: string, exe
       findings.push({code: `task-worktree-shared:${a.id}:${b.id}`, result: 'BLOCKED'});
   }
   // Integration is serial: each integration assumes the base it just updated from is current (Codex X3).
-  if (tasks.filter(t => t.stage === 'integrating').length > 1) findings.push({code: 'task-integration-concurrent', result: 'BLOCKED'});
+  const integrating = tasks.filter(t => t.stage === 'integrating').map(t => t.id);
+  if (integrating.length > 1) findings.push({code: 'task-integration-concurrent:' + integrating.join(':'), result: 'BLOCKED'});
   for (const t of active) {
     if (WRITING.includes(t.stage) && execution.mode === 'orchestrated' && !t.worktree) findings.push({code: 'task-missing-worktree:' + t.id, result: 'WARNING'});
     if (t.reviewIterations > execution.maxReviewIterations) findings.push({code: 'task-review-limit-exceeded:' + t.id, result: 'BLOCKED'});
@@ -158,7 +160,7 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     const text = paragraphs.join('\n');
     // Open, unmerged and merged are separate claims: a closed PR is accurately "not merged" (C8).
     const claimsOpen = /\b(?:is open|remains open|open PR)\b/i.test(text);
-    const unmerged = /\b(?:no merge|not (?:yet |been )?merged|(?:is|was|has)n['’]t (?:been |yet )?merged|never (?:been )?merged|unmerged)\b/gi;
+    const unmerged = /(?:\bno merge|(?:\bnot|n['’]t)(?: (?:yet|been|be))* merged|\bnever(?: been)? merged|\bunmerged)\b/gi;
     const claimsUnmerged = unmerged.test(text);
     const claimsMerged = /\bmerged\b/i.test(text.replace(unmerged, ''));
     if (claimsOpen && state !== 'OPEN' || claimsUnmerged && state === 'MERGED' || claimsMerged && state !== 'MERGED')
@@ -167,9 +169,10 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
   return findings;
 }
 function safe(p: string) {try {relative(p); return true;} catch {return false;}}
+export const prArgv = (url: string) => ['gh', 'pr', 'view', url, '--json', 'state', '--jq', '.state'];
 export function prState(url: string): string | null {
   try {
-    const result = Bun.spawnSync(['gh', 'pr', 'view', url, '--json', 'state', '--jq', '.state'], {stdin: 'ignore', timeout: 20000});
+    const result = Bun.spawnSync(prArgv(url), {stdin: 'ignore', timeout: 20000});
     const state = result.stdout.toString().trim();
     return result.exitCode === 0 && /^[A-Z]+$/.test(state) ? state : null;
   } catch {return null;}

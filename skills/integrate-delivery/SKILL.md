@@ -7,9 +7,10 @@ description:
 
 # integrate-delivery
 
-Read effective delivery (`integration`, `base`, `mergeMethod`), applicable gates, approvals and the task ledger. Start
-only with candidates whose local required gates, independent review and configured external review are PASS (or NOT RUN
-where optional). `pull-request`, `merge` and remote CI are produced below; `approval-merge` is the owner's.
+Read effective delivery (`integration`, `base`, `mergeMethod`), applicable gates, approvals and, when orchestrated, the
+task ledger (single-agent: record stages in status and evidence). Start only with candidates whose local required gates,
+independent review and configured external review are PASS (or NOT RUN where optional). `pull-request`, `merge` and
+remote CI are produced below; `approval-merge` is the owner's.
 
 1. Serialize: integrate one task at a time. Update from the current base, rebase or merge the task branch, resolve
    conflicts without discarding either side, and record the new candidate. If its diff changed or the base changed code
@@ -21,11 +22,12 @@ where optional). `pull-request`, `merge` and remote CI are produced below; `appr
      URL, base, head, checks, reviews and unresolved findings. Stop; merging is a separate owner decision. Stage
      `pr-open`.
    - `pr-auto-merge`: as `pr`; once those checks PASS, approval-merge is recorded and every other required gate is PASS,
-     enable auto-merge with `mergeMethod` bound to that head (`gh pr merge --auto --match-head-commit`). A new head
-     voids review and approval. A queued auto-merge is not merged; record the merge commit.
+     run `gh pr merge <url> --auto --<mergeMethod> --match-head-commit <sha>`. That pins only enabling: first record
+     branch protection that dismisses stale approvals and requires approval of the latest push, else `merge` stays
+     BLOCKED. Any merge queue must use `mergeMethod`. Queued is not merged; record the merge commit.
    - `direct-merge`: no PR. With approval-merge recorded and every other required gate PASS (including CI on a pushed
-     candidate branch when CI runs on branches), merge into `base` with `mergeMethod`, then confirm post-merge checks on
-     `base`. Record base before, candidate head, merge commit and evidence.
+     candidate branch when CI runs on branches), merge into `base` with `mergeMethod` (a merge queue must use it), then
+     confirm post-merge checks on `base`. Record base before, candidate head, merge commit and evidence.
 4. Move the task to `merged`, then `done` after docs, status, roadmap and ledger are updated. Remove the worktree only
    after merge; keep the branch unless deletion is authorized.
 

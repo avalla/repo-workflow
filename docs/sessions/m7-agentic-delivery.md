@@ -91,6 +91,27 @@ S-a…S-e. External review ([raw output](m7-codex-review-3.txt)): 1 × P1, 5 × 
 | S-d      | Attribution limit documented in USAGE                                                                    |
 | S-e      | Accepted: planned worktrees differing only in case are compared case-sensitively until created           |
 
+### Review round 4 (candidate `3e7636e0`)
+
+Independent review ([report](m7-independent-review-4.md)): **PASS** with one medium item (M4-1) and low M4-2…M4-4.
+External review ([raw output](m7-codex-review-4.txt)): 1 × P1, 4 × P2, 2 × P3, Y1–Y7. Dispositions:
+
+| Finding    | Disposition                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Y1 / M4-1  | `--match-head-commit <sha>` pins only enabling; auto-merge also needs recorded branch protection that dismisses stale approvals and requires approval of the latest push, else `merge` BLOCKED |
+| Y2         | A merge queue must use the configured `mergeMethod`                                                                                                                                            |
+| Y3         | Docs are updated on each candidate before review; post-integration only records outcomes                                                                                                       |
+| Y4         | Task paths overlap case-insensitively                                                                                                                                                          |
+| Y5         | Nested checklist items count                                                                                                                                                                   |
+| Y6         | Ledger operations apply when orchestrated; single-agent records stages in status and evidence                                                                                                  |
+| Y7         | `delivery.base` uses Git's character denylist (`release@2026`, `feat/#42` accepted; `@`, `@{`, controls rejected)                                                                              |
+| M4-2       | Unmerged phrasing accepts stacked modifiers and future tense                                                                                                                                   |
+| M4-3       | Recorded lookup argv is the executed argv (`prArgv`)                                                                                                                                           |
+| M4-4       | USAGE limits the warning to entry files; state paths fail closed                                                                                                                               |
+| Suggestion | `task-integration-concurrent` names the tasks; case-insensitive ownership guards and budget headroom noted, not changed                                                                        |
+
+Round 4 exceeded the default `maxReviewIterations` of 3; further review rounds are an owner decision.
+
 ### Local checks
 
 `bun run typecheck` PASS. Targeted `bun test tests/delivery.test.ts tests/wizard.test.tsx tests/contracts.test.ts` PASS

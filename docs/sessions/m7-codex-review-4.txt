@@ -1,0 +1,26 @@
+codex review --base origin/main on 3e7636e0bd2aa9471a1026512c4194bba5d254ff, 2026-11-27T01:01:11Z
+Full review comments:
+
+- [P1] Enforce approval for the head GitHub actually merges — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:23-25
+  If auto-merge is queued and someone with write access pushes another commit, GitHub can leave auto-merge enabled. `--match-head-commit` checks the head when auto-merge is enabled; it does not pin the eventual merge to that SHA. The new head can therefore merge after platform checks pass without this workflow's independent review or owner approval. Require a platform-enforced, head-specific approval check before enabling auto-merge, or leave the gate blocked. [AGENTS.md:11–13](AGENTS.md#L11-L13)
+
+- [P2] Verify that the merge queue honors the configured method — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:23-25
+  On a GitHub branch that requires a merge queue, `gh pr merge` warns that the queue controls the merge strategy and proceeds even if the caller supplied a strategy. A project configured for `squash` can therefore record a successful merge when the queue actually used `merge` or `rebase`. Check the queue's strategy before enqueueing and block delivery if it does not match the configured `mergeMethod`. [ADR 0006:13–24](docs/adr/0006-configurable-delivery-integration.md#L13-L24)
+
+- [P2] Update documentation before reviewing and integrating the candidate — /Users/andrea/dev/tmp/repo-workflow/adapters/claude-code/commands/repo-workflow-deliver.md:14-17
+  The native Claude delivery command first calls `update-docs` after integration. For a slice that changes documented behavior, following that order either stalls at the required `documentation-current` gate or leaves the documentation edits outside the reviewed and delivered candidate. Run the documentation update before freezing the candidate for review, and reserve the post-integration refresh for recording the outcome. [core/POLICY.md:8–13](core/POLICY.md#L8-L13)
+
+- [P2] Detect case aliases in task-owned paths — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:95-98
+  On a case-insensitive checkout, active tasks claiming `src/Foo.ts` and `src/foo.ts` own the same file, but the case-sensitive overlap check lets both through when their worktrees and branches differ. Those workers can independently edit the same file despite the disjoint-ownership requirement. Compare owned paths using the checkout's case semantics, or reject case aliases consistently with the installer's path checks. [skills/orchestrate-delivery/SKILL.md:14–16](skills/orchestrate-delivery/SKILL.md#L14-L16)
+
+- [P2] Count nested roadmap checklist items — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:32-39
+  The checklist matcher only accepts `- [ ]` at column one. An unchecked item nested under a completed item is silently ignored, so `roadmap` can still validate a stale 100% summary and `doctor` will not flag it. Count nested task-list items or reject them explicitly rather than accepting counts that omit them. [core/POLICY.md:16–20](core/POLICY.md#L16-L20)
+
+- [P3] Make ledger operations conditional on orchestration — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:10-12
+  The feature route and native delivery command both invoke `integrate-delivery` in single-agent mode, but the skill tells the executor to read the ledger and write task stages unconditionally. The default single-agent configuration does not create a ledger, so following the procedure requires either inventing one or skipping undocumented steps. Make ledger operations conditional and record single-agent outcomes in the configured status and evidence files. [core/WORKFLOWS.md:6–7](core/WORKFLOWS.md#L6-L7)
+
+- [P3] Accept valid Git branch names as delivery targets — /Users/andrea/dev/tmp/repo-workflow/schemas/config.schema.json:549-551
+  The allowlist rejects existing branch names such as `release@2026` and `feat/#42`, both accepted by `git check-ref-format --branch`. Projects targeting those branches cannot save a delivery configuration without renaming the branch. Align the schema with Git's branch-name rules and add coverage for valid punctuation. [ADR 0006:54](docs/adr/0006-configurable-delivery-integration.md#L54)
+Type checking and all 50 tests passed, but the auto-merge procedure does not guarantee that GitHub merges the approved head. The delivery instructions and diagnostics also miss supported cases that can stall delivery or report incorrect progress.
+
+exit=0

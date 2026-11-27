@@ -25,8 +25,8 @@ launches no agents.
    external-review when configured. Findings move the task to `fixing`; the worker fixes, the principal re-verifies and
    reviewers re-review affected behavior. Count iterations; at maxReviewIterations stop, mark `blocked` with the
    unresolved findings and escalate to the owner.
-6. Integrate with integrate-delivery once its start criteria hold; it produces the delivery gates. Update docs, status
-   and roadmap.
+6. Integrate with integrate-delivery once its start criteria hold; it produces the delivery gates. Docs ship with each
+   candidate; afterwards record status, roadmap and ledger.
 
 Ledger stages: planned → approved → implementing → verifying → reviewing → external-review → fixing → integrating →
 pr-open → merged → done; `blocked` and `abandoned` need a reason. Update the ledger after every transition so a fresh

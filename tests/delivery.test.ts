@@ -33,9 +33,9 @@ test('merge modes require an explicit owner merge approval and a merge method', 
     expect(() => inspect(project(c => {c.delivery = {integration, base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, policy: 'optional'});}))).toThrow('schema-validation');
   }
   // Target branches follow Git ref-name rules (Codex D7).
-  for (const bad of ['--force', 'main/', 'release.lock', 'a//b', '.hidden', 'a/.b', 'a..b', 'main.', '/main', 'HEAD'])
+  for (const bad of ['--force', 'main/', 'release.lock', 'a//b', '.hidden', 'a/.b', 'a..b', 'main.', '/main', 'HEAD', '@', 'a@{1}', 'a b', 'a~1', 'a:b', 'a\\b', 'a/x.lock/b'])
     expect(() => inspect(project(c => {c.delivery = {integration: 'pr', base: bad};}))).toThrow('schema-validation');
-  for (const good of ['release/1.2', 'release+next', 'HEADS'])
+  for (const good of ['release/1.2', 'release+next', 'HEADS', 'release@2026', 'feat/#42', 'a@b'])
     expect(inspect(project(c => {c.delivery = {integration: 'pr', base: good};})).delivery.base).toBe(good);
   // Generated content under .codex is generator-owned (R3-2).
   expect(() => inspect(project(c => {c.components.main.path = '.codex';}))).toThrow('component-ownership-collision');
@@ -142,12 +142,13 @@ test('doctor validates the task ledger: overlaps, dependencies, cycles, limits a
   expect(codes(ledgerProject([task('a'), task('b', {branch: 'feature/a'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'reviewing'})]))).toEqual([]);
   // Checkouts compare by resolved identity; no worktree is the main checkout; integration shares the index (R2-2, D4).
+  expect(codes(ledgerProject([task('a', {paths: ['src/Foo.ts']}), task('b', {paths: ['src/foo.ts']})]))).toContain('task-path-overlap:a:b=BLOCKED');
   for (const worktree of ['../wt-a/', './../wt-a', '../x/../wt-a'])
     expect(codes(ledgerProject([task('a'), task('b', {worktree})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a', {worktree: null}), task('b', {worktree: null})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'integrating'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   // Integration is serial even across separate checkouts (Codex X3).
-  expect(codes(ledgerProject([task('a', {stage: 'integrating'}), task('b', {stage: 'integrating'})]))).toContain('task-integration-concurrent=BLOCKED');
+  expect(codes(ledgerProject([task('a', {stage: 'integrating'}), task('b', {stage: 'integrating'})]))).toContain('task-integration-concurrent:a:b=BLOCKED');
   expect(() => doctor(ledgerProject([{...task('a'), extra: true}]))).toThrow('schema-validation: tasks');
   expect(() => doctor(ledgerProject([task('a', {paths: []})]))).toThrow('schema-validation: tasks');
   expect(codes(ledgerProject([task('a', {candidate: 'a'.repeat(64)})]))).toEqual([]);
@@ -190,6 +191,8 @@ test('roadmap check recomputes feature, milestone and project progress', () => {
   expect(roadmapReport(example + items, false).findings).toEqual([{code: 'roadmap-format-not-adopted', result: 'WARNING'}]);
   expect(roadmapReport(example + items).findings.map(f => f.code)).toEqual(['roadmap-missing-summary', 'roadmap-missing-row:M1 — a']);
   // A repeated label would hide one node from the row check (R2-6).
+  // Nested checklist items count (Codex Y5).
+  expect(roadmapReport(good.replace('- [x] one\n', '- [x] one\n  - [ ] nested\n')).findings[0].code).toContain('roadmap-summary-mismatch');
   // Inline ```code``` at line start is not a fence (R3-1).
   expect(roadmapReport('```x``` is inline code.\n\n' + good).findings).toEqual([]);
   const twice = '## Milestone 1 — a\n\n### Tasks\n\n- [ ] one\n\n## Milestone 2 — b\n\n### Tasks\n\n- [ ] two\n';
@@ -220,7 +223,7 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) is not yet merged.\n');
   expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:MERGED');
-  for (const phrase of ['has not been merged', "isn't merged", 'was never merged']) {
+  for (const phrase of ['has not been merged', "isn't merged", 'was never merged', 'has not yet been merged', "hasn't yet been merged", 'will not be merged', "won't be merged", "aren't merged"]) {
     write(root, 'docs/STATUS.md', `[PR #7](https://github.com/o/r/pull/7) ${phrase}.\n`);
     expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   }
