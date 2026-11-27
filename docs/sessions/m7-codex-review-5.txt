@@ -1,0 +1,14 @@
+codex review --base origin/main on 7fcc858e70a36a6699b61d124f7df70938d7a8ed, 2026-11-27T01:33:22Z
+Full review comments:
+
+- [P1] Bind auto-merge to the candidate that passed all gates — /Users/andrea/dev/tmp/repo-workflow/skills/integrate-delivery/SKILL.md:24-27
+  If someone with write access pushes a new commit after auto-merge is enabled, GitHub can keep auto-merge queued. `--match-head-commit` checks only the head at enablement, and branch protection can accept a fresh GitHub approval without rerunning Repo Workflow's independent review, owner merge approval, or local checks for the new SHA. Require a merge-blocking check tied to all required evidence for the current head, or leave auto-merge blocked when the platform cannot enforce that guarantee. This is the candidate-specific gate requirement in [AGENTS.md](AGENTS.md#L11-L13).
+
+- [P2] Exclude non-rendered checkboxes from roadmap progress — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:28-33
+  A checkbox inside a multiline HTML comment is counted as a real item. In a local probe, adding a commented-out checked item to a roadmap with one visible unchecked task changed the reported progress from `0/1` to `1/2` and made both `roadmap` and the adopted-format `doctor` check reject the correct summary. Count rendered Markdown task-list items rather than every matching line so hidden items do not distort the progress required by [AGENTS.md](AGENTS.md#L16-L18).
+
+- [P2] Accept N/A progress rows for unscoped features — /Users/andrea/dev/tmp/repo-workflow/src/diagnostics.ts:50-54
+  When a roadmap names a future feature or milestone before defining its tasks, the documented `0/0 | N/A` row is rejected as `roadmap-unknown-row` because the heading was filtered out before row validation. Omitting the row instead makes the heading disappear from the report. Keep zero-item headings in the progress tree and row lookup without marking them complete, so the roadmap can report progress at every level required by [AGENTS.md](AGENTS.md#L16-L18).
+The auto-merge procedure can land a different candidate from the one that passed the required gates. Local probes also confirmed two roadmap validation defects; the live merge path was not exercised.
+
+exit=0

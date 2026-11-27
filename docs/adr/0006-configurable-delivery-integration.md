@@ -15,9 +15,12 @@ no merge authority).
 
 - `pr`: the core pull-request gate stays required; merging is a separate owner decision.
 - `pr-auto-merge`: pull-request stays required; a required `merge` gate covers enabling platform auto-merge after every
-  other required gate passes. A queued auto-merge is not merged.
-- `direct-merge`: no PR. The pull-request gate is replaced by a required `merge` gate that keeps the same evidence
-  (base, candidate head, checks, reviews, findings) plus the merge commit.
+  other required gate passes. Because `--match-head-commit` pins only enabling, auto-merge also needs recorded platform
+  protection that blocks any head lacking this workflow's evidence (a required check or owner-only code-owner approval
+  of the latest push); otherwise `merge` stays BLOCKED. A queued auto-merge is not merged.
+- `direct-merge`: no PR; a base that requires a merge queue leaves it BLOCKED. The pull-request gate is replaced by a
+  required `merge` gate that keeps the same evidence (base, candidate head, checks, reviews, findings) plus the merge
+  commit.
 
 Both merge modes require `mergeMethod` and a required project approval with ID `merge` in `approvals`; the schema
 rejects a merge mode without it. Choosing a merge mode in the wizard records that approval policy; each merge still

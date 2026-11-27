@@ -193,6 +193,13 @@ test('roadmap check recomputes feature, milestone and project progress', () => {
   // A repeated label would hide one node from the row check (R2-6).
   // Nested checklist items count (Codex Y5).
   expect(roadmapReport(good.replace('- [x] one\n', '- [x] one\n  - [ ] nested\n')).findings[0].code).toContain('roadmap-summary-mismatch');
+  // Ordered items count; HTML comments and indented code blocks are not rendered items (R5, Codex Z2).
+  expect(roadmapReport(good.replace('- [x] one\n', '- [x] one\n  1. [ ] nested\n')).findings[0].code).toContain('roadmap-summary-mismatch');
+  expect(roadmapReport(good.replace('- [x] one\n', '- [x] one\n\n<!--\n- [x] hidden\n-->\n\nExample:\n\n    - [x] sample\n')).findings).toEqual([]);
+  // Headings without items accept a 0/0 N/A row and need none (Codex Z3).
+  const later = good + '\n## Milestone 2 — later\n\n### F9 — idea\n';
+  expect(roadmapReport(later).findings).toEqual([]);
+  expect(roadmapReport(later.replace('| F2 — y | 0/1 | 0% |\n', '| F2 — y | 0/1 | 0% |\n| F9 — idea | 0/0 | N/A |\n')).findings).toEqual([]);
   // Inline ```code``` at line start is not a fence (R3-1).
   expect(roadmapReport('```x``` is inline code.\n\n' + good).findings).toEqual([]);
   const twice = '## Milestone 1 — a\n\n### Tasks\n\n- [ ] one\n\n## Milestone 2 — b\n\n### Tasks\n\n- [ ] two\n';
@@ -223,10 +230,12 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) is not yet merged.\n');
   expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:MERGED');
-  for (const phrase of ['has not been merged', "isn't merged", 'was never merged', 'has not yet been merged', "hasn't yet been merged", 'will not be merged', "won't be merged", "aren't merged"]) {
+  for (const phrase of ['has not been merged', "isn't merged", 'was never merged', 'has not yet been merged', "hasn't yet been merged", 'will not be merged', "won't be merged", "aren't merged", 'cannot be merged', 'is not currently merged', "didn't get merged"]) {
     write(root, 'docs/STATUS.md', `[PR #7](https://github.com/o/r/pull/7) ${phrase}.\n`);
     expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   }
+  write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) is merged; no merge conflicts.\n');
+  expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   // With several PRs in a paragraph, each claim belongs to its own sentence (Codex D6, S2).
   write(root, 'docs/STATUS.md', 'PR https://github.com/o/r/pull/1 is open; PR https://github.com/o/r/pull/2 was merged.\n');
   const states: Record<string, string> = {'https://github.com/o/r/pull/1': 'OPEN', 'https://github.com/o/r/pull/2': 'MERGED'};

@@ -112,6 +112,25 @@ External review ([raw output](m7-codex-review-4.txt)): 1 × P1, 4 × P2, 2 × P3
 
 Round 4 exceeded the default `maxReviewIterations` of 3; further review rounds are an owner decision.
 
+### Review round 5, final (candidate `7fcc858e`)
+
+The owner authorized a fifth and final round after the default limit of three. Independent review
+([report](m7-independent-review-5.md)): **PASS**, four low findings. External review
+([raw output](m7-codex-review-5.txt)): 1 × P1, 2 × P2, Z1–Z3. Dispositions (no further review round):
+
+| Finding     | Disposition                                                                                                                                                                                                                      |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Z1          | Auto-merge requires recorded protection blocking any head without this workflow's evidence (required check or owner-only code-owner approval of the latest push), else BLOCKED; head change → `--disable-auto`; ADR 0006 updated |
+| Z2          | Checkboxes inside HTML comments are not counted                                                                                                                                                                                  |
+| Z3          | Headings without items accept a `0/0 N/A` row and need none                                                                                                                                                                      |
+| R5-1        | Ordered task items (`1. [ ]`) count                                                                                                                                                                                              |
+| R5-2        | Indented code blocks outside a list are not counted                                                                                                                                                                              |
+| R5-3        | `direct-merge` onto a base requiring a merge queue is BLOCKED                                                                                                                                                                    |
+| R5-4        | Workers update affected docs before verification; the Claude command updates affected docs, not status/ledger, per candidate                                                                                                     |
+| Suggestions | "no merge conflicts", "cannot be merged", "is not currently merged", "didn't get merged" handled; case-insensitive overlap kept as conservative                                                                                  |
+
+These fixes were verified by local checks only; they have not been re-reviewed.
+
 ### Local checks
 
 `bun run typecheck` PASS. Targeted `bun test tests/delivery.test.ts tests/wizard.test.tsx tests/contracts.test.ts` PASS
@@ -129,8 +148,11 @@ native entry points. Two worker subagents ran in parallel in separate worktrees 
 `bugfix/t2-average-empty`). Independent review passed on each iteration. Codex found E1 (overflow), E2 (README), E3
 (error class), E4 (subnormal precision and stale ledger evidence) and E5 (NaN order dependence); E1–E4 were fixed and
 integrated serially on `integrate/pilot-m7`. `t1` reached the 3/3 review-iteration limit on E5, which is outside its
-acceptance criteria, and is `blocked` awaiting an owner decision; `t2` is `integrating`. The merge gate is NOT RUN. `pr`
-and `pr-auto-merge` modes were not exercised (no remote).
+acceptance criteria, and was escalated. On 2026-11-27 the owner deferred E5 and approved the merge: the reviewed
+candidate `c52e224` was squash-merged into the pilot's `main` as `faed2a6` (identical tree; base before `3aac4f3`),
+`bun test` passed 11/11 before and after the merge, both ledger tasks reached `done`, worktrees were removed after the
+merge and branches kept. `doctor` (current CLI) reports no findings and the pilot roadmap is 100%. Remote CI, `pr` and
+`pr-auto-merge` were not exercised (no remote; owner chose not to create one), so the F8 pilot item stays open.
 
 ### Incident
 

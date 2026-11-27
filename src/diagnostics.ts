@@ -25,12 +25,18 @@ export function unfenced(text: string) {
 // Recomputes roadmap progress from checkboxes; summaries are claims to verify, never inputs (F6).
 // doctor passes strict=false for roadmaps without the summary line, so project-owned formats only warn (M7-R2).
 export function roadmapReport(source: string, strict = true) {
-  const text = unfenced(source);
+  // HTML comments are not rendered, so their checkboxes are not items (Codex Z2).
+  const text = unfenced(source).replace(/<!--[\s\S]*?-->/g, '');
   if (!strict && !/^Progress: \*\*/m.test(text)) return {project: null, milestones: [], findings: [{code: 'roadmap-format-not-adopted', result: 'WARNING'} as Finding]};
   const milestones: Node[] = [], findings: Finding[] = [];
-  let milestone: Node | null = null, feature: Node | null = null;
+  let milestone: Node | null = null, feature: Node | null = null, inList = false;
   for (const line of text.split('\n')) {
-    const h2 = /^## (.+)$/.exec(line), h3 = /^### (.+)$/.exec(line), item = /^\s*[-*+] \[([ xX])\] /.exec(line);
+    // Bullet and ordered task items count when nested in a list; 4+ spaces outside a list is an indented code block (R5).
+    const listed = /^(\s*)(?:[-*+]|\d+[.)])\s/.exec(line), checkbox = /^\s*(?:[-*+]|\d+[.)]) \[([ xX])\] /.exec(line);
+    const item = checkbox && (listed![1].length < 4 || inList) ? checkbox : null;
+    if (listed && (listed[1].length < 4 || inList)) inList = true;
+    else if (line.trim() && !/^\s{2,}/.test(line)) inList = false;
+    const h2 = /^## (.+)$/.exec(line), h3 = /^### (.+)$/.exec(line);
     if (h2) {milestone = {label: label(h2[1]), done: 0, total: 0, features: []}; milestones.push(milestone); feature = null;}
     else if (h3 && milestone) {feature = {label: label(h3[1]), done: 0, total: 0, features: []}; milestone.features.push(feature);}
     else if (item) {
@@ -53,6 +59,8 @@ export function roadmapReport(source: string, strict = true) {
     if (nodes.has(node.label)) findings.push({code: 'roadmap-duplicate-label:' + node.label, result: 'BLOCKED'});
     else nodes.set(node.label, node);
   }
+  // Headings without items may carry a 0/0 N/A row; they are never required or complete (Codex Z3).
+  for (const node of milestones.flatMap(m => [m, ...m.features])) if (!node.total && !nodes.has(node.label)) nodes.set(node.label, node);
   const seen = new Set<string>();
   for (const row of text.matchAll(/^\|\s*([^|]+?)\s*\|\s*(\d+)\/(\d+)\s*\|\s*(\d+%|N\/A)\s*\|/gm)) {
     const node = nodes.get(row[1]);
@@ -61,7 +69,7 @@ export function roadmapReport(source: string, strict = true) {
     if (Number(row[2]) !== node.done || Number(row[3]) !== node.total || row[4] !== percent(node.done, node.total))
       findings.push({code: `roadmap-row-mismatch:${row[1]}: expected ${node.done}/${node.total} ${percent(node.done, node.total)}`, result: 'BLOCKED'});
   }
-  for (const node of nodes.values()) if (!seen.has(node.label)) findings.push({code: 'roadmap-missing-row:' + node.label, result: 'BLOCKED'});
+  for (const node of nodes.values()) if (node.total && !seen.has(node.label)) findings.push({code: 'roadmap-missing-row:' + node.label, result: 'BLOCKED'});
   const tree = counted.map(m => ({label: m.label, done: m.done, total: m.total, percent: percent(m.done, m.total),
     features: m.features.filter(f => f.total).map(f => ({label: f.label, done: f.done, total: f.total, percent: percent(f.done, f.total)}))}));
   return {project, milestones: tree, findings};
@@ -160,7 +168,7 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     const text = paragraphs.join('\n');
     // Open, unmerged and merged are separate claims: a closed PR is accurately "not merged" (C8).
     const claimsOpen = /\b(?:is open|remains open|open PR)\b/i.test(text);
-    const unmerged = /(?:\bno merge|(?:\bnot|n['’]t)(?: (?:yet|been|be))* merged|\bnever(?: been)? merged|\bunmerged)\b/gi;
+    const unmerged = /(?:\bno merge(?! conflicts?)|(?:\bnot|\bcannot|n['’]t)(?: (?:yet|been|be|currently|get))* merged|\bnever(?: been)? merged|\bunmerged)\b/gi;
     const claimsUnmerged = unmerged.test(text);
     const claimsMerged = /\bmerged\b/i.test(text.replace(unmerged, ''));
     if (claimsOpen && state !== 'OPEN' || claimsUnmerged && state === 'MERGED' || claimsMerged && state !== 'MERGED')

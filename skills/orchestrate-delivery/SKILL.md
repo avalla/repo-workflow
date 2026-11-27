@@ -17,16 +17,16 @@ launches no agents.
 2. Isolate: give each writing task one worktree and branch from the current base, named `<kind>/<task-id>`, outside
    other worktrees. Record branch and worktree in the ledger. Never let two workers write the same checkout.
 3. Fan out at most maxParallel writing tasks whose dependencies are `merged` or `done`. Brief each worker with its task,
-   owned paths, relevant contracts and gates only. Workers implement, run authorized checks and report diff and
-   evidence; they never merge, push or edit the ledger.
+   owned paths, relevant contracts and gates only. Workers implement, update affected docs, run authorized checks and
+   report diff and evidence; they never merge, push or edit the ledger.
 4. Verify: inspect each actual diff and evidence against its acceptance criteria; a completion message is not proof.
    Record candidate identity and move the task to `reviewing`.
 5. Review: obtain review-change from a context that authored neither the task nor its integration. Then run
    external-review when configured. Findings move the task to `fixing`; the worker fixes, the principal re-verifies and
    reviewers re-review affected behavior. Count iterations; at maxReviewIterations stop, mark `blocked` with the
    unresolved findings and escalate to the owner.
-6. Integrate with integrate-delivery once its start criteria hold; it produces the delivery gates. Docs ship with each
-   candidate; afterwards record status, roadmap and ledger.
+6. Integrate with integrate-delivery once its start criteria hold; it produces the delivery gates. Afterwards record
+   status, roadmap and ledger.
 
 Ledger stages: planned → approved → implementing → verifying → reviewing → external-review → fixing → integrating →
 pr-open → merged → done; `blocked` and `abandoned` need a reason. Update the ledger after every transition so a fresh

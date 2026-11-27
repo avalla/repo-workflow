@@ -8,10 +8,13 @@ their declared scope; M2 and M5 each keep one open item; M7 (configurable agenti
 Implemented on branch `docs/m7-agentic-delivery-roadmap` from `main` at `7255f32`: delivery integration modes (`pr`,
 `pr-auto-merge`, `direct-merge`) with owner merge approval, parallel and review-iteration limits, optional Codex review,
 a validated task ledger, the reworked Ink wizard, orchestration/integration/external-review/technical-assessment/
-update-docs procedures, the handoff split, roadmap and drift diagnostics, optional Claude Code subagents, retirement of
-the Python reference and archived M1–M6 evidence. Decisions: [ADR 0006](adr/0006-configurable-delivery-integration.md),
-[ADR 0007](adr/0007-retire-python-reference.md). Evidence, candidate, checks and reviews:
-[M7 report](sessions/m7-agentic-delivery.md).
+update-docs procedures, the handoff split, roadmap and drift diagnostics, optional Claude Code subagents and Codex
+custom agents, retirement of the Python reference and archived M1–M6 evidence. Decisions:
+[ADR 0006](adr/0006-configurable-delivery-integration.md), [ADR 0007](adr/0007-retire-python-reference.md). Evidence,
+candidate, checks and reviews: [M7 report](sessions/m7-agentic-delivery.md). Five review rounds (independent and Codex);
+the final independent review passed and its findings were fixed and checked locally without a further round. A
+disposable pilot delivered two parallel tasks through direct-merge; `pr` and `pr-auto-merge` were not exercised, so the
+pilot item stays open. M7 roadmap items are checked only after the M7 PR is merged.
 
 ## Earlier milestones
 
@@ -30,6 +33,6 @@ needs a target PR decision and PR/browser/accessibility gates ([pilot](sessions/
 
 ## Next
 
-1. Owner decision on pushing the M7 branch and opening its PR (pull-request gate).
+1. Review and merge the M7 PR (pull-request gate; merging is the owner's decision), then check the M7 items.
 2. Present the reviewed AF Next patch for a target PR-publication decision; finish its required gates.
 3. Complete native Antigravity qualification when available.

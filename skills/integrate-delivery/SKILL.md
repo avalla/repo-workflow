@@ -22,12 +22,14 @@ remote CI are produced below; `approval-merge` is the owner's.
      URL, base, head, checks, reviews and unresolved findings. Stop; merging is a separate owner decision. Stage
      `pr-open`.
    - `pr-auto-merge`: as `pr`; once those checks PASS, approval-merge is recorded and every other required gate is PASS,
-     run `gh pr merge <url> --auto --<mergeMethod> --match-head-commit <sha>`. That pins only enabling: first record
-     branch protection that dismisses stale approvals and requires approval of the latest push, else `merge` stays
-     BLOCKED. Any merge queue must use `mergeMethod`. Queued is not merged; record the merge commit.
-   - `direct-merge`: no PR. With approval-merge recorded and every other required gate PASS (including CI on a pushed
-     candidate branch when CI runs on branches), merge into `base` with `mergeMethod` (a merge queue must use it), then
-     confirm post-merge checks on `base`. Record base before, candidate head, merge commit and evidence.
+     run `gh pr merge <url> --auto --<mergeMethod> --match-head-commit <sha>`; that pins only enabling. First record
+     protection that blocks any head lacking this workflow's evidence (a required check, or owner-only code-owner
+     approval of the latest push), else `merge` stays BLOCKED; on a head change run `gh pr merge <url> --disable-auto`.
+     A merge queue must use `mergeMethod`. Queued is not merged; record the merge commit.
+   - `direct-merge`: no PR; a base that requires a merge queue leaves it BLOCKED. With approval-merge recorded and every
+     other required gate PASS (including CI on a pushed candidate branch when CI runs on branches), merge into `base`
+     with `mergeMethod`, then confirm post-merge checks on `base`. Record base before, candidate head, merge commit and
+     evidence.
 4. Move the task to `merged`, then `done` after docs, status, roadmap and ledger are updated. Remove the worktree only
    after merge; keep the branch unless deletion is authorized.
 
