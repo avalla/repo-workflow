@@ -158,3 +158,9 @@ merge and branches kept. `doctor` (current CLI) reports no findings and the pilo
 
 An external Claude Code plugin Stop hook reformatted eight TypeScript files to Prettier defaults during the session. The
 files were restored byte-exactly and `.prettierignore` now limits Prettier to Markdown in this repository.
+
+### Close-out
+
+PR #5 was merged by the owner on 2026-11-27 as `e3d0ec1`, whose tree is identical to the reviewed head `47c499a`. With
+owner authorization the merged branches of PRs #1–#5 were deleted locally and on `origin`, and a stale worktree entry
+was pruned. Fifteen M7 items were checked; the `pr`-mode pilot item stays open.
