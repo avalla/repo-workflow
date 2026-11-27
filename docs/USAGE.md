@@ -99,14 +99,16 @@ is not a delivery certificate. Existing roadmaps are preserved on install and up
 deliberately. See [this repository's checklist](../ROADMAP.md) for an example.
 
 `doctor` also validates the task ledger when `state.tasks` is set (schema, unknown dependencies, cycles, overlapping
-owned paths of active tasks, writing or integrating tasks sharing a branch or checkout, writers above `maxParallel`,
-review iterations above `maxReviewIterations`, writers whose dependencies are not integrated, missing worktrees or
-blocker reasons). Worktrees are compared as resolved paths from the project root; a task without one uses the main
-checkout. It reports drift: relative links in status and roadmap (outside fenced and inline code) that point to missing
-or unsafe files, and task-authorization statements in AGENTS.md or CLAUDE.md. With `--remote` it reads the actual state
-of every cited GitHub PR through `gh` and warns when nearby text claims the PR is open while it is not, not merged while
-it is merged, or merged while it is not. A paragraph citing several PRs is read sentence by sentence. Without `--remote`
-that check is NOT RUN.
+owned paths of active tasks, writing or integrating tasks sharing a branch or checkout, more than one task integrating,
+writers above `maxParallel`, review iterations above `maxReviewIterations`, writers whose dependencies are not
+integrated, missing worktrees or blocker reasons). Worktrees are compared as resolved paths from the project root; a
+task without one uses the main checkout. It reports drift: relative links in status and roadmap (outside fenced and
+inline code) that point to missing or unsafe files, and task-authorization statements in AGENTS.md or CLAUDE.md. With
+`--remote` it reads the actual state of every cited GitHub PR through `gh` and warns when nearby text claims the PR is
+open while it is not, not merged while it is merged, or merged while it is not. A paragraph citing several PRs is read
+sentence by sentence; sentences citing none or several are skipped, so this is a heuristic, not proof. The `gh` lookups
+are listed in `diagnosticLookups`; `commandsExecuted` stays empty. Unsafe memory or entry files (for example a symlinked
+CLAUDE.md) are reported as `unsafe-memory-file` warnings. Without `--remote` that check is NOT RUN.
 
 `--affected` is repeatable with checkout-relative paths. Tasks: `feature`, `bugfix`, `docs`, `research`, `release`.
 Omitted paths (including an empty API array) mean scope is unknown, not that no files changed. Gate `applicable` is

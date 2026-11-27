@@ -44,11 +44,11 @@ export function resolve(config: Document, target: Inputs, source: Inputs): Docum
   const components: Document = config.components, roots: string[] = [];
   for (const component of Object.values(components)) {
     const p = relative(component.path, true);
-    req(!['.repo-workflow', '.agents', '.claude'].includes(p.split('/')[0]), 'component-ownership-collision'); checked(target.root, p);
+    req(!['.repo-workflow', '.agents', '.claude', '.codex'].includes(p.split('/')[0]), 'component-ownership-collision'); checked(target.root, p);
     req(!roots.some(r => p === '.' || r === '.' || p.toLowerCase() === r.toLowerCase() || p.toLowerCase().startsWith(r.toLowerCase() + '/') || r.toLowerCase().startsWith(p.toLowerCase() + '/')), 'overlapping-component-roots'); roots.push(p);
   }
   for (const p of Object.values(config.state) as string[]) {
-    relative(p); req(!['.repo-workflow', '.agents', '.claude'].some(r => p === r || p.startsWith(r + '/')) && !['AGENTS.md', 'CLAUDE.md', '.repo-workflow.json'].includes(p), 'state-ownership-collision'); target.track(p);
+    relative(p); req(!['.repo-workflow', '.agents', '.claude', '.codex'].some(r => p === r || p.startsWith(r + '/')) && !['AGENTS.md', 'CLAUDE.md', '.repo-workflow.json'].includes(p), 'state-ownership-collision'); target.track(p);
   }
   req(new Set(Object.values(config.state).map(p => String(p).toLowerCase())).size === Object.keys(config.state).length, 'state-ownership-collision');
   for (const command of Object.values(config.commands) as Document[]) {

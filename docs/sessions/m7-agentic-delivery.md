@@ -69,6 +69,28 @@ Independent review ([report](m7-independent-review-2.md)): **FAIL**, R2-1…R2-8
 | R2-8      | Wizard adds a `<check>-release` gate that applies to every release                                           |
 | R2-7      | Codex custom agents exist (`.codex/agents/*.toml`); generated for both roles instead of narrowing F7         |
 
+### Review round 3 (candidate `99082cf3`)
+
+Independent review ([report](m7-independent-review-3.md)): **PASS**, with low findings R3-1…R3-3 and suggestions
+S-a…S-e. External review ([raw output](m7-codex-review-3.txt)): 1 × P1, 5 × P2, 1 × P3, X1–X7. Dispositions:
+
+| Finding  | Disposition                                                                                              |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| X1       | Auto-merge is bound to the approved head (`gh pr merge --auto --match-head-commit`); a new head voids it |
+| X2       | `orchestrate-delivery` hands off on integration start criteria; integration produces delivery gates      |
+| X3       | `task-integration-concurrent` BLOCKED for more than one `integrating` task                               |
+| X4       | Unreadable or symlinked memory/entry files become `unsafe-memory-file` warnings                          |
+| X5 / S-a | `delivery.base` rejects a leading `/` and `HEAD`, and accepts `+`                                        |
+| X6       | Wizard release gates use a task-only selector, so they apply without affected paths                      |
+| X7       | `doctor` reports `gh` lookups in `diagnosticLookups` and states remote discovery                         |
+| R3-1     | A backtick run followed by another backtick on the line is not a fence opener                            |
+| R3-2     | `.codex` added to the component and state ownership guards                                               |
+| R3-3     | "has not been merged", "isn't merged", "never merged" are unmerged claims                                |
+| S-b      | `approval-merge` is described as the owner's                                                             |
+| S-c      | Inline code is stripped per paragraph                                                                    |
+| S-d      | Attribution limit documented in USAGE                                                                    |
+| S-e      | Accepted: planned worktrees differing only in case are compared case-sensitively until created           |
+
 ### Local checks
 
 `bun run typecheck` PASS. Targeted `bun test tests/delivery.test.ts tests/wizard.test.tsx tests/contracts.test.ts` PASS

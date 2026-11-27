@@ -3,7 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {parseArgs} from 'node:util';
 import {canonical, checked, decode, Inputs, requireThat as req, type Document} from './io';
-import {driftFindings, ledgerFindings, roadmapReport} from './diagnostics';
+import {driftFindings, ledgerFindings, prState, roadmapReport} from './diagnostics';
 import {gateReport} from './compose';
 import {apply, configuration, plan, readLock, recover, type Operation, type Plan} from './lifecycle';
 import {block} from './render';
@@ -25,7 +25,10 @@ export function doctor(root: string, task = 'feature', affected: string[] = [], 
   if (fs.existsSync(target.track(config.state.roadmap))) findings.push(...roadmapReport(target.text(config.state.roadmap), false).findings);
   if (config.state.tasks) findings.push(...ledgerFindings(target, source, config.state.tasks, effective.execution));
   else if (effective.execution.mode === 'orchestrated') findings.push({code: 'task-ledger-not-configured', result: 'BLOCKED'});
-  findings.push(...driftFindings(target, [config.state.current, config.state.roadmap], ['AGENTS.md', 'CLAUDE.md'], remote));
+  // Remote lookups are diagnostic reads, reported so a remote run is distinguishable from a local one (Codex X7).
+  const lookups: string[][] = [];
+  findings.push(...driftFindings(target, [config.state.current, config.state.roadmap], ['AGENTS.md', 'CLAUDE.md'], remote,
+    url => {lookups.push(['gh', 'pr', 'view', url, '--json', 'state']); return prState(url);}));
   const gates = gateReport(effective, config, task, affected);
   for (const [key, gate] of Object.entries(gates)) if (gate.required && gate.applicable === null)
     findings.push({code: 'missing-affected-paths:' + key, result: 'BLOCKED'});
@@ -45,7 +48,8 @@ export function doctor(root: string, task = 'feature', affected: string[] = [], 
     if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/active'))) findings.push({code: 'active-transaction', result: 'BLOCKED'});
     if (fs.existsSync(checked(target.root, '.repo-workflow/transactions/recovery-owner'))) findings.push({code: 'recovery-in-progress', result: 'BLOCKED'});
   }
-  return {findings, gates, prerequisites: effective.profiles.flatMap((p: Document) => p.profile.policy.prerequisites.map((requirement: string) => ({scope: p.scope, requirement, result: 'UNKNOWN'}))), completion: false, commandsExecuted: [], discovery: 'filesystem contract only; native harness execution is separate evidence'};
+  return {findings, gates, prerequisites: effective.profiles.flatMap((p: Document) => p.profile.policy.prerequisites.map((requirement: string) => ({scope: p.scope, requirement, result: 'UNKNOWN'}))), completion: false, commandsExecuted: [], diagnosticLookups: lookups,
+    discovery: (lookups.length ? 'filesystem contract plus read-only GitHub PR state' : 'filesystem contract only') + '; native harness execution is separate evidence'};
 }
 const HELP = `Repo Workflow (Bun) — local workflow configuration; never executes configured commands
 

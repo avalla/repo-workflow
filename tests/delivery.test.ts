@@ -33,9 +33,12 @@ test('merge modes require an explicit owner merge approval and a merge method', 
     expect(() => inspect(project(c => {c.delivery = {integration, base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, policy: 'optional'});}))).toThrow('schema-validation');
   }
   // Target branches follow Git ref-name rules (Codex D7).
-  for (const bad of ['--force', 'main/', 'release.lock', 'a//b', '.hidden', 'a/.b', 'a..b', 'main.'])
+  for (const bad of ['--force', 'main/', 'release.lock', 'a//b', '.hidden', 'a/.b', 'a..b', 'main.', '/main', 'HEAD'])
     expect(() => inspect(project(c => {c.delivery = {integration: 'pr', base: bad};}))).toThrow('schema-validation');
-  expect(inspect(project(c => {c.delivery = {integration: 'pr', base: 'release/1.2'};})).delivery.base).toBe('release/1.2');
+  for (const good of ['release/1.2', 'release+next', 'HEADS'])
+    expect(inspect(project(c => {c.delivery = {integration: 'pr', base: good};})).delivery.base).toBe(good);
+  // Generated content under .codex is generator-owned (R3-2).
+  expect(() => inspect(project(c => {c.components.main.path = '.codex';}))).toThrow('component-ownership-collision');
   // The merge approval must cover every merge candidate (M7-R1 / Codex C1).
   for (const applicability of [{components: [], paths: [], tasks: ['release']}, {components: [], paths: ['src'], tasks: []}, {components: ['main'], paths: [], tasks: []}])
     expect(() => inspect(project(c => {c.delivery = {integration: 'direct-merge', base: 'main', mergeMethod: 'squash'}; c.approvals.push({...merge, applicability});}))).toThrow('schema-validation');
@@ -99,6 +102,8 @@ test('wizard answers produce merge approval, command gates, ledger and native en
   // A release verifies the whole candidate even when it touches only documentation (R2-8).
   expect(inspect(root, 'release', ['README.md']).gates['project/test-release'].applicable).toBe(true);
   expect(inspect(root, 'feature', ['src/a.ts']).gates['project/test-release'].applicable).toBe(false);
+  // Release checks need no affected paths (Codex X6).
+  expect(inspect(root, 'release').gates['project/test-release'].applicable).toBe(true);
   fs.appendFileSync(root + '/.claude/agents/repo-workflow-worker.md', 'local note\n');
   apply(plan(root, 'uninstall'), root);
   expect(fs.existsSync(root + '/.claude/commands/repo-workflow-deliver.md')).toBe(false);
@@ -141,6 +146,8 @@ test('doctor validates the task ledger: overlaps, dependencies, cycles, limits a
     expect(codes(ledgerProject([task('a'), task('b', {worktree})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a', {worktree: null}), task('b', {worktree: null})]))).toContain('task-worktree-shared:a:b=BLOCKED');
   expect(codes(ledgerProject([task('a'), task('b', {worktree: '../wt-a', stage: 'integrating'})]))).toContain('task-worktree-shared:a:b=BLOCKED');
+  // Integration is serial even across separate checkouts (Codex X3).
+  expect(codes(ledgerProject([task('a', {stage: 'integrating'}), task('b', {stage: 'integrating'})]))).toContain('task-integration-concurrent=BLOCKED');
   expect(() => doctor(ledgerProject([{...task('a'), extra: true}]))).toThrow('schema-validation: tasks');
   expect(() => doctor(ledgerProject([task('a', {paths: []})]))).toThrow('schema-validation: tasks');
   expect(codes(ledgerProject([task('a', {candidate: 'a'.repeat(64)})]))).toEqual([]);
@@ -183,6 +190,8 @@ test('roadmap check recomputes feature, milestone and project progress', () => {
   expect(roadmapReport(example + items, false).findings).toEqual([{code: 'roadmap-format-not-adopted', result: 'WARNING'}]);
   expect(roadmapReport(example + items).findings.map(f => f.code)).toEqual(['roadmap-missing-summary', 'roadmap-missing-row:M1 — a']);
   // A repeated label would hide one node from the row check (R2-6).
+  // Inline ```code``` at line start is not a fence (R3-1).
+  expect(roadmapReport('```x``` is inline code.\n\n' + good).findings).toEqual([]);
   const twice = '## Milestone 1 — a\n\n### Tasks\n\n- [ ] one\n\n## Milestone 2 — b\n\n### Tasks\n\n- [ ] two\n';
   expect(roadmapReport(twice).findings.map(f => f.code)).toContain('roadmap-duplicate-label:Tasks');
   const root = project(); apply(plan(root), root);
@@ -211,6 +220,10 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   write(root, 'docs/STATUS.md', '[PR #7](https://github.com/o/r/pull/7) is not yet merged.\n');
   expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
   expect(driftFindings(target, files, [], true, () => 'MERGED').map(f => f.code)).toContain('pr-state-drift:https://github.com/o/r/pull/7:MERGED');
+  for (const phrase of ['has not been merged', "isn't merged", 'was never merged']) {
+    write(root, 'docs/STATUS.md', `[PR #7](https://github.com/o/r/pull/7) ${phrase}.\n`);
+    expect(driftFindings(target, files, [], true, () => 'OPEN').map(f => f.code).filter(c => c.startsWith('pr-'))).toEqual([]);
+  }
   // With several PRs in a paragraph, each claim belongs to its own sentence (Codex D6, S2).
   write(root, 'docs/STATUS.md', 'PR https://github.com/o/r/pull/1 is open; PR https://github.com/o/r/pull/2 was merged.\n');
   const states: Record<string, string> = {'https://github.com/o/r/pull/1': 'OPEN', 'https://github.com/o/r/pull/2': 'MERGED'};
@@ -223,4 +236,9 @@ test('drift diagnostics flag stale PR claims, missing links and entry authorizat
   fs.mkdirSync(root + '/docs/sessions', {recursive: true});
   expect(driftFindings(target, files, [], false).map(f => f.code)).toEqual(['unsafe-linked-file:docs/STATUS.md:link.md']);
   expect(() => doctor(root, 'feature', ['src/a.ts'])).not.toThrow();
+  // A project-owned CLAUDE.md symlink is reported, not fatal (Codex X4); local runs report no lookups (X7).
+  fs.rmSync(root + '/CLAUDE.md', {force: true}); fs.symlinkSync(root + '/AGENTS.md', root + '/CLAUDE.md');
+  const report = doctor(root, 'feature', ['src/a.ts']);
+  expect(report.findings.map((f: any) => f.code + '=' + f.result)).toContain('unsafe-memory-file:CLAUDE.md=WARNING');
+  expect(report.diagnosticLookups).toEqual([]); expect(report.discovery).toContain('filesystem contract only');
 });

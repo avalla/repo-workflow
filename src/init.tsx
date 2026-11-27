@@ -59,7 +59,7 @@ export function createConfig(a: Answers): Document {
     gates.push({id, category: 'technical', required: true, applicability: {components: ['main'], paths: list(a.checkPaths ?? 'src'), tasks: ['feature', 'bugfix']},
       binding: id, environment: 'local', resources: [], procedure: null});
     // A release verifies the whole candidate, whatever files it touches (R2-8).
-    gates.push({id: id + '-release', category: 'technical', required: true, applicability: {components: ['main'], paths: [], tasks: ['release']},
+    gates.push({id: id + '-release', category: 'technical', required: true, applicability: {components: [], paths: [], tasks: ['release']},
       binding: id, environment: 'local', resources: [], procedure: null});
   }
   const approvals: Document[] = [{id: 'publish', scope: 'project', applicability: {components: [], paths: [], tasks: ['release']}, policy: 'required', authority: 'project owner'}];

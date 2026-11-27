@@ -9,7 +9,7 @@ description:
 
 Read effective delivery (`integration`, `base`, `mergeMethod`), applicable gates, approvals and the task ledger. Start
 only with candidates whose local required gates, independent review and configured external review are PASS (or NOT RUN
-where optional). Delivery gates (`pull-request`, `merge`, `approval-merge`) and remote CI are produced below.
+where optional). `pull-request`, `merge` and remote CI are produced below; `approval-merge` is the owner's.
 
 1. Serialize: integrate one task at a time. Update from the current base, rebase or merge the task branch, resolve
    conflicts without discarding either side, and record the new candidate. If its diff changed or the base changed code
@@ -21,7 +21,8 @@ where optional). Delivery gates (`pull-request`, `merge`, `approval-merge`) and 
      URL, base, head, checks, reviews and unresolved findings. Stop; merging is a separate owner decision. Stage
      `pr-open`.
    - `pr-auto-merge`: as `pr`; once those checks PASS, approval-merge is recorded and every other required gate is PASS,
-     enable platform auto-merge with `mergeMethod`. A queued auto-merge is not merged; record the merge commit.
+     enable auto-merge with `mergeMethod` bound to that head (`gh pr merge --auto --match-head-commit`). A new head
+     voids review and approval. A queued auto-merge is not merged; record the merge commit.
    - `direct-merge`: no PR. With approval-merge recorded and every other required gate PASS (including CI on a pushed
      candidate branch when CI runs on branches), merge into `base` with `mergeMethod`, then confirm post-merge checks on
      `base`. Record base before, candidate head, merge commit and evidence.

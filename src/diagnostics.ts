@@ -13,7 +13,8 @@ const label = (heading: string) => heading.trim().replace(/^Milestone (\d+)\b/, 
 export function unfenced(text: string) {
   const out: string[] = []; let fence: string | null = null;
   for (const line of text.split('\n')) {
-    const marker = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+    // A backtick fence's info string cannot contain backticks, so ```x``` at line start is inline code (R3-1).
+    const marker = /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})(.*)$/.exec(line);
     if (fence) {if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = null; continue;}
     if (marker) {fence = marker[1]; continue;}
     out.push(line);
@@ -99,6 +100,8 @@ export function ledgerFindings(target: Inputs, source: Inputs, file: string, exe
     if (CHECKOUT.includes(a.stage) && CHECKOUT.includes(b.stage) && (checkout(target.root, a.worktree) === checkout(target.root, b.worktree) || a.branch && a.branch === b.branch))
       findings.push({code: `task-worktree-shared:${a.id}:${b.id}`, result: 'BLOCKED'});
   }
+  // Integration is serial: each integration assumes the base it just updated from is current (Codex X3).
+  if (tasks.filter(t => t.stage === 'integrating').length > 1) findings.push({code: 'task-integration-concurrent', result: 'BLOCKED'});
   for (const t of active) {
     if (WRITING.includes(t.stage) && execution.mode === 'orchestrated' && !t.worktree) findings.push({code: 'task-missing-worktree:' + t.id, result: 'WARNING'});
     if (t.reviewIterations > execution.maxReviewIterations) findings.push({code: 'task-review-limit-exceeded:' + t.id, result: 'BLOCKED'});
@@ -113,9 +116,15 @@ const PR = /https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/pull\/\d+/g
 // Flags memory that has drifted from observable facts. Remote PR checks run only on explicit request (F4).
 export function driftFindings(target: Inputs, files: string[], entries: string[], remote: boolean, ghState = prState): Finding[] {
   const findings: Finding[] = [], citations = new Map<string, string[]>();
+  // Memory files are leads: a symlink or unsafe path is reported instead of aborting doctor (Codex X4).
+  const read = (file: string) => {
+    try {return fs.existsSync(target.track(file)) ? target.text(file) : null;}
+    catch {findings.push({code: 'unsafe-memory-file:' + file, result: 'WARNING'}); return null;}
+  };
   for (const file of files) {
-    if (!fs.existsSync(target.track(file))) continue;
-    const text = unfenced(target.text(file)), prose = text.replace(/(`+)[^`]*?\1/g, '');
+    const source = read(file); if (source === null) continue;
+    // Code spans never cross paragraphs (S-c).
+    const text = unfenced(source), prose = text.split(/\n\s*\n/).map(p => p.replace(/(`+)[^`]*?\1/g, '')).join('\n\n');
     for (const link of prose.matchAll(/\]\(([^)\s]+)\)/g)) {
       const value = link[1].split('#')[0];
       if (!value || /^[a-z]+:/i.test(value) || value.startsWith('/')) continue;
@@ -137,8 +146,8 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     }
   }
   for (const file of entries) {
-    if (!fs.existsSync(target.track(file))) continue;
-    target.text(file).split('\n').forEach((line, i) => {
+    const source = read(file); if (source === null) continue;
+    source.split('\n').forEach((line, i) => {
       if (/\b(?:current|this) task authori[sz]es\b|\bis (?:now )?authori[sz]ed\b/i.test(line)) findings.push({code: `entry-authorization-statement:${file}:${i + 1}`, result: 'WARNING'});
     });
   }
@@ -149,7 +158,7 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
     const text = paragraphs.join('\n');
     // Open, unmerged and merged are separate claims: a closed PR is accurately "not merged" (C8).
     const claimsOpen = /\b(?:is open|remains open|open PR)\b/i.test(text);
-    const unmerged = /\b(?:no merge|not (?:yet )?merged|unmerged)\b/gi;
+    const unmerged = /\b(?:no merge|not (?:yet |been )?merged|(?:is|was|has)n['’]t (?:been |yet )?merged|never (?:been )?merged|unmerged)\b/gi;
     const claimsUnmerged = unmerged.test(text);
     const claimsMerged = /\bmerged\b/i.test(text.replace(unmerged, ''));
     if (claimsOpen && state !== 'OPEN' || claimsUnmerged && state === 'MERGED' || claimsMerged && state !== 'MERGED')
@@ -158,7 +167,7 @@ export function driftFindings(target: Inputs, files: string[], entries: string[]
   return findings;
 }
 function safe(p: string) {try {relative(p); return true;} catch {return false;}}
-function prState(url: string): string | null {
+export function prState(url: string): string | null {
   try {
     const result = Bun.spawnSync(['gh', 'pr', 'view', url, '--json', 'state', '--jq', '.state'], {stdin: 'ignore', timeout: 20000});
     const state = result.stdout.toString().trim();
